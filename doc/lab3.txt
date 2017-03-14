@@ -1,0 +1,31 @@
+Lab 3 - Simple Deep Neural Network
+
+Submit your code (Lab3.java) for your simple deep neural network here.  Also submit your lab report (Lab3.pdf).
+
+Groups of four can work together.  ALL should submit the SAME code and report.  Be sure all names on both.  The report should clarify who worked on which parts of the code and experimentation.  BY TURNING IN CODE AND A REPORT, YOU ARE AFFIRMING YOU DID A SUBSTANTIAL AMOUNT OF THE WORK AND HAVE A SOLID UNDERSTANDING OF THE MATERIAL.
+
+We need to follow a standard convention for your code in order to simplify testing it.  For Lab 3 (code in Lab3.java) we will call your code this way:
+
+        Lab3 trainDirectoryName tuneDirectoryName testDirectoryName
+
+See the Week 4 Lab3 lecture notes for what your code should output (a 'confusion matrix').  Your lab report should briefly describe the size of your convolution and pooling layers - include a drawing of it like Slide 2 of the my cs540 Lecture 20 (linked on http://pages.cs.wisc.edu/~shavlik/cs638_cs838.html).  You do not need to explain convolution, pooling, drop out, etc.  Focus on presenting and discussing your experimental results.
+
+Summary (from a 3/9/17 Piazza posting):
+
+   provide a drawing that illustrates your network topology
+
+   your code should output a testset CONFUSION matrix and overall testset accuracy
+
+   you need to use early stopping (ok to report a TUNE set confusion matrix after every epoch
+   and a testset confusion matrix whenever the tuneset accuracy improves; maybe output the trainset
+
+   confusion matrix every 10 epochs, to save cpu cycles - but also fine to just have your turned-in code output
+   a testset confusion matrix before terminating)
+
+   show (and discuss) in your report a learning curve;  ok to only have points at 25%, 50%, 75% and 100% of the training examples
+
+   experiment (and discuss) with DropOut, need not use it in the configuration you turn in for our testing
+
+   if you did any additional experiments, briefly discuss them (if more than a page or so, create an appendix
+
+   containing your additional experiments), but no need to report everything you did
