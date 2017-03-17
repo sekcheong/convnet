@@ -8,10 +8,25 @@ public class Matrix {
 	private int _rows;
 	private int _cols;
 	double[][] A;
+	double[] B;
 
 
 	public Matrix(int rows, int cols) {
-		A = new double[rows][cols];
+
+		if (rows < 1 && cols < 1) throw new IllegalArgumentException("The row number and column number can not be both 0");
+
+		if (rows > 0 && cols > 0) {
+			A = new double[rows][cols];
+		}
+		else if (rows == 0) {
+			B = new double[cols];
+		}
+		else if (cols == 0) {
+			B = new double[rows];
+		}
+
+		_rows = rows;
+		_cols = cols;
 	}
 
 
@@ -39,12 +54,52 @@ public class Matrix {
 	}
 
 
+	public boolean isColumnVector() {
+		return (_cols == 0 && _rows > 0);
+	}
+
+
+	public boolean isRowVector() {
+		return (_cols > 0 && _rows == 0);
+	}
+
+
 	public Matrix plus(Matrix b) {
 		return this;
 	}
 
 
-	public Matrix plusEqual(Matrix b) {
+	public Matrix plusN(Matrix b) {
+		return this;
+	}
+
+
+	public Matrix minus(Matrix b) {
+		return this;
+	}
+
+
+	public Matrix minusN(Matrix b) {
+		return this;
+	}
+
+
+	public Matrix times(double c) {
+		return this;
+	}
+
+
+	public Matrix timesN(double c) {
+		return this;
+	}
+	
+	
+	public Matrix dot(Matrix b) {
+		return this;
+	}
+	
+	
+	public Matrix dotN(Matrix b) {
 		return this;
 	}
 
@@ -128,9 +183,7 @@ public class Matrix {
 
 
 	private static double[][] dot(double[][] a, double[][] b) {
-		if (a[0].length != b[0].length) {
-			throw new IllegalArgumentException("Matrix inner dimensions must agree.");
-		}
+		if (a[0].length != b[0].length) { throw new IllegalArgumentException("Matrix inner dimensions must agree."); }
 
 		int rows = a.length;
 		int cols = b.length;
@@ -184,9 +237,7 @@ public class Matrix {
 
 
 	private void checkDim(Matrix b) {
-		if (b._cols != this._cols || b._rows != this._cols) {
-			throw new IllegalArgumentException("Matrix dimensions must agree.");
-		}
+		if (b._cols != this._cols || b._rows != this._cols) { throw new IllegalArgumentException("Matrix dimensions must agree."); }
 	}
 
 }
@@ -205,8 +256,10 @@ public class Matrix {
 // for (int xw = 0; xw < w; xw++) {
 // for (int ys = 0; ys < h; ys++) {
 // for (int xs = 0; xs < w; xs++) {
-// r[yw][xw] += (x[ys][xs] * Math.cos(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0 * yw * ys / h)))) / Math.sqrt(w * h);
-// i[yw][xw] -= (x[ys][xs] * Math.sin(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0 * yw * ys / h)))) / Math.sqrt(w * h);
+// r[yw][xw] += (x[ys][xs] * Math.cos(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0
+// * yw * ys / h)))) / Math.sqrt(w * h);
+// i[yw][xw] -= (x[ys][xs] * Math.sin(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0
+// * yw * ys / h)))) / Math.sqrt(w * h);
 // a[yw][xw] = Math.sqrt(r[yw][xw] * r[yw][xw] + i[yw][xw] * i[yw][xw]);
 // }
 // }
@@ -226,8 +279,10 @@ public class Matrix {
 // for (int xw = 0; xw < w; xw++) {
 // for (int ys = 0; ys < h; ys++) {
 // for (int xs = 0; xs < w; xs++) {
-// r[yw][xw] += (x[ys][xs] * Math.cos(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0 * yw * ys / h)))) / Math.sqrt(w * h);
-// i[yw][xw] -= (x[ys][xs] * Math.sin(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0 * yw * ys / h)))) / Math.sqrt(w * h);
+// r[yw][xw] += (x[ys][xs] * Math.cos(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0
+// * yw * ys / h)))) / Math.sqrt(w * h);
+// i[yw][xw] -= (x[ys][xs] * Math.sin(2 * Math.PI * ((1.0 * xw * xs / w) + (1.0
+// * yw * ys / h)))) / Math.sqrt(w * h);
 // a[yw][xw] = Math.sqrt(r[yw][xw] * r[yw][xw] + i[yw][xw] * i[yw][xw]);
 // }
 // }
