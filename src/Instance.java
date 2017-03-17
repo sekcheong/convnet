@@ -266,7 +266,7 @@ public class Instance {
                 g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                                      RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 g2d.scale(2, 2);
-              //  g2d.drawImage(img, 0, 0, this); Fails in Java 1.6 and 1.7
+                g2d.drawImage(img, 0, 0, this); //Fails in Java 1.6 and 1.7
             }
         };
         panel.setPreferredSize(new Dimension(width * 2, height * 2));

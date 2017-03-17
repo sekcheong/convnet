@@ -70,8 +70,7 @@ public class Lab3 {
 										// the 'teacher-provided' label of the
 										// example.
 
-	private static double eta = 0.1, fractionOfTrainingToUse = 1.00, dropoutRate = 0.50; // To
-																							// turn
+	private static double eta = 0.1, fractionOfTrainingToUse = 1.00, dropoutRate = 0.50; // To turn
 																							// off
 																							// drop
 																							// out,
@@ -174,6 +173,7 @@ public class Lab3 {
 
 				Instance instance = new Instance(scaledBI == null ? img : scaledBI, name, name.substring(0, locationOfUnderscoreImage));
 
+				instance.displayImage(img);
 				dataset.add(instance);
 			}
 			catch (IOException e) {
