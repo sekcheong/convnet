@@ -29,6 +29,11 @@ public class Volume {
 	}
 
 
+	public Volume(int width, int height, int depth, double v) {
+		initVolume(width, height, depth, v);
+	}
+
+
 	public Volume(Volume src) {
 		_width = src._width;
 		_height = src._height;
@@ -46,7 +51,21 @@ public class Volume {
 		_depth = depth;
 		_w = new double[_width * _height * _depth];
 		_dw = new double[_w.length];
-		// initWeights(_w);
+		initWeights(_w);
+	}
+
+
+	private void initVolume(int width, int height, int depth, double v) {
+		_width = width;
+		_height = height;
+		_depth = depth;
+		_w = new double[_width * _height * _depth];
+		if (v != 0) {
+			for (int i = 0; i < _w.length; i++)
+				_w[i] = v;
+		}
+		_dw = new double[_w.length];
+		initWeights(_w);
 	}
 
 
