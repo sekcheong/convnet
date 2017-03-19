@@ -4,22 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import ml.convnet.Volume;
+import ml.convnet.Cube;
 
 public class ImageUtil {
 
-	public static Volume imageToVolume(BufferedImage image) {
+	public static Cube imageToVolume(BufferedImage image) {
 		return imageToVolume(image,false);
 	}
 
 
-	public static Volume imageToVolume(BufferedImage image, boolean toGrayScale) {
+	public static Cube imageToVolume(BufferedImage image, boolean toGrayScale) {
 		int width = image.getWidth();
 		int height = image.getHeight();
-		Volume v;
+		Cube v;
 
 		if (!toGrayScale) {
-			v = new Volume(width, height, 3);
+			v = new Cube(width, height, 3);
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					Color c = new Color(image.getRGB(i, j));
@@ -31,7 +31,7 @@ public class ImageUtil {
 			}
 		}
 		else {
-			v = new Volume(width, height, 1);
+			v = new Cube(width, height, 1);
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					Color c = new Color(image.getRGB(i, j));

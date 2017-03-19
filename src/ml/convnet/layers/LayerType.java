@@ -3,13 +3,12 @@ package ml.convnet.layers;
 public enum LayerType {
 	input,
 	fullyconnected,
-	pool,
 	convolution,
+	pool,
 	regression,
-	relu,
-	sigmoid,
-	tangh,
 	softmax,
+	sigmoid,
+	htan,
 	dropout,
 	maxout
 }
