@@ -22,12 +22,12 @@ public class Trace {
 	}
 
 
-	public static void TraceError(Object msg) {
-		TraceError(msg, new Object[0]);
+	public static void logError(Object msg) {
+		logError(msg, new Object[0]);
 	}
 
 
-	public static void TraceError(Object msg, Object... moreMsgs) {
+	public static void logError(Object msg, Object... moreMsgs) {
 		System.err.print(msg);
 		for (Object s : moreMsgs) {
 			System.err.print(s);

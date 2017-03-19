@@ -42,6 +42,11 @@ public class Cube {
 	}
 
 
+	public Cube(Cube v, double c) {
+		initVolume(v._dim.w, v._dim.h, v._dim.d, c);
+	}
+
+
 	private void initVolume(int width, int height, int depth) {
 		_dim = new CubeSize(width, height, depth);
 		W = new double[_dim.size()];

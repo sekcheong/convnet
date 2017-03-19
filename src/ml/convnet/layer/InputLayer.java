@@ -1,34 +1,25 @@
-package ml.convnet.layers;
+package ml.convnet.layer;
 
 import ml.convnet.Cube;
-import ml.convnet.CubeSize;
 
 public class InputLayer extends Layer {
-	
-	
+	int _w;
+	int _h;
+	int _d;
+
+
 	public InputLayer(int w, int h, int d) {
-		this.inputSize = new CubeSize(w,h,d);
+		_w = w;
+		_h = h;
+		_d = d;
 		this.type = LayerType.input;
 	}
 
 
-	@Override
 	public Cube forward(Cube x) {
 		this.input = x;
 		this.output = x;
 		return x;
-	}
-
-
-	@Override
-	public void backward() {
-		
-	}
-
-
-	@Override
-	public Cube backward(Cube y) {
-		return null;
 	}
 
 }

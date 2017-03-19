@@ -1,4 +1,4 @@
-package ml.convnet.layers;
+package ml.convnet.layer;
 
 public enum LayerType {
 	input,
@@ -7,6 +7,7 @@ public enum LayerType {
 	pool,
 	regression,
 	softmax,
+	leru,
 	sigmoid,
 	htan,
 	dropout,
