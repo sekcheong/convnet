@@ -59,9 +59,10 @@ public class ConvolutionLayer extends Layer {
 				j = -_padding;
 				for (int ax = 0; ax < this.outputSize.w; j += _stride, ax++) { // xy_stride
 
+					
+					
 				}
 			}
-
 		}
 		
 		// for(var d=0;d<this.out_depth;d++) {
