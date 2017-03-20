@@ -20,8 +20,16 @@ public class ConvNet {
 
 	public Layer[] layers() throws Exception {
 		List<Layer> layers = new ArrayList<Layer>();
-
 		Layer layer;
+		Layer prev;
+
+		String act;
+		int w;
+		int h;
+		int d;
+		int units;
+		double bias;
+
 		for (int i = 0; i < _layerSpec.size(); i++) {
 
 			Map<String, Object> p = _layerSpec.get(i);
@@ -33,36 +41,62 @@ public class ConvNet {
 
 			switch (layerType) {
 				case input:
-					layer = new InputLayer((int) p.get("width"), (int) p.get("height"), (int) p.get("depth"));
+					w = (int) p.get("width");
+					h = (int) p.get("height");
+					d = (int) p.get("depth");
+					layer = new InputLayer(w, h, d);
 					layers.add(layer);
 					break;
 
-				case fullyconnected:
-					layer = new FullyConnectedLayer((int) p.get("width"), (int) p.get("height"), (int) p.get("depth"), (int) p.get("units"), (double) p.get("bias"));
-					layers.add(layer);
-
-					String act = (String) p.get("activation");
+				case fullconnect:
+					prev = layers.get(layers.size() - 1);
+					units = (int) p.get("units");
+					if (p.containsKey("bias")) {
+						bias = (double) p.get("bias");
+					}
+					else {
+						bias = prev.bias;
+					}
+					//layer = new FullConnectLayer(prev.outW(), prev.outH(), prev.outD(), units, bias);
+				//	layers.add(layer);
+					act = (String) p.get("activation");
 					if (act == null || act.trim().length() == 0) {
 						throw new Exception("activation is not specifed for layer " + i);
 					}
-
+					layer = getActivationLayer(act, p);
+					layers.add(layer);
 					break;
 
 				case convolution:
+
 				case pool:
+
 				case regression:
+
 				case softmax:
+
 				case leru:
+
 				case sigmoid:
+
 				case htan:
+
 				case dropout:
+
 				case maxout:
+
 				default:
 					break;
 			}
 
 		}
 
+		return null;
+	}
+
+
+	private Layer getActivationLayer(String act, Map<String, Object> p) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

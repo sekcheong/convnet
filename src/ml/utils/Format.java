@@ -22,10 +22,10 @@ public class Format {
 				return format3d((double[][][]) v, decimal);
 			}
 
-			Trace.TraceError("Format.matrix(Object v): Unexpected data type ", v.toString());
+			Trace.logError("Format.matrix(Object v): Unexpected data type ", v.toString());
 		}
 		catch (Exception ex) {
-			Trace.TraceError("Format.matrix(Object v): Error formatting matrix ", v.toString(), "\nDetails:", ex.getMessage());
+			Trace.logError("Format.matrix(Object v): Error formatting matrix ", v.toString(), "\nDetails:", ex.getMessage());
 		}
 
 		return "";

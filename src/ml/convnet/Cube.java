@@ -4,32 +4,33 @@ import java.util.Random;
 
 public class Cube {
 
-	private CubeSize _dim;
-
 	public double[] W;
 
 	public double[] dW;
 
+	public int[] dim = new int[3];
+
 	private static Random rand = new Random();
 
 
-	public Cube() {
-		_dim = new CubeSize(0, 0, 0);
-	}
+	public Cube() {}
 
 
 	public Cube(int width, int height, int depth) {
-		initVolume(width, height, depth);
+		createVolume(width, height, depth);
 	}
 
 
 	public Cube(int width, int height, int depth, double v) {
-		initVolume(width, height, depth, v);
+		createVolume(width, height, depth, v);
 	}
 
 
 	public Cube(Cube src) {
-		_dim = new CubeSize(src._dim.w, src._dim.h, src._dim.d);
+		for (int i=0; i<src.dim.length; i++) {
+			dim[i] = src.dim[i];
+		}
+
 		W = new double[src.W.length];
 		for (int i = 0; i < src.W.length; i++) {
 			W[i] = src.W[i];
@@ -43,27 +44,28 @@ public class Cube {
 
 
 	public Cube(Cube v, double c) {
-		initVolume(v._dim.w, v._dim.h, v._dim.d, c);
+		createVolume(v.dim[0], v.dim[1], v.dim[2], c);
 	}
 
 
-	private void initVolume(int width, int height, int depth) {
-		_dim = new CubeSize(width, height, depth);
-		W = new double[_dim.size()];
+	private void createVolume(int width, int height, int depth) {
+		dim[0] = width;
+		dim[1] = height;
+		dim[2] = depth;
+		W = new double[dim[0] * dim[1] * dim[2]];
 		initWeights(W);
 	}
 
 
-	private void initVolume(int width, int height, int depth, double v) {
-		_dim = new CubeSize(width, height, depth);
-		W = new double[_dim.size()];
-		dW = new double[W.length];
+	private void createVolume(int width, int height, int depth, double v) {
+		this.dim[0] = width;
+		this.dim[1] = height;
+		this.dim[2] = depth;
 
-		// fill up the weights with the default value
-		if (v != 0) {
-			for (int i = 0; i < W.length; i++) {
-				W[i] = v;
-			}
+		W = new double[dim[0] * dim[1] * dim[2]];
+		if (v == 0) return;
+		for (int i = 0; i < W.length; i++) {
+			W[i] = v;
 		}
 	}
 
@@ -81,75 +83,85 @@ public class Cube {
 	}
 
 
-	public CubeSize dim() {
-		return _dim;
+	public static int index(int x, int y, int z) {
+		return 0;
 	}
 
 
-	public double get(int x, int y, int d) {
-		int i = _dim.index(x, y, d);
+	public double get(int x, int y, int z) {
+		int i = index(x, y, z);
 		return this.W[i];
 	}
 
 
-	public void set(int x, int y, int d, double v) {
-		int i = _dim.index(x, y, d);
-		this.W[i] = v;
+	public void set(int x, int y, int z, double v) {
+		this.W[index(x, y, z)] = v;
 	}
 
 
-	public void set(double c) {
-		for (int i = 0; i < W.length; i++)
+	public void setAll(double c) {
+		for (int i = 0; i < W.length; i++) {
 			W[i] = c;
+		}
+	}
+	
+	public int width() {
+		return dim[0];
 	}
 
-
-	public void add(Cube v) {
-		for (int i = 0; i < W.length; i++)
-			W[i] += v.W[i];
+	public int height() {
+		return dim[1];
 	}
-
-
-	public void add(double[] d) {
-		for (int i = 0; i < W.length; i++)
-			W[i] += d[i];
+	
+	public int depth() {
+		return dim[2];
 	}
-
-
-	public void addScale(double[] d, double scale) {
-		for (int i = 0; i < W.length; i++)
-			W[i] += d[i] * scale;
-
-	}
-
-
-	public void addScale(Cube v, double scale) {
-		for (int i = 0; i < W.length; i++)
-			W[i] += v.W[i] * scale;
-
-	}
-
-
-	public double getGrad(int x, int y, int d) {
-		int i = _dim.index(x, y, d);
-		return this.dW[i];
-	}
-
-
-	public void setGrad(int x, int y, int d, double grad) {
-		int i = _dim.index(x, y, d);
-		this.dW[i] = grad;
-	}
-
-
-	public void addGrad(int x, int y, int d, double grad) {
-		int i = _dim.index(x, y, d);
-		this.dW[i] += grad;
-	}
-
-
-	public static double[] zeros(int size) {
-		return new double[size];
-	}
+	// public void add(Cube v) {
+	// for (int i = 0; i < W.length; i++)
+	// W[i] += v.W[i];
+	// }
+	//
+	//
+	// public void add(double[] d) {
+	// for (int i = 0; i < W.length; i++)
+	// W[i] += d[i];
+	// }
+	//
+	//
+	// public void addScale(double[] d, double scale) {
+	// for (int i = 0; i < W.length; i++)
+	// W[i] += d[i] * scale;
+	//
+	// }
+	//
+	//
+	// public void addScale(Cube v, double scale) {
+	// for (int i = 0; i < W.length; i++)
+	// W[i] += v.W[i] * scale;
+	//
+	// }
+	//
+	//
+	// public double getGrad(int x, int y, int d) {
+	// int i = _dim.index(x, y, d);
+	// return this.dW[i];
+	// }
+	//
+	//
+	// public void setGrad(int x, int y, int d, double grad) {
+	// int i = _dim.index(x, y, d);
+	// this.dW[i] = grad;
+	// }
+	//
+	//
+	// public void addGrad(int x, int y, int d, double grad) {
+	// int i = _dim.index(x, y, d);
+	// this.dW[i] += grad;
+	// }
+	//
+	//
+	// public static double[] zeros(int size) {
+	// return new double[size];
+	// }
 
 }

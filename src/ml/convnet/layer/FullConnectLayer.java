@@ -2,38 +2,35 @@ package ml.convnet.layer;
 
 import ml.convnet.Cube;
 
-public class FullyConnectedLayer extends Layer {
+public class FullConnectLayer extends Layer {
 	private Cube[] _filters;
-	private int _inputs;
-	int _outW;
-	int _outH;
-	int _outD;
+	
 
+	public FullConnectLayer(Layer prev, int units, double bias) {
+		super(prev);
+		
+		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
+		this.outH(1);
+		this.outW(1);
+		this.outD(units);
 
-	public FullyConnectedLayer(int w, int h, int d, int units, double bias) {
-
-		_outW = 1;
-		_outH = 1;
-		_outD = units;
-		_inputs = w * h * d;
-
-		_filters = new Cube[_outD];
+		_filters = new Cube[this.outD()];
 		for (int i = 0; i < _filters.length; i++) {
-			_filters[i] = new Cube(1, 1, _inputs);
+			_filters[i] = new Cube(1, 1, this.inLength());
 		}
-		this.biases = new Cube(1, 1, _outD, bias);
-		this.type = LayerType.fullyconnected;
+		this.biases = new Cube(1, 1, this.outD(), bias);
+		this.type = LayerType.fullconnect;
 	}
 
 
 	public Cube forward(Cube x) {
 		this.input = x;
-		Cube out = new Cube(1, 1, _outD, 0);
+		Cube out = new Cube(1, 1, this.outD(), 0);
 		double[] wx = x.W;
-		for (int i = 0; i < _outD; i++) {
+		for (int i = 0; i < this.outD(); i++) {
 			double a = 0;
 			double[] wi = _filters[i].W;
-			for (int d = 0; d < _inputs; i++) {
+			for (int d = 0; d < this.inLength(); i++) {
 				a += wx[d] * wi[d];
 			}
 			a += this.biases.W[i];
@@ -50,10 +47,10 @@ public class FullyConnectedLayer extends Layer {
 		in.dW = new double[in.W.length];
 
 		// compute gradient wrt weights and data
-		for (int i = 0; i < _outD; i++) {
+		for (int i = 0; i < this.outD(); i++) {
 			Cube tfi = _filters[i];
 			chainGrad = this.output.dW[i];
-			for (int d = 0; d < this._inputs; d++) {
+			for (int d = 0; d < this.inLength(); d++) {
 				in.dW[d] += tfi.W[d] * chainGrad; // grad wrt input data
 				tfi.dW[d] += in.W[d] * chainGrad; // grad wrt params
 			}
@@ -63,8 +60,8 @@ public class FullyConnectedLayer extends Layer {
 
 
 	public double[][][] getResponse() {
-		double[][][] res = new double[_outD + 1][2][];
-		int n = _outD;
+		int n = this.outD();
+		double[][][] res = new double[n + 1][2][];
 		for (int i = 0; i < n; i++) {
 			res[i][0] = _filters[i].W;
 			res[i][1] = _filters[i].dW;

@@ -6,7 +6,16 @@ import ml.convnet.layer.LayerType;
 
 public class SigmoidLayer extends Layer {
 
-	public SigmoidLayer() {
+	public SigmoidLayer(Layer prev) {
+		super(prev);
+		this.inW(prev.outW());
+		this.inH(prev.outH());
+		this.inD(prev.outD());
+
+		this.outW(this.inW());
+		this.outH(this.inH());
+		this.outD(this.inD());
+
 		this.type = LayerType.sigmoid;
 	}
 

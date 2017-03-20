@@ -6,26 +6,21 @@ import ml.convnet.layer.LayerType;
 
 public class RegressionLayer extends Layer {
 
-	private int _inputs;
-	private int _outW;
-	private int _outH;
-	private int _inW;
-	private int _inH;
-	private int _inD;
-
-
-	public RegressionLayer(int w, int h, int d) {
-		_inW = w;
-		_inH = h;
-		_inD = d;
-		_outW = 1;
-		_outH = 1;
-		_inputs = _inW * _inH * _inD;
+	RegressionLayer(Layer prev) {
+		super(prev);
+		this.inW(prev.outW());
+		this.inH(prev.outH());
+		this.inD(prev.outD());
+		
+		this.outW(1);
+		this.outH(1);
+		this.outD(1);
+		this.outD(this.inLength());
+		
 		this.type = LayerType.regression;
 	}
 
 
-	@Override
 	public Cube forward(Cube x) {
 		this.input = x;
 		this.output = x;
@@ -35,7 +30,7 @@ public class RegressionLayer extends Layer {
 
 	public double backward(double[] y) {
 		Cube x = this.input;
-		double loss = 0;
+		double loss = 0.0;
 		for (int i = 0; i < x.W.length; i++) {
 			double dy = x.W[i] - y[i];
 			x.dW[i] = dy;
@@ -44,4 +39,12 @@ public class RegressionLayer extends Layer {
 		return loss;
 	}
 
+
+	public double backward(double y) {
+		Cube x = this.input;
+		double dy = x.W[0] - y;
+		x.dW[0] = dy;
+		return .5 * dy * dy;
+	}
+	
 }

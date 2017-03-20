@@ -2,7 +2,7 @@ package ml.convnet.layer;
 
 public enum LayerType {
 	input,
-	fullyconnected,
+	fullconnect,
 	convolution,
 	pool,
 	regression,
