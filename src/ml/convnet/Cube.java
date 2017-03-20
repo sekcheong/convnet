@@ -27,7 +27,7 @@ public class Cube {
 
 
 	public Cube(Cube src) {
-		for (int i=0; i<src.dim.length; i++) {
+		for (int i = 0; i < src.dim.length; i++) {
 			dim[i] = src.dim[i];
 		}
 
@@ -104,18 +104,23 @@ public class Cube {
 			W[i] = c;
 		}
 	}
-	
+
+
 	public int width() {
 		return dim[0];
 	}
 
+
 	public int height() {
 		return dim[1];
 	}
-	
+
+
 	public int depth() {
 		return dim[2];
 	}
+
+
 	// public void add(Cube v) {
 	// for (int i = 0; i < W.length; i++)
 	// W[i] += v.W[i];
@@ -142,22 +147,19 @@ public class Cube {
 	// }
 	//
 	//
-	// public double getGrad(int x, int y, int d) {
-	// int i = _dim.index(x, y, d);
-	// return this.dW[i];
-	// }
-	//
-	//
-	// public void setGrad(int x, int y, int d, double grad) {
-	// int i = _dim.index(x, y, d);
-	// this.dW[i] = grad;
-	// }
-	//
-	//
-	// public void addGrad(int x, int y, int d, double grad) {
-	// int i = _dim.index(x, y, d);
-	// this.dW[i] += grad;
-	// }
+	public double getGrad(int x, int y, int z) {
+		return this.dW[index(x, y, z)];
+	}
+
+
+	public void setGrad(int x, int y, int z, double grad) {
+		this.dW[index(x, y, z)] = grad;
+	}
+
+
+	public void addGrad(int x, int y, int z, double grad) {
+		this.dW[index(x, y, z)] += grad;
+	}
 	//
 	//
 	// public static double[] zeros(int size) {

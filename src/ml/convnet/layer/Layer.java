@@ -13,7 +13,7 @@ public abstract class Layer {
 
 	private Layer _next = null;
 	private Layer _last = null;
-	
+
 	public double bias;
 	public int index;
 
@@ -144,6 +144,11 @@ public abstract class Layer {
 
 	public double[][][] response() {
 		return null;
+	}
+
+
+	public boolean isTraining() {
+		return net.isTraining;
 	}
 
 }

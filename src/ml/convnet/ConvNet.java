@@ -9,6 +9,7 @@ import ml.convnet.layer.*;
 
 public class ConvNet {
 	public List<Map<String, Object>> _layerSpec = new ArrayList<Map<String, Object>>();
+	public boolean isTraining;
 
 
 	public Map<String, Object> addLayer() {

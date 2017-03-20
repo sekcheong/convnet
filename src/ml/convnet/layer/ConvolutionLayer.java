@@ -23,9 +23,9 @@ public class ConvolutionLayer extends Layer {
 
 		if (_stride <= 0) _stride = 1;
 		if (filterH == 0) _filterH = _filterW;
-		
+
 		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
-		
+
 		t = (int) Math.floor((double) (this.inW() + pad * 2 - _filterW) / _stride + 1);
 		this.outW(t);
 
@@ -87,7 +87,7 @@ public class ConvolutionLayer extends Layer {
 
 		Cube V = this.input;
 		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data, we're about to fill it
-		
+
 		int V_sx = V.width();
 		int V_sy = V.height();
 		int xy_stride = _stride;
@@ -100,14 +100,13 @@ public class ConvolutionLayer extends Layer {
 				x = -this._pad;
 				for (int ax = 0; ax < this.outW(); x += xy_stride, ax++) {
 					// convolve centered at this particular location
-					double chainGrad = this.output.dW[Cube.index(ax, ay, d)]; // gradient from above, from chain rule
+					double chainGrad = this.output.getGrad(ax, ay, d); // gradient from above, from chain rule
 					for (int fy = 0; fy < f.height(); fy++) {
 						int oy = y + fy; // coordinates in the original input array coordinates
 						for (int fx = 0; fx < f.width(); fx++) {
 							int ox = x + fx;
 							if (oy >= 0 && oy < V_sy && ox >= 0 && ox < V_sx) {
 								for (int fd = 0; fd < f.depth(); fd++) {
-									// avoid function call overhead (x2) for efficiency, compromise modularity :(
 									int ix1 = ((V_sx * oy) + ox) * V.depth() + fd;
 									int ix2 = ((f.width() * fy) + fx) * f.depth() + fd;
 									f.dW[ix2] += V.W[ix1] * chainGrad;
@@ -121,7 +120,8 @@ public class ConvolutionLayer extends Layer {
 			}
 		}
 	}
-	
+
+
 	public double[][][] response() {
 		int n = this.outD();
 		double[][][] res = new double[n + 1][2][];
