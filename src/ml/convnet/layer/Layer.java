@@ -10,10 +10,12 @@ public abstract class Layer {
 	public Cube output;
 	public Cube biases;
 	public int[][] sizes = new int[2][3];
-	public double bias;
-	public int index;
+
 	private Layer _next = null;
 	private Layer _last = null;
+	
+	public double bias;
+	public int index;
 
 
 	public Layer(Layer prev) {
@@ -140,7 +142,7 @@ public abstract class Layer {
 	}
 
 
-	public double[][][] getResponse() {
+	public double[][][] response() {
 		return null;
 	}
 

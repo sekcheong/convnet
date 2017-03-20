@@ -1,7 +1,15 @@
 package ml.convnet.learner;
 
-public class Learner {
-	public Learner(double rate, double momentum, double decay) {
-		
+import ml.convnet.ConvNet;
+
+public abstract class Learner {
+	protected ConvNet _net;
+	protected int _epochs;
+
+	public Learner() {
+
 	}
+
+	public abstract void train(double[] example, double[] target);
+
 }

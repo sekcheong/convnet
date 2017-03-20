@@ -122,7 +122,7 @@ public class ConvolutionLayer extends Layer {
 		}
 	}
 	
-	public double[][][] getResponse() {
+	public double[][][] response() {
 		int n = this.outD();
 		double[][][] res = new double[n + 1][2][];
 		for (int i = 0; i < n; i++) {
