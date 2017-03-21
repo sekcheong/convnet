@@ -2,10 +2,12 @@ package ml.convnet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ml.convnet.data.Example;
 import ml.convnet.layer.*;
 import ml.convnet.learner.*;
 
-public class ConvNet {
+public class ConvNet  {
 
 	private List<Layer> _layerList = new ArrayList<Layer>();
 
@@ -46,13 +48,33 @@ public class ConvNet {
 	}
 
 
-	public void train(double[] x, double[] y) {
+	public void train(Example[] train, Example[] tune) {
 		
+	}
+
+
+	public void train(Example ex) {
+		train(ex.x, ex.y);
+	}
+
+
+	public void train(double[] x, double[] y) {
+
 	}
 
 
 	public double[] predict(double[] x) {
 		return null;
+	}
+
+
+	public double[] accuracy(Example[] test) {
+		return null;
+	}
+
+
+	public boolean validate(Example ex) {
+		return false;
 	}
 
 }
