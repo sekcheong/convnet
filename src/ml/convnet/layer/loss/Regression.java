@@ -4,9 +4,9 @@ import ml.convnet.Cube;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class RegressionLayer extends Layer {
+public class Regression extends Layer {
 
-	RegressionLayer(Layer prev) {
+	Regression(Layer prev) {
 		super(prev);
 		this.inW(prev.outW());
 		this.inH(prev.outH());

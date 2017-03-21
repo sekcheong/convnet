@@ -4,9 +4,9 @@ import ml.convnet.Cube;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class LeRuLayer extends Layer {
+public class LeRu extends Layer {
 
-	public LeRuLayer(Layer prev) {
+	public LeRu(Layer prev) {
 		super(prev);
 		this.inW(prev.outW());
 		this.inH(prev.outH());

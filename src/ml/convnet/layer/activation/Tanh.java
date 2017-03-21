@@ -4,9 +4,9 @@ import ml.convnet.Cube;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class TanhLayer extends Layer {
+public class Tanh extends Layer {
 
-	public TanhLayer(Layer prev) {
+	public Tanh(Layer prev) {
 		super(prev);
 		this.inW(prev.outW());
 		this.inH(prev.outH());

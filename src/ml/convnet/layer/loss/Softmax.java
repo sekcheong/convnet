@@ -4,12 +4,12 @@ import ml.convnet.Cube;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class SoftmaxLayer extends Layer {
+public class Softmax extends Layer {
 	private int _ncls;
 	private double[] _es;
 
 
-	public SoftmaxLayer(Layer prev, int nclass) {
+	public Softmax(Layer prev, int nclass) {
 		super(prev);
 		this.inW(prev.outW());
 		this.inH(prev.outH());

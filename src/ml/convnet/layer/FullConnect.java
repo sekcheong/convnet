@@ -2,11 +2,11 @@ package ml.convnet.layer;
 
 import ml.convnet.Cube;
 
-public class FullConnectLayer extends Layer {
+public class FullConnect extends Layer {
 	private Cube[] _filters;
 	
 
-	public FullConnectLayer(Layer prev, int units, double bias) {
+	public FullConnect(Layer prev, int units, double bias) {
 		super(prev);
 		
 		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());

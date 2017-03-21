@@ -2,13 +2,13 @@ package ml.convnet.layer;
 
 import ml.convnet.Cube;
 
-public class DropOutLayer extends Layer {
+public class DropOut extends Layer {
 
 	private boolean[] _dropped;
 	private double _dropProb;
 
 
-	public DropOutLayer(Layer prev, double dropOutProb) {
+	public DropOut(Layer prev, double dropOutProb) {
 		super(prev);
 		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
 		this.outW(this.inW()).outH(this.inH()).outD(this.inD());

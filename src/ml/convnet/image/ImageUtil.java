@@ -1,4 +1,4 @@
-package ml.convnet.util;
+package ml.convnet.image;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,12 +8,11 @@ import ml.convnet.Cube;
 
 public class ImageUtil {
 
-	public static Cube imageToVolume(BufferedImage image) {
-		return imageToVolume(image,false);
+	public static Cube imageToCube(BufferedImage image) {
+		return imageToCube(image, false);
 	}
 
-
-	public static Cube imageToVolume(BufferedImage image, boolean toGrayScale) {
+	public static Cube imageToCube(BufferedImage image, boolean toGrayScale) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		Cube v;
@@ -23,7 +22,7 @@ public class ImageUtil {
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					Color c = new Color(image.getRGB(i, j));
-					//normalize pixel value to [-0.5, +0.5]
+					// normalize pixel value to [-0.5, +0.5]
 					v.set(i, j, 0, (((double) c.getRed()) / 255.0) - 0.5);
 					v.set(i, j, 1, (((double) c.getGreen())) / 255.0 - 0.5);
 					v.set(i, j, 2, (((double) c.getBlue())) / 255.0 - 0.5);
@@ -43,7 +42,7 @@ public class ImageUtil {
 		return v;
 	}
 
-	
+
 	public static double rgbToGrayScale(int r, int g, int b) {
 		double r0 = (double) r / (255);
 		double g0 = (double) g / (255);

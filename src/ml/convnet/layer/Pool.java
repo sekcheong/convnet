@@ -2,7 +2,7 @@ package ml.convnet.layer;
 
 import ml.convnet.Cube;
 
-public class PoolLayer extends Layer {
+public class Pool extends Layer {
 	private int _w;
 	private int _h;
 	private int _d;
@@ -11,7 +11,7 @@ public class PoolLayer extends Layer {
 	private int[][] _mask;
 
 
-	public PoolLayer(Layer prev, int w, int h, int stride, int pad) {
+	public Pool(Layer prev, int w, int h, int stride, int pad) {
 		super(prev);
 
 		int t;

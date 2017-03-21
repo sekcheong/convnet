@@ -2,7 +2,7 @@ package ml.convnet.layer;
 
 import ml.convnet.Cube;
 
-public class ConvolutionLayer extends Layer {
+public class Convolution extends Layer {
 
 	private Cube[] _filters;
 	private int _stride;
@@ -11,7 +11,7 @@ public class ConvolutionLayer extends Layer {
 	int _filterH;
 
 
-	public ConvolutionLayer(Layer prev, int filterW, int filterH, int filterD, int stride, int pad, double bias) {
+	public Convolution(Layer prev, int filterW, int filterH, int filterD, int stride, int pad, double bias) {
 		super(prev);
 		int t;
 

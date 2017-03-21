@@ -4,9 +4,9 @@ import ml.convnet.Cube;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class SigmoidLayer extends Layer {
+public class Sigmoid extends Layer {
 
-	public SigmoidLayer(Layer prev) {
+	public Sigmoid(Layer prev) {
 		super(prev);
 		this.inW(prev.outW());
 		this.inH(prev.outH());
