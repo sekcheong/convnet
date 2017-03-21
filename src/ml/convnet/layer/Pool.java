@@ -85,7 +85,7 @@ public class Pool extends Layer {
 	public void backward() {
 		// pooling layers have no parameters, so simply compute gradient wrt data here
 		Cube V = this.input;
-		;
+		
 		V.dW = new double[V.W.length];
 		Cube A = this.output;
 

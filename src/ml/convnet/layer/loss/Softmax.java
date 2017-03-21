@@ -55,7 +55,7 @@ public class Softmax extends Layer {
 	}
 
 
-	public Object backward(Object v) {
+	public double backward(double v) {
 		int y = (int) v;
 		// compute and accumulate gradient wrt weights and bias of this layer
 		Cube x = this.input;

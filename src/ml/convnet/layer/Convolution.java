@@ -24,7 +24,9 @@ public class Convolution extends Layer {
 		if (_stride <= 0) _stride = 1;
 		if (filterH == 0) _filterH = _filterW;
 
-		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
+		this.inW(prev.outW())
+				.inH(prev.outH())
+				.inD(prev.outD());
 
 		t = (int) Math.floor((double) (this.inW() + pad * 2 - _filterW) / _stride + 1);
 		this.outW(t);
@@ -86,7 +88,8 @@ public class Convolution extends Layer {
 	public void backward() {
 
 		Cube V = this.input;
-		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data, we're about to fill it
+		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data,
+										// we're about to fill it
 
 		int V_sx = V.width();
 		int V_sy = V.height();
@@ -100,9 +103,11 @@ public class Convolution extends Layer {
 				x = -this._pad;
 				for (int ax = 0; ax < this.outW(); x += xy_stride, ax++) {
 					// convolve centered at this particular location
-					double chainGrad = this.output.getGrad(ax, ay, d); // gradient from above, from chain rule
+					// gradient from above, from chain rule
+					double chainGrad = this.output.getGrad(ax, ay, d);
 					for (int fy = 0; fy < f.height(); fy++) {
-						int oy = y + fy; // coordinates in the original input array coordinates
+						// coordinates in the original input array coordinates
+						int oy = y + fy;
 						for (int fx = 0; fx < f.width(); fx++) {
 							int ox = x + fx;
 							if (oy >= 0 && oy < V_sy && ox >= 0 && ox < V_sx) {

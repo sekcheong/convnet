@@ -13,8 +13,7 @@ public class Regression extends Layer {
 		this.inD(prev.outD());
 		
 		this.outW(1);
-		this.outH(1);
-		this.outD(1);
+		this.outH(1);		
 		this.outD(this.inLength());
 		
 		this.type = LayerType.regression;
