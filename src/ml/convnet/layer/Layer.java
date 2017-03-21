@@ -16,6 +16,7 @@ public abstract class Layer {
 
 	public double bias;
 	public int index;
+	private ConvNet _net;
 
 
 	public Layer(Layer prev) {
@@ -147,8 +148,18 @@ public abstract class Layer {
 	}
 
 
-	public boolean isTraining() {
-		return net.isTraining;
+	public boolean training() {
+		return net.inTraining();
+	}
+
+
+	public void net(ConvNet convNet) {
+		_net = convNet;
+	}
+
+
+	public ConvNet net() {
+		return _net;
 	}
 
 }

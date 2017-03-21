@@ -9,7 +9,7 @@ public enum LayerType {
 	softmax,
 	leru,
 	sigmoid,
-	htan,
+	tanh,
 	dropout,
 	maxout
 }

@@ -4,7 +4,7 @@ import ml.convnet.Cube;
 
 public class DropOutLayer extends Layer {
 
-	private boolean[] dropped;
+	private boolean[] _dropped;
 	private double _dropProb;
 
 
@@ -20,15 +20,16 @@ public class DropOutLayer extends Layer {
 		this.input = V;
 		Cube V2 = new Cube(V);
 		int N = V.W.length;
-		if (this.isTraining()) {
+		if (this.training()) {
 			// do dropout
+			this._dropped = new boolean[N];
 			for (int i = 0; i < N; i++) {
 				if (Math.random() < this._dropProb) {
 					V2.W[i] = 0;
-					this.dropped[i] = true;
+					this._dropped[i] = true;
 				} // drop!
 				else {
-					this.dropped[i] = false;
+					this._dropped[i] = false;
 				}
 			}
 		}
@@ -44,6 +45,14 @@ public class DropOutLayer extends Layer {
 
 
 	public void backword() {
-
+		Cube V = this.input; // we need to set dw of this
+		Cube chainGrad = this.output;
+		int N = V.W.length;
+		V.dW = new double[N]; // zero out gradient wrt data
+		for (int i = 0; i < N; i++) {
+			if (!(this._dropped[i])) {
+				V.dW[i] = chainGrad.dW[i]; // copy over the gradient
+			}
+		}
 	}
 }
