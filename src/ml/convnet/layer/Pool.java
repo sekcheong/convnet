@@ -1,6 +1,6 @@
 package ml.convnet.layer;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 
 public class Pool extends Layer {
 	private int _w;
@@ -40,10 +40,10 @@ public class Pool extends Layer {
 	}
 
 
-	public Cube forward(Cube v) {
+	public Volume forward(Volume v) {
 		this.input = v;
 
-		Cube A = new Cube(this.outW(), this.outH(), this.outD(), 0.0);
+		Volume A = new Volume(this.outW(), this.outH(), this.outD(), 0.0);
 
 		int n = 0; // a counter for switches
 		for (int d = 0; d < this.outD(); d++) {
@@ -86,12 +86,12 @@ public class Pool extends Layer {
 
 
 	public void backward() {
-		Cube V = this.input;
+		Volume V = this.input;
 
 		// pooling layers have no parameters, so simply compute gradient wrt
 		// data here
 		V.dW = new double[V.W.length];
-		Cube A = this.output;
+		Volume A = this.output;
 
 		int n = 0;
 		for (int d = 0; d < this.outD(); d++) {

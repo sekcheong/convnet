@@ -1,6 +1,6 @@
 package ml.convnet.layer.activation;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
@@ -20,9 +20,9 @@ public class Sigmoid extends Layer {
 	}
 
 
-	public Cube forward(Cube v) {
+	public Volume forward(Volume v) {
 		this.input = v;
-		Cube out = new Cube(v, 0);
+		Volume out = new Volume(v, 0);
 		int n = v.W.length;
 		double[] outW = out.W;
 		double[] inW = v.W;
@@ -35,8 +35,8 @@ public class Sigmoid extends Layer {
 
 
 	public void backward() {
-		Cube in = this.input;
-		Cube out = this.output;
+		Volume in = this.input;
+		Volume out = this.output;
 		int n = in.W.length;
 		in.dW = new double[n];
 		for (int i = 0; i < n; i++) {

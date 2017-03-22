@@ -1,6 +1,6 @@
 package ml.convnet.layer.activation;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 import ml.convnet.layer.Layer;
 
 public class ActivationLayer extends Layer {
@@ -16,9 +16,9 @@ public class ActivationLayer extends Layer {
 	}
 
 
-	public Cube forward(Cube x) {
+	public Volume forward(Volume x) {
 		this.input = x;
-		Cube out = new Cube(x, 0);
+		Volume out = new Volume(x, 0);
 		this.output = out;
 		double[] f = x.W;
 		double[] g = out.W;
@@ -28,8 +28,8 @@ public class ActivationLayer extends Layer {
 
 
 	public void backward() {
-		Cube in = this.input;
-		Cube out = this.output;
+		Volume in = this.input;
+		Volume out = this.output;
 		in.dW = new double[in.W.length];
 		double[] w = out.W;
 		double[] dw = in.dW;
@@ -38,12 +38,12 @@ public class ActivationLayer extends Layer {
 
 
 	protected void computeForward(double[] in, double[] out) {
-		
+
 	}
 
 
 	protected void computeBackward(double[] w, double[] dw) {
-		
+
 	}
 
 }

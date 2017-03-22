@@ -1,6 +1,6 @@
 package ml.convnet.layer.activation;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
@@ -20,9 +20,9 @@ public class LeRu extends Layer {
 	}
 
 
-	public Cube forward(Cube x) {
+	public Volume forward(Volume x) {
 		this.input = x;
-		Cube out = new Cube(x);
+		Volume out = new Volume(x);
 		int n = x.W.length;
 		double[] V2w = out.W;
 		for (int i = 0; i < n; i++) {
@@ -34,8 +34,8 @@ public class LeRu extends Layer {
 
 
 	public void backward() {
-		Cube in = this.input;
-		Cube out = this.output;
+		Volume in = this.input;
+		Volume out = this.output;
 		int n = in.W.length;
 		in.dW = new double[n];
 		for (int i = 0; i < n; i++) {

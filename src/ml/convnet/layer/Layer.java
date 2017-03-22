@@ -1,14 +1,14 @@
 package ml.convnet.layer;
 
 import ml.convnet.ConvNet;
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 
 public abstract class Layer {
 	public ConvNet net;
 	public LayerType type;
-	public Cube input;
-	public Cube output;
-	public Cube biases;
+	public Volume input;
+	public Volume output;
+	public Volume biases;
 	public int[][] sizes = new int[2][3];
 
 	private Layer _next = null;
@@ -27,7 +27,11 @@ public abstract class Layer {
 	}
 
 
-	public Cube forward(Cube x) {
+	public Volume forward(double[] x) {
+		return null;
+	}
+	
+	public Volume forward(Volume x) {
 		return null;
 	}
 
@@ -44,6 +48,26 @@ public abstract class Layer {
 
 	public double backward(double y) {
 		return 0;
+	}
+	
+	
+	public Volume[] response() {
+		return null;
+	}
+
+
+	public boolean training() {
+		return net.inTraining();
+	}
+
+
+	public void net(ConvNet convNet) {
+		_net = convNet;
+	}
+
+
+	public ConvNet net() {
+		return _net;
 	}
 
 
@@ -140,26 +164,6 @@ public abstract class Layer {
 
 	public int outLength() {
 		return this.outW() * this.outH() * this.outD();
-	}
-
-
-	public Cube[] response() {
-		return null;
-	}
-
-
-	public boolean training() {
-		return net.inTraining();
-	}
-
-
-	public void net(ConvNet convNet) {
-		_net = convNet;
-	}
-
-
-	public ConvNet net() {
-		return _net;
-	}
+	}	
 
 }

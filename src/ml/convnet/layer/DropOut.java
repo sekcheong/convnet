@@ -1,6 +1,6 @@
 package ml.convnet.layer;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 
 public class DropOut extends Layer {
 
@@ -20,13 +20,13 @@ public class DropOut extends Layer {
 	}
 
 
-	public Cube forward(Cube V) {
+	public Volume forward(Volume V) {
 		this.input = V;
-		Cube V2 = new Cube(V);
+		Volume V2 = new Volume(V);
 		int n = V.W.length;
 
 		if (this.training()) {
-			
+
 			this._dropped = new boolean[n];
 			for (int i = 0; i < n; i++) {
 				if (Math.random() < this._dropProb) {
@@ -37,15 +37,15 @@ public class DropOut extends Layer {
 					this._dropped[i] = false;
 				}
 			}
-			
+
 		}
 		else {
-			
+
 			for (int i = 0; i < n; i++) {
 				// scale the activations during prediction
 				V2.W[i] *= this._dropProb;
 			}
-			
+
 		}
 
 		this.output = V2;
@@ -54,7 +54,7 @@ public class DropOut extends Layer {
 
 
 	public void backword() {
-		Cube V = this.input; // we need to set dw of this
+		Volume V = this.input; // we need to set dw of this
 		double[] chainGrad = this.output.dW;
 		int n = V.W.length;
 		V.dW = new double[n]; // zero out gradient wrt data

@@ -18,15 +18,24 @@ public class ConvNet  {
 	private Layer[] _layers;
 
 
+	public ConvNet() { }
+	
+	
+	public ConvNet(Learner learner) {
+		this.learner(learner);
+	}
+	
+	
 	public boolean inTraining() {
 		return _training;
 	}
 
 
-	public void addLayer(Layer layer) {
+	public ConvNet addLayer(Layer layer) {
 		layer.net(this);
 		_layerList.add(layer);
 		_layers = null;
+		return this;
 	}
 
 
@@ -39,6 +48,7 @@ public class ConvNet  {
 
 
 	public void learner(Learner learner) {
+		_learner.net(this);
 		_learner = learner;
 	}
 
@@ -49,22 +59,14 @@ public class ConvNet  {
 
 
 	public void train(Example[] train, Example[] tune) {
-		
+		_training = true;
 	}
-
-
-	public void train(Example ex) {
-		train(ex.x, ex.y);
-	}
-
-
-	public void train(double[] x, double[] y) {
-
-	}
-
+	
 
 	public double[] predict(double[] x) {
-		return null;
+		_training = false;
+		double[] yhat = forward(x);
+		return yhat;
 	}
 
 
@@ -75,6 +77,45 @@ public class ConvNet  {
 
 	public boolean validate(Example ex) {
 		return false;
+	}
+
+
+	public double[] forward(double[] x) {		
+		Layer[] layers = this.layers();
+		Volume act = layers[0].forward(x);
+
+		for (int i = 1; i < layers.length; i++) {
+			act = layers[i].forward(act);
+		}
+		
+		return act.W;
+	}
+
+
+	public double backward(double[] y) {
+		Layer[] layers = this.layers();
+		double loss = layers[layers.length - 1].backward(y);
+
+		for (int i = layers.length - 2; i >= 0; i--) { 
+			layers[i].backward();
+		}
+		
+		return loss;
+	}
+
+	
+	public Volume[] response() {
+		Layer[] layers = this.layers();
+		List<Volume> res = new ArrayList<Volume>();
+
+		for (int i = 0; i < layers.length; i++) {
+			Volume[] layerResponse = layers[i].response();
+			for (int j = 0; j < layerResponse.length; j++) {
+				res.add(layerResponse[j]);
+			}
+		}
+
+		return res.toArray(new Volume[res.size()]);
 	}
 
 }

@@ -2,31 +2,34 @@ package ml.convnet;
 
 import java.util.Random;
 
-public class Cube {
+public class Volume {
 
+	// the weight parameters
 	public double[] W;
 
+	// the gradients
 	public double[] dW;
 
+	// the dimension of the volume dim = [w, h, d]
 	public int[] dim = new int[3];
 
 	private static Random rand = new Random();
 
 
-	public Cube() {}
+	public Volume() {}
 
 
-	public Cube(int width, int height, int depth) {
+	public Volume(int width, int height, int depth) {
 		createVolume(width, height, depth);
 	}
 
 
-	public Cube(int width, int height, int depth, double v) {
+	public Volume(int width, int height, int depth, double v) {
 		createVolume(width, height, depth, v);
 	}
 
 
-	public Cube(Cube src) {
+	public Volume(Volume src) {
 		for (int i = 0; i < src.dim.length; i++) {
 			dim[i] = src.dim[i];
 		}
@@ -43,8 +46,19 @@ public class Cube {
 	}
 
 
-	public Cube(Cube v, double c) {
+	public Volume(Volume v, double c) {
 		createVolume(v.dim[0], v.dim[1], v.dim[2], c);
+	}
+
+
+	public Volume(int width, int height, int depth, double[] x) {
+		dim[0] = width;
+		dim[1] = height;
+		dim[2] = depth;
+		W = new double[dim[0] * dim[1] * dim[2]];
+		for (int i = 0; i < W.length; i++) {
+			W[i] = x[i];
+		}
 	}
 
 
@@ -121,49 +135,82 @@ public class Cube {
 	}
 
 
-	// public void add(Cube v) {
-	// for (int i = 0; i < W.length; i++)
-	// W[i] += v.W[i];
-	// }
-	//
-	//
-	// public void add(double[] d) {
-	// for (int i = 0; i < W.length; i++)
-	// W[i] += d[i];
-	// }
-	//
-	//
-	// public void addScale(double[] d, double scale) {
-	// for (int i = 0; i < W.length; i++)
-	// W[i] += d[i] * scale;
-	//
-	// }
-	//
-	//
-	// public void addScale(Cube v, double scale) {
-	// for (int i = 0; i < W.length; i++)
-	// W[i] += v.W[i] * scale;
-	//
-	// }
-	//
-	//
-	public double getGrad(int x, int y, int z) {
-		return this.dW[index(x, y, z)];
+	public void add(Volume v) {
+		for (int i = 0; i < W.length; i++) {
+			W[i] += v.W[i];
+		}
 	}
 
 
-	public void setGrad(int x, int y, int z, double grad) {
-		this.dW[index(x, y, z)] = grad;
+	public void add(double[] d) {
+		for (int i = 0; i < W.length; i++) {
+			W[i] += d[i];
+		}
+	}
+
+
+	public double dot(Volume v) {
+		double y = 0;
+		for (int i = 0; i < W.length; i++) {
+			y = y + W[i] * v.W[i];
+		}
+		return y;
+	}
+
+
+	public double dot(double[] v) {
+		double y = 0;
+		for (int i = 0; i < W.length; i++) {
+			y = y + W[i] * v[i];
+		}
+		return y;
+	}
+
+
+	public void addScale(double[] d, double scale) {
+		for (int i = 0; i < W.length; i++)
+			W[i] += d[i] * scale;
+
+	}
+
+
+	public void addScale(Volume v, double scale) {
+		for (int i = 0; i < W.length; i++)
+			W[i] += v.W[i] * scale;
+
 	}
 
 
 	public void addGrad(int x, int y, int z, double grad) {
-		this.dW[index(x, y, z)] += grad;
+		dW[index(x, y, z)] += grad;
 	}
-	//
-	//
-	// public static double[] zeros(int size) {
-	// return new double[size];
-	// }
+
+
+	public double getGrad(int x, int y, int z) {
+		return dW[index(x, y, z)];
+	}
+
+
+	public void setGrad(int x, int y, int z, double grad) {
+		dW[index(x, y, z)] = grad;
+	}
+
+
+	public double dotGrad(Volume v) {
+		double y = 0;
+		for (int i = 0; i < dW.length; i++) {
+			y = y + dW[i] * v.dW[i];
+		}
+		return y;
+	}
+
+
+	public double dotGrad(double[] v) {
+		double y = 0;
+		for (int i = 0; i < dW.length; i++) {
+			y = y + dW[i] * v[i];
+		}
+		return y;
+	}
 
 }

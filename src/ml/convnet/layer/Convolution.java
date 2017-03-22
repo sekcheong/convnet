@@ -1,10 +1,10 @@
 package ml.convnet.layer;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 
 public class Convolution extends Layer {
 
-	private Cube[] _filters;
+	private Volume[] _filters;
 	private int _stride;
 	int _pad;
 	int _filterW;
@@ -36,28 +36,28 @@ public class Convolution extends Layer {
 
 		this.outD(filterD);
 
-		_filters = new Cube[this.outD()];
+		_filters = new Volume[this.outD()];
 		for (int i = 0; i < _filters.length; i++) {
-			_filters[i] = new Cube(_filterW, _filterH, this.inD());
+			_filters[i] = new Volume(_filterW, _filterH, this.inD());
 		}
 
 		this.bias = bias;
-		this.biases = new Cube(1, 1, this.outD(), bias);
+		this.biases = new Volume(1, 1, this.outD(), bias);
 		this.type = LayerType.convolution;
 	}
 
 
-	public Cube forward(Cube v) {
+	public Volume forward(Volume v) {
 
 		this.input = v;
-		Cube out = new Cube(_filterW, _filterH, this.outD(), 0.0);
+		Volume out = new Volume(_filterW, _filterH, this.outD(), 0.0);
 
 		int w = v.width();
 		int h = v.height();
 		int stride = _stride;
 
 		for (int d = 0; d < this.outD(); d++) {
-			Cube filter = _filters[d];
+			Volume filter = _filters[d];
 			int x = -_pad;
 			int y = -_pad;
 			for (int ay = 0; ay < this.outH(); y += stride, ay++) {
@@ -87,7 +87,7 @@ public class Convolution extends Layer {
 
 	public void backward() {
 
-		Cube V = this.input;
+		Volume V = this.input;
 		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data,
 										// we're about to fill it
 
@@ -96,7 +96,7 @@ public class Convolution extends Layer {
 		int xy_stride = _stride;
 
 		for (int d = 0; d < this.outD(); d++) {
-			Cube f = _filters[d];
+			Volume f = _filters[d];
 			int x = -this._pad;
 			int y = -this._pad;
 			for (int ay = 0; ay < this.outH(); y += xy_stride, ay++) {
@@ -127,10 +127,10 @@ public class Convolution extends Layer {
 	}
 
 
-	public Cube[] response() {
-		Cube[] ret = new Cube[_filters.length+1];
-		for (int i=0; i<_filters.length; i++) {
-			ret[i]=_filters[i];
+	public Volume[] response() {
+		Volume[] ret = new Volume[_filters.length + 1];
+		for (int i = 0; i < _filters.length; i++) {
+			ret[i] = _filters[i];
 		}
 		ret[_filters.length] = this.biases;
 		return ret;

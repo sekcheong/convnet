@@ -1,6 +1,6 @@
 package ml.convnet.layer.loss;
 
-import ml.convnet.Cube;
+import ml.convnet.Volume;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
@@ -22,10 +22,10 @@ public class Softmax extends Layer {
 	}
 
 
-	public Cube forward(Cube x) {
+	public Volume forward(Volume x) {
 		this.output = x;
 
-		Cube A = new Cube(1, 1, this.outD(), 0.0);
+		Volume A = new Volume(1, 1, this.outD(), 0.0);
 
 		// compute max activation
 		double[] as = x.W;
@@ -58,7 +58,7 @@ public class Softmax extends Layer {
 	public double backward(double v) {
 		int y = (int) v;
 		// compute and accumulate gradient wrt weights and bias of this layer
-		Cube x = this.input;
+		Volume x = this.input;
 		x.dW = new double[x.W.length]; // zero out the gradient of input Cube
 
 		for (int i = 0; i < this.outD(); i++) {
