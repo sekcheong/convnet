@@ -59,16 +59,13 @@ public class FullConnect extends Layer {
 	}
 
 
-	public double[][][] response() {
-		int n = this.outD();
-		double[][][] res = new double[n + 1][2][];
-		for (int i = 0; i < n; i++) {
-			res[i][0] = _units[i].W;
-			res[i][1] = _units[i].dW;
+	public Cube[] response() {
+		Cube[] ret = new Cube[_units.length+1];
+		for (int i=0; i<_units.length; i++) {
+			ret[i]=_units[i];
 		}
-		res[n][0] = this.biases.W;
-		res[n][1] = this.biases.dW;
-		return res;
+		ret[_units.length] = this.biases;
+		return ret;
 	}
 
 }

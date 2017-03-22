@@ -20,7 +20,9 @@ public class Pool extends Layer {
 		_stride = stride;
 		_pad = pad;
 
-		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
+		this.inW(prev.outW())
+				.inH(prev.outH())
+				.inD(prev.outD());
 
 		this.outD(this.inD());
 
@@ -30,7 +32,8 @@ public class Pool extends Layer {
 		t = (int) Math.floor((double) (this.inH() + _pad * 2 - _h) / _stride + 1);
 		this.outH(t);
 
-		// stores mask for x, y coordinates for where the max comes from, for each output neuron
+		// stores mask for x, y coordinates for where the max comes from, for
+		// each output neuron
 		_mask = new int[this.outLength()][2];
 
 		this.type = LayerType.pool;
@@ -51,7 +54,7 @@ public class Pool extends Layer {
 				for (int ay = 0; ay < this.outH(); y += this._stride, ay++) {
 
 					// convolve centered at this particular location
-					double a = -999999999999.0;
+					double a = -99999999999999.0;
 					int winx = -1, winy = -1;
 					for (int fx = 0; fx < this._w; fx++) {
 						for (int fy = 0; fy < this._h; fy++) {
@@ -83,9 +86,10 @@ public class Pool extends Layer {
 
 
 	public void backward() {
-		// pooling layers have no parameters, so simply compute gradient wrt data here
 		Cube V = this.input;
-		
+
+		// pooling layers have no parameters, so simply compute gradient wrt
+		// data here
 		V.dW = new double[V.W.length];
 		Cube A = this.output;
 

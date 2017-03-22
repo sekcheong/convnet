@@ -143,7 +143,7 @@ public abstract class Layer {
 	}
 
 
-	public double[][][] response() {
+	public Cube[] response() {
 		return null;
 	}
 

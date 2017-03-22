@@ -127,16 +127,13 @@ public class Convolution extends Layer {
 	}
 
 
-	public double[][][] response() {
-		int n = this.outD();
-		double[][][] res = new double[n + 1][2][];
-		for (int i = 0; i < n; i++) {
-			res[i][0] = _filters[i].W;
-			res[i][1] = _filters[i].dW;
+	public Cube[] response() {
+		Cube[] ret = new Cube[_filters.length+1];
+		for (int i=0; i<_filters.length; i++) {
+			ret[i]=_filters[i];
 		}
-		res[n][0] = this.biases.W;
-		res[n][1] = this.biases.dW;
-		return res;
+		ret[_filters.length] = this.biases;
+		return ret;
 	}
 
 }

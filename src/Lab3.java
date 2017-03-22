@@ -26,64 +26,34 @@ import javax.imageio.ImageIO;
 
 public class Lab3 {
 
-	private static int imageSize = 8; // Images are imageSize x imageSize. The
-										// provided data is 128x128, but this
-										// can be resized by setting this value
-										// (or passing in an argument).
-										// You might want to resize to 8x8,
-										// 16x16, 32x32, or 64x64; this can
-										// reduce your network size and speed up
-										// debugging runs.
-										// ALL IMAGES IN A TRAINING RUN SHOULD
-										// BE THE *SAME* SIZE.
+	// Images are imageSize x imageSize. The provided data is 128x128, but this can be resized by setting this value (or passing in an argument).
+	// You might want to resize to 8x8, 16x16, 32x32, or 64x64; this can reduce your network size and speed up debugging runs.
+	// ALL IMAGES IN A TRAINING RUN SHOULD BE THE *SAME* SIZE.
+	private static int imageSize = 8;
 
 	private static enum Category
 	{
 		airplanes, butterfly, flower, grand_piano, starfish, watch
 	}; // We'll hardwire these in, but more robust code would not do so.
 
-	private static final Boolean useRGB = false; // If true, FOUR units are used
-													// per pixel: red, green,
-													// blue, and grey. If false,
-													// only ONE (the grey-scale
-													// value).
-	private static int unitsPerPixel = (useRGB ? 4 : 1); // If using RGB, use
-															// red+blue+green+grey.
-															// Otherwise just
-															// use the grey
-															// value.
+	// If true, FOUR units are used per pixel: red, green, blue, and grey. If false, only ONE (the grey-scale value).
+	private static final Boolean useRGB = false;
+	// If using RGB, use red+blue+green+grey. Otherwise just use the grey value.
+	private static int unitsPerPixel = (useRGB ? 4 : 1);
 
-	private static String modelToUse = "oneLayer"; // Should be one of {
-													// "perceptrons",
-													// "oneLayer", "deep" }; You
-													// might want to use this if
-													// you are trying approaches
-													// other than a Deep ANN.
-	private static int inputVectorSize; // The provided code uses a 1D vector of
-										// input features. You might want to
-										// create a 2D version for your Deep ANN
-										// code.
-										// Or use the get2DfeatureValue()
-										// 'accessor function' that maps 2D
-										// coordinates into the 1D vector.
-										// The last element in this vector holds
-										// the 'teacher-provided' label of the
-										// example.
+	// Should be one of { "perceptrons", "oneLayer", "deep" }; You might want to use this if you are trying approaches other than a Deep ANN.
+	private static String modelToUse = "oneLayer";
 
-	private static double eta = 0.1, fractionOfTrainingToUse = 1.00, dropoutRate = 0.50; // To turn
-																							// off
-																							// drop
-																							// out,
-																							// set
-																							// dropoutRate
-																							// to
-																							// 0.0
-																							// (or
-																							// a
-																							// neg
-																							// number).
-	private static int maxEpochs = 1000; // Feel free to set to a different
-											// value.
+	// The provided code uses a 1D vector of input features. You might want to create a 2D version for your Deep ANN code.
+	// Or use the get2DfeatureValue() 'accessor function' that maps 2D coordinates into the 1D vector.
+	// The last element in this vector holds the 'teacher-provided' label of the example.
+	private static int inputVectorSize;
+
+	// To turn off drop out, set dropoutRate to 0.0 (or a neg number).
+	private static double eta = 0.1, fractionOfTrainingToUse = 1.00, dropoutRate = 0.50;
+
+	// Feel free to set to a different value.
+	private static int maxEpochs = 1000;
 
 
 	public static void main(String[] args) {
@@ -131,11 +101,8 @@ public class Lab3 {
 		loadDataset(testset, testsetDir);
 		System.out.println("The  tuneset contains " + comma(testset.getSize()) + " examples.  Took " + convertMillisecondsToTimeSpan(System.currentTimeMillis() - start) + ".");
 
-		// Now train a Deep ANN. You might wish to first use your Lab 2 code
-		// here and see how one layer of HUs does. Maybe even try your
-		// perceptron code.
-		// We are providing code that converts images to feature vectors. Feel
-		// free to discard or modify.
+		// Now train a Deep ANN. You might wish to first use your Lab 2 code here and see how one layer of HUs does. Maybe even try your perceptron code.
+		// We are providing code that converts images to feature vectors. Feel free to discard or modify.
 		start = System.currentTimeMillis();
 		trainANN(trainset, tuneset, testset);
 		System.out.println("\nTook " + convertMillisecondsToTimeSpan(System.currentTimeMillis() - start) + " to train.");
@@ -156,14 +123,11 @@ public class Lab3 {
 				// load in all images
 				img = ImageIO.read(file);
 				// every image's name is in such format:
-				// label_image_XXXX(4 digits) though this code could handle more
-				// than 4 digits.
+				// label_image_XXXX(4 digits) though this code could handle more than 4 digits.
 				String name = file.getName();
 				int locationOfUnderscoreImage = name.indexOf("_image");
 
-				// Resize the image if requested. Any resizing allowed, but
-				// should really be one of 8x8, 16x16, 32x32, or 64x64 (original
-				// data is 128x128).
+				// Resize the image if requested. Any resizing allowed, but should really be one of 8x8, 16x16, 32x32, or 64x64 (original data is 128x128).
 				if (imageSize != 128) {
 					scaledBI = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
 					Graphics2D g = scaledBI.createGraphics();
@@ -173,7 +137,6 @@ public class Lab3 {
 
 				Instance instance = new Instance(scaledBI == null ? img : scaledBI, name, name.substring(0, locationOfUnderscoreImage));
 
-				instance.displayImage(img);
 				dataset.add(instance);
 			}
 			catch (IOException e) {
@@ -186,15 +149,8 @@ public class Lab3 {
 
 
 	private static Category convertCategoryStringToEnum(String name) {
-		if ("airplanes".equals(name)) return Category.airplanes; // Should have
-																	// been the
-																	// singular
-																	// 'airplane'
-																	// but we'll
-																	// live with
-																	// this
-																	// minor
-																	// error.
+		// Should have been the singular 'airplane' but we'll live with this minor error.
+		if ("airplanes".equals(name)) return Category.airplanes;
 		if ("butterfly".equals(name)) return Category.butterfly;
 		if ("flower".equals(name)) return Category.flower;
 		if ("grand_piano".equals(name)) return Category.grand_piano;
@@ -204,64 +160,20 @@ public class Lab3 {
 	}
 
 
-	private static double getRandomWeight(int fanin, int fanout, boolean isaReLU) { // This
-																					// is
-																					// one,
-																					// 'rule
-																					// of
-																					// thumb'
-																					// for
-																					// initializing
-																					// weights.
-		double range = Math.max(10 * Double.MIN_VALUE, isaReLU ? 2.0 / Math.sqrt(fanin + fanout) // From
-																									// paper
-																									// by
-																									// Glorot
-																									// &
-																									// Bengio.
-																									// See
-																									// http://andyljones.tumblr.com/post/110998971763/an-explanation-of-xavier-initialization
-				: 4.0 * Math.sqrt(6.0 / (fanin + fanout))); // See
-															// http://stats.stackexchange.com/questions/47590/what-are-good-initial-weights-in-a-neural-network
+	private static double getRandomWeight(int fanin, int fanout, boolean isaReLU) {
+		// This is one, 'rule of thumb' for initializing weights.
+		// From paper by Glorot & Bengio. See http://andyljones.tumblr.com/post/110998971763/an-explanation-of-xavier-initialization
+		// See http://stats.stackexchange.com/questions/47590/what-are-good-initial-weights-in-a-neural-network
+		double range = Math.max(10 * Double.MIN_VALUE, isaReLU ? 2.0 / Math.sqrt(fanin + fanout) : 4.0 * Math.sqrt(6.0 / (fanin + fanout)));
 		return (2.0 * random() - 1.0) * range;
 	}
 
 
-	// Map from 2D coordinates (in pixels) to the 1D fixed-length feature
-	// vector.
-	private static double get2DfeatureValue(Vector<Double> ex, int x, int y, int offset) { // If
-																							// only
-																							// using
-																							// GREY,
-																							// then
-																							// offset
-																							// =
-																							// 0;
-																							// Else
-																							// offset
-																							// =
-																							// 0
-																							// for
-																							// RED,
-																							// 1
-																							// for
-																							// GREEN,
-																							// 2
-																							// for
-																							// BLUE,
-																							// and
-																							// 3
-																							// for
-																							// GREY.
-		return ex.get(unitsPerPixel * (y * imageSize + x) + offset); // Jude: I
-																		// have
-																		// not
-																		// used
-																		// this,
-																		// so
-																		// might
-																		// need
-																		// debugging.
+	// Map from 2D coordinates (in pixels) to the 1D fixed-length feature vector.
+	private static double get2DfeatureValue(Vector<Double> ex, int x, int y, int offset) {
+		// If only using GREY, then offset = 0; Else offset = 0 for RED, 1 for GREEN, 2 for BLUE, and 3 for GREY.
+		// Jude: I have not used this, so might need debugging.
+		return ex.get(unitsPerPixel * (y * imageSize + x) + offset);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,43 +181,16 @@ public class Lab3 {
 
 	// Return the count of TESTSET errors for the chosen model.
 	private static int trainANN(Dataset trainset, Dataset tuneset, Dataset testset) {
+		// Assume there is at least one train image!
 		Instance sampleImage = trainset.getImages()
-				.get(0); // Assume there is at least one train image!
-		inputVectorSize = sampleImage.getWidth() * sampleImage.getHeight() * unitsPerPixel + 1; // The
-																								// '-1'
-																								// for
-																								// the
-																								// bias
-																								// is
-																								// not
-																								// explicitly
-																								// added
-																								// to
-																								// all
-																								// examples
-																								// (instead
-																								// code
-																								// should
-																								// implicitly
-																								// handle
-																								// it).
-																								// The
-																								// final
-																								// 1
-																								// is
-																								// for
-																								// the
-																								// CATEGORY.
+				.get(0);
+		// The '-1' for the bias is not explicitly added to all examples (instead code should implicitly handle it). The final 1 is for the CATEGORY.
+		inputVectorSize = sampleImage.getWidth() * sampleImage.getHeight() * unitsPerPixel + 1;
 
-		// For RGB, we use FOUR input units per pixel: red, green, blue, plus
-		// grey. Otherwise we only use GREY scale.
-		// Pixel values are integers in [0,255], which we convert to a double in
-		// [0.0, 1.0].
-		// The last item in a feature vector is the CATEGORY, encoded as a
-		// double in 0 to the size on the Category enum.
-		// We do not explicitly store the '-1' that is used for the bias.
-		// Instead code (to be written) will need to implicitly handle that
-		// extra feature.
+		// For RGB, we use FOUR input units per pixel: red, green, blue, plus grey. Otherwise we only use GREY scale.
+		// Pixel values are integers in [0,255], which we convert to a double in [0.0, 1.0].
+		// The last item in a feature vector is the CATEGORY, encoded as a double in 0 to the size on the Category enum.
+		// We do not explicitly store the '-1' that is used for the bias. Instead code (to be written) will need to implicitly handle that extra feature.
 		System.out.println("\nThe input vector size is " + comma(inputVectorSize - 1) + ".\n");
 
 		Vector<Vector<Double>> trainFeatureVectors = new Vector<Vector<Double>>(trainset.getSize());
@@ -326,28 +211,10 @@ public class Lab3 {
 
 		System.out.println("\nTime to start learning!");
 
-		// Call your Deep ANN here. We recommend you create a separate class
-		// file for that during testing and debugging, but before submitting
-		// your code cut-and-paste that code here.
+		// Call your Deep ANN here. We recommend you create a separate class file for that during testing and debugging, but before submitting your code cut-and-paste that code here.
 
-		if ("perceptrons".equals(modelToUse)) return trainPerceptrons(trainFeatureVectors, tuneFeatureVectors, testFeatureVectors); // This
-																																	// is
-																																	// optional.
-																																	// Either
-																																	// comment
-																																	// out
-																																	// this
-																																	// line
-																																	// or
-																																	// just
-																																	// right
-																																	// a
-																																	// 'dummy'
-																																	// function.
-		else if ("oneLayer".equals(modelToUse)) return trainOneHU(trainFeatureVectors, tuneFeatureVectors, testFeatureVectors); // This
-																																// is
-																																// optional.
-																																// Ditto.
+		if ("perceptrons".equals(modelToUse)) return trainPerceptrons(trainFeatureVectors, tuneFeatureVectors, testFeatureVectors); // This is optional. Either comment out this line or just right a 'dummy' function.
+		else if ("oneLayer".equals(modelToUse)) return trainOneHU(trainFeatureVectors, tuneFeatureVectors, testFeatureVectors); // This is optional. Ditto.
 		else if ("deep".equals(modelToUse)) return trainDeep(trainFeatureVectors, tuneFeatureVectors, testFeatureVectors);
 		return -1;
 	}
@@ -363,38 +230,18 @@ public class Lab3 {
 	private static Vector<Double> convertToFeatureVector(Instance image) {
 		Vector<Double> result = new Vector<Double>(inputVectorSize);
 
-		for (int index = 0; index < inputVectorSize - 1; index++) { // Need to
-																	// subtract
-																	// 1 since
-																	// the last
-																	// item is
-																	// the
-																	// CATEGORY.
+		// Need to subtract 1 since the last item is the CATEGORY.
+		for (int index = 0; index < inputVectorSize - 1; index++) {
 			if (useRGB) {
 				int xValue = (index / unitsPerPixel) % image.getWidth();
 				int yValue = (index / unitsPerPixel) / image.getWidth();
-				// System.out.println(" xValue = " + xValue + " and yValue = " +
-				// yValue + " for index = " + index);
-				if (index % unitsPerPixel == 0) result.add(image.getRedChannel()[xValue][yValue] / 255.0); // If
-																											// unitsPerPixel
-																											// >
-																											// 4,
-																											// this
-																											// if-then-elseif
-																											// needs
-																											// to
-																											// be
-																											// edited!
+				// System.out.println(" xValue = " + xValue + " and yValue = " + yValue + " for index = " + index);
+				// If unitsPerPixel > 4, this if-then-elseif needs to be edited!
+				if (index % unitsPerPixel == 0) result.add(image.getRedChannel()[xValue][yValue] / 255.0);
 				else if (index % unitsPerPixel == 1) result.add(image.getGreenChannel()[xValue][yValue] / 255.0);
 				else if (index % unitsPerPixel == 2) result.add(image.getBlueChannel()[xValue][yValue] / 255.0);
-				else result.add(image.getGrayImage()[xValue][yValue] / 255.0); // Seems
-																				// reasonable
-																				// to
-																				// also
-																				// provide
-																				// the
-																				// GREY
-																				// value.
+				// Seems reasonable to also provide the GREY value.
+				else result.add(image.getGrayImage()[xValue][yValue] / 255.0);
 			}
 			else {
 				int xValue = index % image.getWidth();
@@ -402,34 +249,13 @@ public class Lab3 {
 				result.add(image.getGrayImage()[xValue][yValue] / 255.0);
 			}
 		}
-		result.add((double) convertCategoryStringToEnum(image.getLabel()).ordinal()); // The
-																						// last
-																						// item
-																						// is
-																						// the
-																						// CATEGORY,
-																						// representing
-																						// as
-																						// an
-																						// integer
-																						// starting
-																						// at
-																						// 0
-																						// (and
-																						// that
-																						// int
-																						// is
-																						// then
-																						// coerced
-																						// to
-																						// double).
+		// The last item is the CATEGORY, representing as an integer starting at 0 (and that int is then coerced to double).
+		result.add((double) convertCategoryStringToEnum(image.getLabel()).ordinal());
 
 		return result;
 	}
 
-	//////////////////// Some utility methods (cut-and-pasted from JWS'
-	//////////////////// Utils.java file).
-	//////////////////// ///////////////////////////////////////////////////
+	//////////////////// Some utility methods (cut-and-pasted from JWS' Utils.java file). ///////////////////////////////////////////////////
 
 	private static final long millisecInMinute = 60000;
 	private static final long millisecInHour = 60 * millisecInMinute;
@@ -442,16 +268,10 @@ public class Lab3 {
 
 
 	public static String convertMillisecondsToTimeSpan(long millisec, int digits) {
-		if (millisec == 0) { return "0 seconds"; } // Handle these cases this
-													// way rather than saying "0
-													// milliseconds."
-		if (millisec < 1000) { return comma(millisec) + " milliseconds"; } // Or
-																			// just
-																			// comment
-																			// out
-																			// these
-																			// two
-																			// lines?
+		// Handle these cases this way rather than saying "0 milliseconds."
+		if (millisec == 0) { return "0 seconds"; }
+		// Or just comment out these two lines?
+		if (millisec < 1000) { return comma(millisec) + " milliseconds"; }
 		if (millisec > millisecInDay) { return comma(millisec / millisecInDay) + " days and " + convertMillisecondsToTimeSpan(millisec % millisecInDay, digits); }
 		if (millisec > millisecInHour) { return comma(millisec / millisecInHour) + " hours and " + convertMillisecondsToTimeSpan(millisec % millisecInHour, digits); }
 		if (millisec > millisecInMinute) { return comma(millisec / millisecInMinute) + " minutes and " + convertMillisecondsToTimeSpan(millisec % millisecInMinute, digits); }
@@ -460,20 +280,20 @@ public class Lab3 {
 	}
 
 
-	public static String comma(int value) { // Always use separators (e.g.,
-											// "100,000").
+	// Always use separators (e.g., "100,000").
+	public static String comma(int value) {
 		return String.format("%,d", value);
 	}
 
 
-	public static String comma(long value) { // Always use separators (e.g.,
-												// "100,000").
+	// Always use separators (e.g., "100,000").
+	public static String comma(long value) {
 		return String.format("%,d", value);
 	}
 
 
-	public static String comma(double value) { // Always use separators (e.g.,
-												// "100,000").
+	// Always use separators (e.g., "100,000").
+	public static String comma(double value) {
 		return String.format("%,f", value);
 	}
 
@@ -485,15 +305,13 @@ public class Lab3 {
 
 
 	/**
-	 * Format the given floating point number by truncating it to the specified
-	 * number of decimal places.
+	 * Format the given floating point number by truncating it to the specified number of decimal places.
 	 * 
 	 * @param d
 	 *            A number.
 	 * @param decimals
 	 *            How many decimal places the number should have when displayed.
-	 * @return A string containing the given number formatted to the specified
-	 *         number of decimal places.
+	 * @return A string containing the given number formatted to the specified number of decimal places.
 	 */
 	public static String truncate(double d, int decimals) {
 		double abs = Math.abs(d);
@@ -514,27 +332,15 @@ public class Lab3 {
 	 *            Vector to permute in place.
 	 */
 	public static <T> void permute(Vector<T> vector) {
-		if (vector != null) { // NOTE from JWS (2/2/12): not sure this is an
-								// unbiased permute; I prefer (1) assigning
-								// random number to each element, (2) sorting,
-								// (3) removing random numbers.
-			// But also see
-			// "http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" which
-			// justifies this.
-			/*
-			 * To shuffle an array a of n elements (indices 0..n-1): for i from
-			 * n - 1 downto 1 do j <- random integer with 0 <= j <= i exchange
-			 * a[j] and a[i]
-			 */
+		if (vector != null) {
+			// NOTE from JWS (2/2/12): not sure this is an unbiased permute;
+			// I prefer (1) assigning random number to each element, (2) sorting, (3) removing random numbers.
+			// But also see "http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" which justifies this.
+			//
+			// To shuffle an array a of n elements (indices 0..n-1): for i from n - 1 downto 1 do j <- random integer with 0 <= j <= i exchange a[j] and a[i]
 
-			for (int i = vector.size() - 1; i >= 1; i--) { // Note from JWS
-															// (2/2/12): to
-															// match the above I
-															// reversed the FOR
-															// loop that Trevor
-															// wrote, though I
-															// don't think it
-															// matters.
+			// Note from JWS (2/2/12): to match the above I reversed the FOR loop that Trevor wrote, though I don't think it matters.
+			for (int i = vector.size() - 1; i >= 1; i--) {
 				int j = random0toNminus1(i + 1);
 				if (j != i) {
 					T swap = vector.get(i);
@@ -545,13 +351,8 @@ public class Lab3 {
 		}
 	}
 
-	public static Random randomInstance = new Random(638 * 838); // Change the
-																	// 638 * 838
-																	// to get a
-																	// different
-																	// sequence
-																	// of random
-																	// numbers.
+	// Change the 638 * 838 to get a different sequence of random numbers.
+	public static Random randomInstance = new Random(638 * 838);
 
 
 	/**
@@ -566,8 +367,7 @@ public class Lab3 {
 	 * @param lower
 	 *            The lower end of the interval.
 	 * @param upper
-	 *            The upper end of the interval. It is not possible for the
-	 *            returned random number to equal this number.
+	 *            The upper end of the interval. It is not possible for the returned random number to equal this number.
 	 * @return Returns a random integer in the given interval [lower, upper).
 	 */
 	public static int randomInInterval(int lower, int upper) {
@@ -586,110 +386,55 @@ public class Lab3 {
 	}
 
 
-	/////////////////////////////////////////////////////////////////////////////////////////////// Write
-	/////////////////////////////////////////////////////////////////////////////////////////////// your
-	/////////////////////////////////////////////////////////////////////////////////////////////// own
-	/////////////////////////////////////////////////////////////////////////////////////////////// code
-	/////////////////////////////////////////////////////////////////////////////////////////////// below
-	/////////////////////////////////////////////////////////////////////////////////////////////// here.
-	/////////////////////////////////////////////////////////////////////////////////////////////// Feel
-	/////////////////////////////////////////////////////////////////////////////////////////////// free
-	/////////////////////////////////////////////////////////////////////////////////////////////// to
-	/////////////////////////////////////////////////////////////////////////////////////////////// use
-	/////////////////////////////////////////////////////////////////////////////////////////////// or
-	/////////////////////////////////////////////////////////////////////////////////////////////// discard
-	/////////////////////////////////////////////////////////////////////////////////////////////// what
-	/////////////////////////////////////////////////////////////////////////////////////////////// is
-	/////////////////////////////////////////////////////////////////////////////////////////////// provided.
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Write your own code below here. Feel free to use or discard what is provided.
 
 	private static int trainPerceptrons(Vector<Vector<Double>> trainFeatureVectors, Vector<Vector<Double>> tuneFeatureVectors, Vector<Vector<Double>> testFeatureVectors) {
-		Vector<Vector<Double>> perceptrons = new Vector<Vector<Double>>(Category.values().length); // One
-																									// perceptron
-																									// per
-																									// category.
+		// One perceptron per category.
+		Vector<Vector<Double>> perceptrons = new Vector<Vector<Double>>(Category.values().length);
 
 		for (int i = 0; i < Category.values().length; i++) {
-			Vector<Double> perceptron = new Vector<Double>(inputVectorSize); // Note:
-																				// inputVectorSize
-																				// includes
-																				// the
-																				// OUTPUT
-																				// CATEGORY
-																				// as
-																				// the
-																				// LAST
-																				// element.
-																				// That
-																				// element
-																				// in
-																				// the
-																				// perceptron
-																				// will
-																				// be
-																				// the
-																				// BIAS.
+			// Note: inputVectorSize includes the OUTPUT CATEGORY as the LAST element. That element in the perceptron will be the BIAS.
+			Vector<Double> perceptron = new Vector<Double>(inputVectorSize);
 			perceptrons.add(perceptron);
 			for (int indexWgt = 0; indexWgt < inputVectorSize; indexWgt++)
-				perceptron.add(getRandomWeight(inputVectorSize, numberOfHiddenUnits, true)); // Initialize
-																								// weights.
+				// Initialize weights.
+				perceptron.add(getRandomWeight(inputVectorSize, 1, true));
 		}
-
-		if (fractionOfTrainingToUse < 1.0) { // Randomize list, then get the
-												// first N of them.
+		// Randomize list, then get the first N of them.
+		if (fractionOfTrainingToUse < 1.0) {
 			int numberToKeep = (int) (fractionOfTrainingToUse * trainFeatureVectors.size());
 			Vector<Vector<Double>> trainFeatureVectors_temp = new Vector<Vector<Double>>(numberToKeep);
 
-			permute(trainFeatureVectors); // Note: this is an IN-PLACE permute,
-											// but that is OK.
+			// Note: this is an IN-PLACE permute, but that is OK.
+			permute(trainFeatureVectors);
 			for (int i = 0; i < numberToKeep; i++) {
 				trainFeatureVectors_temp.add(trainFeatureVectors.get(i));
 			}
 			trainFeatureVectors = trainFeatureVectors_temp;
 		}
 
-		int trainSetErrors = Integer.MAX_VALUE, tuneSetErrors = Integer.MAX_VALUE, best_tuneSetErrors = Integer.MAX_VALUE, testSetErrors = Integer.MAX_VALUE, best_epoch = -1,
+		int trainSetErrors = Integer.MAX_VALUE,
+				tuneSetErrors = Integer.MAX_VALUE,
+				best_tuneSetErrors = Integer.MAX_VALUE,
+				testSetErrors = Integer.MAX_VALUE, best_epoch = -1,
 				testSetErrorsAtBestTune = Integer.MAX_VALUE;
-		long overallStart = System.currentTimeMillis(), start = overallStart;
 
-		for (int epoch = 1; epoch <= maxEpochs /* && trainSetErrors > 0 */; epoch++) { // Might
-																						// still
-																						// want
-																						// to
-																						// train
-																						// after
-																						// trainset
-																						// error
-																						// =
-																						// 0
-																						// since
-																						// we
-																						// want
-																						// to
-																						// get
-																						// all
-																						// predictions
-																						// on
-																						// the
-																						// 'right
-																						// side
-																						// of
-																						// zero'
-																						// (whereas
-																						// errors
-																						// defined
-																						// wrt
-																						// HIGHEST
-																						// output).
-			permute(trainFeatureVectors); // Note: this is an IN-PLACE permute,
-											// but that is OK.
+		long overallStart = System.currentTimeMillis(),
+				start = overallStart;
+
+		// Might still want to train after trainset error = 0 since we want to get all predictions on the 'right side of zero' (whereas errors defined wrt HIGHEST output).
+		for (int epoch = 1; epoch <= maxEpochs /* && trainSetErrors > 0 */; epoch++) {
+			permute(trainFeatureVectors); // Note: this is an IN-PLACE permute, but that is OK.
 
 			// CODE NEEDED HERE!
 
-			System.out.println("Done with Epoch # " + comma(epoch) + ".  Took " + convertMillisecondsToTimeSpan(System.currentTimeMillis() - start) + " ("
-					+ convertMillisecondsToTimeSpan(System.currentTimeMillis() - overallStart) + " overall).");
-			reportPerceptronConfig(); // Print out some info after epoch, so you
-										// can see what experiment is running in
-										// a given console.
+			System.out.println("Done with Epoch # "
+					+ comma(epoch) + ".  Took " + convertMillisecondsToTimeSpan(System.currentTimeMillis() - start)
+					+ " (" + convertMillisecondsToTimeSpan(System.currentTimeMillis() - overallStart) + " overall).");
+
+			reportPerceptronConfig(); // Print out some info after epoch, so you can see what experiment is running in a given console.
+
 			start = System.currentTimeMillis();
 		}
 		System.out.println("\n***** Best tuneset errors = " + comma(best_tuneSetErrors) + " of " + comma(tuneFeatureVectors.size()) + " ("
@@ -705,14 +450,9 @@ public class Lab3 {
 				+ ", eta = " + truncate(eta, 2) + ", dropout rate = " + truncate(dropoutRate, 2));
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////// ONE
-	//////////////////////////////////////////////////////////////////////////////////////////////// HIDDEN
-	//////////////////////////////////////////////////////////////////////////////////////////////// LAYER
+	//////////////////////////////////////////////////////////////////////////////////////////////// ONE HIDDEN LAYER
 
-	private static boolean debugOneLayer = false; // If set true, more things
-													// checked and/or printed
-													// (which does slow down the
-													// code).
+	private static boolean debugOneLayer = false; // If set true, more things checked and/or printed (which does slow down the code).
 	private static int numberOfHiddenUnits = 250;
 
 
@@ -721,45 +461,14 @@ public class Lab3 {
 		int trainSetErrors = Integer.MAX_VALUE, tuneSetErrors = Integer.MAX_VALUE, best_tuneSetErrors = Integer.MAX_VALUE, testSetErrors = Integer.MAX_VALUE, best_epoch = -1,
 				testSetErrorsAtBestTune = Integer.MAX_VALUE;
 
-		for (int epoch = 1; epoch <= maxEpochs /* && trainSetErrors > 0 */; epoch++) { // Might
-																						// still
-																						// want
-																						// to
-																						// train
-																						// after
-																						// trainset
-																						// error
-																						// =
-																						// 0
-																						// since
-																						// we
-																						// want
-																						// to
-																						// get
-																						// all
-																						// predictions
-																						// on
-																						// the
-																						// 'right
-																						// side
-																						// of
-																						// zero'
-																						// (whereas
-																						// errors
-																						// defined
-																						// wrt
-																						// HIGHEST
-																						// output).
-			permute(trainFeatureVectors); // Note: this is an IN-PLACE permute,
-											// but that is OK.
+		for (int epoch = 1; epoch <= maxEpochs /* && trainSetErrors > 0 */; epoch++) { // Might still want to train after trainset error = 0 since we want to get all predictions on the 'right side of zero' (whereas errors defined wrt HIGHEST output).
+			permute(trainFeatureVectors); // Note: this is an IN-PLACE permute, but that is OK.
 
 			// CODE NEEDED HERE!
 
 			System.out.println("Done with Epoch # " + comma(epoch) + ".  Took " + convertMillisecondsToTimeSpan(System.currentTimeMillis() - start) + " ("
 					+ convertMillisecondsToTimeSpan(System.currentTimeMillis() - overallStart) + " overall).");
-			reportOneLayerConfig(); // Print out some info after epoch, so you
-									// can see what experiment is running in a
-									// given console.
+			reportOneLayerConfig(); // Print out some info after epoch, so you can see what experiment is running in a given console.
 			start = System.currentTimeMillis();
 		}
 
@@ -774,26 +483,20 @@ public class Lab3 {
 	private static void reportOneLayerConfig() {
 		System.out.println("***** ONE-LAYER: UseRGB = " + useRGB + ", imageSize = " + imageSize + "x" + imageSize + ", fraction of training examples used = " + truncate(fractionOfTrainingToUse, 2)
 				+ ", eta = " + truncate(eta, 2) + ", dropout rate = " + truncate(dropoutRate, 2) + ", number HUs = " + numberOfHiddenUnits
-		// + ", activationFunctionForHUs = " + activationFunctionForHUs + ",
-		// activationFunctionForOutputs = " + activationFunctionForOutputs
+		// + ", activationFunctionForHUs = " + activationFunctionForHUs + ", activationFunctionForOutputs = " + activationFunctionForOutputs
 		// + ", # forward props = " + comma(forwardPropCounter)
 		);
-		// for (Category cat : Category.values()) { // Report the output unit
-		// biases.
+		// for (Category cat : Category.values()) { // Report the output unit biases.
 		// int catIndex = cat.ordinal();
 		//
-		// System.out.print(" bias(" + cat + ") = " +
-		// truncate(weightsToOutputUnits[numberOfHiddenUnits][catIndex], 6));
+		// System.out.print(" bias(" + cat + ") = " + truncate(weightsToOutputUnits[numberOfHiddenUnits][catIndex], 6));
 		// } System.out.println();
 	}
 
-	// private static long forwardPropCounter = 0; // Count the number of
-	// forward propagations performed.
+	// private static long forwardPropCounter = 0; // Count the number of forward propagations performed.
 
 
-	//////////////////////////////////////////////////////////////////////////////////////////////// DEEP
-	//////////////////////////////////////////////////////////////////////////////////////////////// ANN
-	//////////////////////////////////////////////////////////////////////////////////////////////// Code
+	//////////////////////////////////////////////////////////////////////////////////////////////// DEEP ANN Code
 
 	private static int trainDeep(Vector<Vector<Double>> trainFeatureVectors, Vector<Vector<Double>> tuneFeatureVectors, Vector<Vector<Double>> testFeatureVectors) {
 		// You need to implement this method!
