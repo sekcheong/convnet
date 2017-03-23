@@ -3,8 +3,10 @@ import ml.convnet.layer.*;
 import ml.convnet.layer.activation.*;
 import ml.convnet.trainer.*;
 
+
 public class Test {
 	public static void main(String[] args) {
+
 		ConvNet net = new ConvNet();
 
 		net.addLayer(new Input(1, 1, 2))
@@ -34,5 +36,16 @@ public class Test {
 		// {type:'fc', num_neurons:12, group_size: 4, activation:'maxout'}
 		// // dropout half the units (probability 0.5) in this layer during training, for regularization
 		// {type:'fc', num_neurons:10, activation:'relu', drop_prob: 0.5}
+
+		int[] a = new int[10];
+		for (int i=0; i<a.length; i++) a[i]=i;
+		for (int i = a.length - 1; i >= 1; i--) {
+			int j = (int) (Math.random() * i);
+			int t = a[i];
+			a[i] = a[j];
+			a[j] = t;
+		}
+		for (int i=0; i<a.length; i++) System.out.println(a[i]);
+
 	}
 }

@@ -5,27 +5,31 @@ import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
 public class Softmax extends Layer {
-	private int _ncls;
+	private int _classes;
 	private double[] _es;
 
 
-	public Softmax(Layer prev, int nclass) {
+	public Softmax(Layer prev, int classes) {
 		super(prev);
+		this.type = LayerType.softmax;
+
 		this.inW(prev.outW());
 		this.inH(prev.outH());
 		this.inD(prev.outD());
+
 		this.outW(1);
 		this.outH(1);
 		this.outD(this.inLength());
-		_ncls = nclass;
-		this.type = LayerType.softmax;
+
+		_classes = classes;
 	}
 
 
 	public Volume forward(Volume x) {
-		this.output = x;
+		this.input = x;
 
-		Volume A = new Volume(1, 1, this.outD(), 0.0);
+		Volume out = new Volume(1, 1, this.outD(), 0.0);
+		this.output = out;
 
 		// compute max activation
 		double[] as = x.W;
@@ -46,12 +50,12 @@ public class Softmax extends Layer {
 		// normalize and output to sum to one
 		for (int i = 0; i < es.length; i++) {
 			es[i] /= esum;
-			A.W[i] = es[i];
+			out.W[i] = es[i];
 		}
 
 		_es = es; // save these for backprop
-		this.output = A;
-		return A;
+
+		return out;
 	}
 
 

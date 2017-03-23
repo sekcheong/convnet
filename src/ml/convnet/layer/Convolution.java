@@ -13,8 +13,9 @@ public class Convolution extends Layer {
 
 	public Convolution(Layer prev, int filterW, int filterH, int filterD, int stride, int pad, double bias) {
 		super(prev);
-		int t;
+		this.type = LayerType.convolution;
 
+		int t;
 		_filterW = filterW;
 		_filterH = filterH;
 
@@ -24,9 +25,7 @@ public class Convolution extends Layer {
 		if (_stride <= 0) _stride = 1;
 		if (filterH == 0) _filterH = _filterW;
 
-		this.inW(prev.outW())
-				.inH(prev.outH())
-				.inD(prev.outD());
+		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
 
 		t = (int) Math.floor((double) (this.inW() + pad * 2 - _filterW) / _stride + 1);
 		this.outW(t);
@@ -43,7 +42,6 @@ public class Convolution extends Layer {
 
 		this.bias = bias;
 		this.biases = new Volume(1, 1, this.outD(), bias);
-		this.type = LayerType.convolution;
 	}
 
 
@@ -51,6 +49,7 @@ public class Convolution extends Layer {
 
 		this.input = v;
 		Volume out = new Volume(_filterW, _filterH, this.outD(), 0.0);
+		this.output = out;
 
 		int w = v.width();
 		int h = v.height();
@@ -80,22 +79,21 @@ public class Convolution extends Layer {
 				}
 			}
 		}
-		this.output = out;
+
 		return out;
 	}
 
 
 	public void backward() {
 
-		Volume V = this.input;
-		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data,
-										// we're about to fill it
-
-		int V_sx = V.width();
-		int V_sy = V.height();
+		Volume in = this.input;
+		in.dW = new double[in.W.length]; // zero out gradient wrt bottom data,
+		// we're about to fill it
+		int V_sx = in.width();
+		int V_sy = in.height();
 		int xy_stride = _stride;
 
-		for (int d = 0; d < this.outD(); d++) {
+		for (int d = 0; d < _filters.length; d++) {
 			Volume f = _filters[d];
 			int x = -this._pad;
 			int y = -this._pad;
@@ -112,10 +110,10 @@ public class Convolution extends Layer {
 							int ox = x + fx;
 							if (oy >= 0 && oy < V_sy && ox >= 0 && ox < V_sx) {
 								for (int fd = 0; fd < f.depth(); fd++) {
-									int ix1 = ((V_sx * oy) + ox) * V.depth() + fd;
+									int ix1 = ((V_sx * oy) + ox) * in.depth() + fd;
 									int ix2 = ((f.width() * fy) + fx) * f.depth() + fd;
-									f.dW[ix2] += V.W[ix1] * chainGrad;
-									V.dW[ix1] += f.W[ix2] * chainGrad;
+									f.dW[ix2] += in.W[ix1] * chainGrad;
+									in.dW[ix1] += f.W[ix2] * chainGrad;
 								}
 							}
 						}

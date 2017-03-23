@@ -24,9 +24,9 @@ public class LeRu extends Layer {
 		this.input = x;
 		Volume out = new Volume(x);
 		int n = x.W.length;
-		double[] V2w = out.W;
+		double[] outW = out.W;
 		for (int i = 0; i < n; i++) {
-			if (V2w[i] < 0) V2w[i] = 0;
+			if (outW[i] < 0) outW[i] = 0;
 		}
 		this.output = out;
 		return out;

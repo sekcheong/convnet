@@ -7,7 +7,7 @@ import ml.convnet.data.Example;
 import ml.convnet.layer.*;
 import ml.convnet.trainer.*;
 
-public class ConvNet  {
+public class ConvNet {
 
 	private List<Layer> _layerList = new ArrayList<Layer>();
 
@@ -16,17 +16,18 @@ public class ConvNet  {
 	private Trainer _trainer;
 
 	private Layer[] _layers;
-	
+
 	private Layer _current;
 
-	public ConvNet() { }
-	
-	
-	public ConvNet(Trainer learner) {
-		this.trainer(learner);
+
+	public ConvNet() {}
+
+
+	public ConvNet(Trainer trainer) {
+		this.trainer(trainer);
 	}
-	
-	
+
+
 	public boolean inTraining() {
 		return _training;
 	}
@@ -39,8 +40,8 @@ public class ConvNet  {
 		_layers = null;
 		return this;
 	}
-	
-	
+
+
 	public Layer currentLayer() {
 		return _current;
 	}
@@ -68,7 +69,7 @@ public class ConvNet  {
 	public void train(Example[] train, Example[] tune) {
 		_training = true;
 	}
-	
+
 
 	public double[] predict(double[] x) {
 		_training = false;
@@ -87,42 +88,43 @@ public class ConvNet  {
 	}
 
 
-	public double[] forward(double[] x) {		
+	public double[] forward(double[] x) {
 		Layer[] layers = this.layers();
-		Volume act = layers[0].forward(x);
 
+		Volume act = layers[0].forward(x);
 		for (int i = 1; i < layers.length; i++) {
 			act = layers[i].forward(act);
 		}
-		
+
 		return act.W;
 	}
 
 
 	public double backward(double[] y) {
 		Layer[] layers = this.layers();
+
 		double loss = layers[layers.length - 1].backward(y);
 
-		for (int i = layers.length - 2; i >= 0; i--) { 
+		for (int i = layers.length - 2; i >= 0; i--) {
 			layers[i].backward();
 		}
-		
+
 		return loss;
 	}
 
-	
+
 	public Volume[] response() {
 		Layer[] layers = this.layers();
-		List<Volume> res = new ArrayList<Volume>();
+		List<Volume> ret = new ArrayList<Volume>();
 
 		for (int i = 0; i < layers.length; i++) {
 			Volume[] layerResponse = layers[i].response();
 			for (int j = 0; j < layerResponse.length; j++) {
-				res.add(layerResponse[j]);
+				ret.add(layerResponse[j]);
 			}
 		}
 
-		return res.toArray(new Volume[res.size()]);
+		return ret.toArray(new Volume[ret.size()]);
 	}
 
 }
