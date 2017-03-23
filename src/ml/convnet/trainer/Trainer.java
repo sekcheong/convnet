@@ -1,14 +1,14 @@
-package ml.convnet.learner;
+package ml.convnet.trainer;
 
 import ml.convnet.ConvNet;
 import ml.convnet.Volume;
 
-public abstract class Learner {
+public abstract class Trainer {
 	protected ConvNet _net;
 	protected int _iteration = 0;
 
 
-	public Learner() {}
+	public Trainer() {}
 
 
 	public int iteration() {

@@ -4,9 +4,8 @@ import ml.convnet.Volume;
 
 public class FullConnect extends Layer {
 	private Volume[] _units;
-
-
-	s
+	
+	
 	public FullConnect(Layer prev, int units, double bias) {
 		super(prev);
 

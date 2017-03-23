@@ -5,7 +5,7 @@ import java.util.List;
 
 import ml.convnet.data.Example;
 import ml.convnet.layer.*;
-import ml.convnet.learner.*;
+import ml.convnet.trainer.*;
 
 public class ConvNet  {
 
@@ -13,16 +13,17 @@ public class ConvNet  {
 
 	private boolean _training;
 
-	private Learner _learner;
+	private Trainer _trainer;
 
 	private Layer[] _layers;
-
+	
+	private Layer _current;
 
 	public ConvNet() { }
 	
 	
-	public ConvNet(Learner learner) {
-		this.learner(learner);
+	public ConvNet(Trainer learner) {
+		this.trainer(learner);
 	}
 	
 	
@@ -34,8 +35,14 @@ public class ConvNet  {
 	public ConvNet addLayer(Layer layer) {
 		layer.net(this);
 		_layerList.add(layer);
+		_current = layer;
 		_layers = null;
 		return this;
+	}
+	
+	
+	public Layer currentLayer() {
+		return _current;
 	}
 
 
@@ -47,14 +54,14 @@ public class ConvNet  {
 	}
 
 
-	public void learner(Learner learner) {
-		_learner.net(this);
-		_learner = learner;
+	public void trainer(Trainer trainer) {
+		_trainer.net(this);
+		_trainer = trainer;
 	}
 
 
-	public Learner learner() {
-		return _learner;
+	public Trainer trainer() {
+		return _trainer;
 	}
 
 

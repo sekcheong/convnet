@@ -1,8 +1,8 @@
-package ml.convnet.learner;
+package ml.convnet.trainer;
 
 import ml.convnet.Volume;
 
-public class SGDLearner extends Learner {
+public class SGDTrainer extends Trainer {
 	private double _rate;
 	private double _momentum;
 	private double _decayL1;
@@ -10,7 +10,7 @@ public class SGDLearner extends Learner {
 	private int _batchSize;
 
 
-	public SGDLearner(double learningRate, int batchSize, double momentum, double decayL1, double decayL2) {
+	public SGDTrainer(double learningRate, int batchSize, double momentum, double decayL1, double decayL2) {
 		_rate = learningRate;
 		_momentum = momentum;
 		_decayL1 = decayL1;

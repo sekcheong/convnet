@@ -22,6 +22,11 @@ public abstract class Layer {
 	public Layer() {
 
 	}
+	
+	public Layer(Layer prev) {
+		_last = prev;
+		_last.next(this);
+	}
 
 
 	public Volume forward(double[] x) {
@@ -78,15 +83,21 @@ public abstract class Layer {
 	}
 
 
-	public void next(Layer l) {
+	protected void next(Layer l) {
 		_next = l;
 	}
 
 
-	public void last(Layer l) {		
-		l.next(this);					
+	protected void last(Layer l) {		
+		_last = l;					
 	}
 
+
+	protected void connectToLastLayer(Layer l) {
+		l.next(this);
+		_last = l;
+	}
+	
 
 	public int inW() {
 		return sizes[0][0];

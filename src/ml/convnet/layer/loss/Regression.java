@@ -6,11 +6,7 @@ import ml.convnet.layer.LayerType;
 
 public class Regression extends Layer {
 
-	Regression(Layer prev) {
-		super(prev);
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
+	Regression() {		
 		
 		this.outW(1);
 		this.outH(1);		
