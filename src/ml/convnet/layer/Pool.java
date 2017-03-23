@@ -3,16 +3,22 @@ package ml.convnet.layer;
 import ml.convnet.Volume;
 
 public class Pool extends Layer {
+
 	private int _w;
+
 	private int _h;
+
 	private int _d;
+
 	private int _stride;
+
 	private int _pad;
+
 	private int[][] _mask;
 
 
-	public Pool(Layer prev, int w, int h, int stride, int pad) {
-		super(prev);
+	public Pool(int w, int h, int stride, int pad) {
+
 		this.type = LayerType.pool;
 
 		int t;
@@ -21,10 +27,18 @@ public class Pool extends Layer {
 		_stride = stride;
 		_pad = pad;
 
-		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
+	}
+
+
+	public void connect(Layer l) {
+
+		this.inW(l.outW());
+		this.inH(l.outH());
+		this.inD(l.outD());
 
 		this.outD(this.inD());
 
+		int t;
 		t = (int) Math.floor((double) (this.inW() + _pad * 2 - _w) / _stride + 1);
 		this.outW(t);
 
@@ -34,22 +48,23 @@ public class Pool extends Layer {
 		// stores mask for x, y coordinates for where the max comes from, for
 		// each output neuron
 		_mask = new int[this.outLength()][2];
+
 	}
 
 
 	public Volume forward(Volume v) {
 		this.input = v;
 		Volume out = new Volume(this.outW(), this.outH(), this.outD(), 0.0);
-		this.output=out;
-		
+		this.output = out;
+
 		int n = 0; // a counter for switches
 		for (int d = 0; d < this.outD(); d++) {
 			int x = -this._pad;
 			int y = -this._pad;
-			
+
 			for (int ax = 0; ax < this.outW(); x += this._stride, ax++) {
 				y = -this._pad;
-				
+
 				for (int ay = 0; ay < this.outH(); y += this._stride, ay++) {
 					// convolve centered at this particular location
 					double a = -99999999999999.0;
@@ -71,7 +86,7 @@ public class Pool extends Layer {
 							}
 						}
 					}
-					
+
 					_mask[n][0] = winx;
 					_mask[n][1] = winy;
 					n++;
@@ -79,7 +94,7 @@ public class Pool extends Layer {
 				}
 			}
 		}
-		
+
 		return out;
 	}
 

@@ -1,4 +1,4 @@
-package ml.convnet.data;
+package ml.data;
 
 import ml.convnet.Volume;
 

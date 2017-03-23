@@ -1,21 +1,11 @@
 package ml.convnet.layer.activation;
 
 import ml.convnet.Volume;
-import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class LeRu extends Layer {
+public class LeRu extends ActivationLayer {
 
-	public LeRu(Layer prev) {
-		super(prev);
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
-
-		this.outW(this.inW());
-		this.outH(this.inH());
-		this.outD(this.inD());
-
+	public LeRu() {
 		this.type = LayerType.leru;
 	}
 

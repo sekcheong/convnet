@@ -10,12 +10,10 @@ public class Test {
 		ConvNet net = new ConvNet();
 
 		net.addLayer(new Input(1, 1, 2))
-		   
-		   .addLayer(new FullConnect(net.currentLayer(), 10, 1))
-		   .addLayer(new LeRu(net.currentLayer()))
-		   
-		   .addLayer(new FullConnect(net.currentLayer(), 1, 1))
-		   .addLayer(new Sigmoid(net.currentLayer()));
+				.addLayer(new FullConnect(10, 1.0))
+				.addLayer(new LeRu())
+				.addLayer(new FullConnect(1, 1.0))
+				.addLayer(new Sigmoid());
 		
 		net.trainer(new SGDTrainer(0.01, 1, 0, 0, 0));
 		

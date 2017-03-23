@@ -1,26 +1,17 @@
 package ml.convnet.layer.loss;
 
 import ml.convnet.Volume;
-import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class Softmax extends Layer {
+public class Softmax extends LossLayer {
+
 	private int _classes;
+
 	private double[] _es;
 
 
-	public Softmax(Layer prev, int classes) {
-		super(prev);
+	public Softmax(int classes) {
 		this.type = LayerType.softmax;
-
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
-
-		this.outW(1);
-		this.outH(1);
-		this.outD(this.inLength());
-
 		_classes = classes;
 	}
 

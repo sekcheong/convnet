@@ -9,41 +9,44 @@ public class Convolution extends Layer {
 	int _pad;
 	int _filterW;
 	int _filterH;
+	int _filterD;
 
 
-	public Convolution(Layer prev, int filterW, int filterH, int filterD, int stride, int pad, double bias) {
-		super(prev);
-		this.type = LayerType.convolution;
-
-		int t;
+	public Convolution(int filterW, int filterH, int filterD, int stride, int pad, double bias) {		
+		this.type = LayerType.convolution;		
 		_filterW = filterW;
 		_filterH = filterH;
-
+		_filterD = filterD;
 		_stride = stride;
 		_pad = pad;
+		this.bias=bias;
+	}
 
+
+	public void connect(Layer l) {		
+		
 		if (_stride <= 0) _stride = 1;
-		if (filterH == 0) _filterH = _filterW;
+		if (_filterH == 0) _filterH = _filterW;
 
-		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
+		this.inW(l.outW()).inH(l.outH()).inD(l.outD());
 
-		t = (int) Math.floor((double) (this.inW() + pad * 2 - _filterW) / _stride + 1);
+		int t;
+		t = (int) Math.floor((double) (this.inW() + _pad * 2 - _filterW) / _stride + 1);
 		this.outW(t);
 
-		t = (int) Math.floor((double) (this.inH() + pad * 2 - _filterH) / _stride + 1);
+		t = (int) Math.floor((double) (this.inH() + _pad * 2 - _filterH) / _stride + 1);
 		this.outH(t);
 
-		this.outD(filterD);
+		this.outD(_filterD);
 
 		_filters = new Volume[this.outD()];
 		for (int i = 0; i < _filters.length; i++) {
 			_filters[i] = new Volume(_filterW, _filterH, this.inD());
 		}
 
-		this.bias = bias;
-		this.biases = new Volume(1, 1, this.outD(), bias);
+		this.biases = new Volume(1, 1, this.outD(), this.bias);
 	}
-
+	
 
 	public Volume forward(Volume v) {
 

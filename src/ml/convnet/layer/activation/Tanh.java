@@ -4,18 +4,9 @@ import ml.convnet.Volume;
 import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class Tanh extends Layer {
+public class Tanh extends ActivationLayer {
 
-	public Tanh(Layer prev) {
-		super(prev);
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
-
-		this.outW(this.inW());
-		this.outH(this.inH());
-		this.outD(this.inD());
-
+	public Tanh() {
 		this.type = LayerType.tanh;
 	}
 

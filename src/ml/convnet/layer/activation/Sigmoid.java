@@ -1,21 +1,11 @@
 package ml.convnet.layer.activation;
 
 import ml.convnet.Volume;
-import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class Sigmoid extends Layer {
+public class Sigmoid extends ActivationLayer {
 
-	public Sigmoid(Layer prev) {
-		super(prev);
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
-
-		this.outW(this.inW());
-		this.outH(this.inH());
-		this.outD(this.inD());
-
+	public Sigmoid() {
 		this.type = LayerType.sigmoid;
 	}
 

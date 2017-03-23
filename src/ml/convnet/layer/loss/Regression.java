@@ -1,20 +1,13 @@
 package ml.convnet.layer.loss;
 
 import ml.convnet.Volume;
-import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
-public class Regression extends Layer {
+public class Regression extends LossLayer {
 
-	Regression() {		
-		
-		this.outW(1);
-		this.outH(1);		
-		this.outD(this.inLength());
-		
+	Regression() {
 		this.type = LayerType.regression;
 	}
-
 
 	public Volume forward(Volume x) {
 		this.input = x;

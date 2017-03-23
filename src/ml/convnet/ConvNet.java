@@ -3,9 +3,9 @@ package ml.convnet;
 import java.util.ArrayList;
 import java.util.List;
 
-import ml.convnet.data.Example;
 import ml.convnet.layer.*;
 import ml.convnet.trainer.*;
+import ml.data.Example;
 
 public class ConvNet {
 
@@ -34,16 +34,22 @@ public class ConvNet {
 
 
 	public ConvNet addLayer(Layer layer) {
+		Layer last = null;
+
+		if (_layerList.size() > 0) {
+			last = _layerList.get(_layerList.size() - 1);
+		}
+		
 		layer.net(this);
+		last.next(layer);
+		layer.last(last);
+
 		_layerList.add(layer);
-		_current = layer;
+		layer.connect(last);
+		
+		//since we modified the layer list we must clear the layer array so it will generate a new one 
 		_layers = null;
 		return this;
-	}
-
-
-	public Layer currentLayer() {
-		return _current;
 	}
 
 

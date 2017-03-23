@@ -5,8 +5,7 @@ import ml.convnet.Volume;
 public class Input extends Layer {
 
 	public Input(int w, int h, int d) {
-		super(null);
-
+		
 		this.inW(w);
 		this.inH(h);
 		this.inD(d);
@@ -24,11 +23,18 @@ public class Input extends Layer {
 		return this.forward(v);
 	}
 
-
+	
 	public Volume forward(Volume x) {
 		this.input = x;
 		this.output = x;
 		return x;
 	}
 
+
+	@Override
+	public void connect(Layer l) {
+		
+		
+	}
+	
 }

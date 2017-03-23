@@ -1,4 +1,4 @@
-package ml.convnet.data;
+package ml.data;
 
 public class DataSet<T> {
 	T[] _examples;

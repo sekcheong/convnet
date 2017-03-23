@@ -5,11 +5,16 @@ import ml.convnet.layer.Layer;
 
 public class ActivationLayer extends Layer {
 
-	public ActivationLayer(Layer prev) {
-		super(prev);
-		this.inW(prev.outW());
-		this.inH(prev.outH());
-		this.inD(prev.outD());
+	public ActivationLayer() {
+
+	}
+
+
+	public void connect(Layer l) {
+		
+		this.inW(l.outW());
+		this.inH(l.outH());
+		this.inD(l.outD());
 		this.outW(this.inW());
 		this.outH(this.inH());
 		this.outD(this.inD());

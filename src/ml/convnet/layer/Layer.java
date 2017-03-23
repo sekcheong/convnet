@@ -4,34 +4,33 @@ import ml.convnet.ConvNet;
 import ml.convnet.Volume;
 
 public abstract class Layer {
+
 	public LayerType type;
+
 	public Volume input;
+
 	public Volume output;
+
 	public Volume biases;
+	
+	public double bias;
+
 	public int[][] sizes = new int[2][3];
 
 	private Layer _next = null;
+
 	private Layer _last = null;
-
-	public double bias;
-	public int index;
-	private ConvNet _net;
-
-
-	public Layer() {
-
-	}
 	
-	public Layer(Layer prev) {
-		_last = prev;
-		_last.next(this);
-	}
+	public int index;
+
+	private ConvNet _net;
 
 
 	public Volume forward(double[] x) {
 		return null;
 	}
-	
+
+
 	public Volume forward(Volume x) {
 		return null;
 	}
@@ -50,8 +49,8 @@ public abstract class Layer {
 	public double backward(double y) {
 		return 0;
 	}
-	
-	
+
+
 	public Volume[] response() {
 		return null;
 	}
@@ -77,26 +76,23 @@ public abstract class Layer {
 	}
 
 
+	public void last(Layer l) {
+		_last = l;
+	}
+
+
+	public void next(Layer l) {
+		_next = l;
+	}
+
+
 	public Layer last() {
 		return _last;
 	}
 
 
-	protected void next(Layer l) {
-		_next = l;
-	}
-
-
-	protected void last(Layer l) {		
-		_last = l;					
-	}
-
-
-	protected void connectToLastLayer(Layer l) {
-		l.next(this);
-		_last = l;
-	}
-	
+	public abstract void connect(Layer l);
+		
 
 	public int inW() {
 		return sizes[0][0];
@@ -171,6 +167,6 @@ public abstract class Layer {
 
 	public int outLength() {
 		return this.outW() * this.outH() * this.outD();
-	}	
+	}
 
 }
