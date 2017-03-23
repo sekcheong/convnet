@@ -7,6 +7,9 @@ public class SGDLearner extends Learner {
 	private double _momentum;
 	private double _decayL1;
 	private double _decayL2;
+	private double _decayLossL1;
+	private double _decayLossL2;
+	private double _loss = 0.0;
 	private int _batchSize;
 
 
@@ -21,13 +24,14 @@ public class SGDLearner extends Learner {
 
 	@Override
 	public void train(double[] x, double[] y) {
-		double decayLossL1 = 0.0;
-		double decayLossL2 = 0.0;
-		double loss = 0.0;
 		double[][] gsum = null;
-
+		
+		_decayLossL1 = 0.0;
+		_decayLossL2 = 0.0;
+		_loss = 0.0;
+		
 		_net.forward(x);
-		loss = _net.backward(y);
+		_loss = _net.backward(y);
 
 		this.incIteration();
 
@@ -44,16 +48,16 @@ public class SGDLearner extends Learner {
 				}
 			}
 
+			
 			for (int i = 0; i < r.length; i++) {
 
 				double[] w = r[i].W;
 				double[] g = r[i].dW;
 
 				for (int j = 0; j < w.length; j++) {
-
 					// accumulate weight decay loss
-					decayLossL1 += _decayL1 * Math.abs(w[j]);
-					decayLossL2 += _decayL2 * w[j] * w[j] / 2;
+					_decayLossL1 += _decayL1 * Math.abs(w[j]);
+					_decayLossL2 += _decayL2 * w[j] * w[j] / 2;
 
 					double gradL1 = _decayL1 * (w[j] > 0 ? 1 : -1);
 					double gradL2 = _decayL2 * (w[j]);
@@ -70,7 +74,6 @@ public class SGDLearner extends Learner {
 					else {
 						w[j] += -_rate * gij;
 					}
-
 					g[j] = 0.0;
 				}
 
