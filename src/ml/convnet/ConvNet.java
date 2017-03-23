@@ -84,7 +84,6 @@ public class ConvNet {
 		Layer[] layers = this.layers();
 
 		Volume act = layers[0].forward(x);
-
 		for (int i = 1; i < layers.length; i++) {
 			act = layers[i].forward(act);
 		}
@@ -108,16 +107,16 @@ public class ConvNet {
 
 	public Volume[] response() {
 		Layer[] layers = this.layers();
-		List<Volume> res = new ArrayList<Volume>();
+		List<Volume> ret = new ArrayList<Volume>();
 
 		for (int i = 0; i < layers.length; i++) {
 			Volume[] layerResponse = layers[i].response();
 			for (int j = 0; j < layerResponse.length; j++) {
-				res.add(layerResponse[j]);
+				ret.add(layerResponse[j]);
 			}
 		}
 
-		return res.toArray(new Volume[res.size()]);
+		return ret.toArray(new Volume[ret.size()]);
 	}
 
 }

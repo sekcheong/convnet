@@ -20,17 +20,17 @@ public class DropOut extends Layer {
 	}
 
 
-	public Volume forward(Volume V) {
-		this.input = V;
-		Volume V2 = new Volume(V);
-		int n = V.W.length;
+	public Volume forward(Volume v) {
+		this.input = v;
+		Volume out = new Volume(v);
+		int n = v.W.length;
 
 		if (this.training()) {
 
 			this._dropped = new boolean[n];
 			for (int i = 0; i < n; i++) {
 				if (Math.random() < this._dropProb) {
-					V2.W[i] = 0;
+					out.W[i] = 0;
 					this._dropped[i] = true;
 				}
 				else {
@@ -43,13 +43,13 @@ public class DropOut extends Layer {
 
 			for (int i = 0; i < n; i++) {
 				// scale the activations during prediction
-				V2.W[i] *= this._dropProb;
+				out.W[i] *= this._dropProb;
 			}
 
 		}
 
-		this.output = V2;
-		return V2;
+		this.output = out;
+		return out;
 	}
 
 
