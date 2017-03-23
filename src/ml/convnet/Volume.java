@@ -16,16 +16,18 @@ public class Volume {
 	private static Random rand = new Random();
 
 
-	public Volume() {}
-
-
 	public Volume(int width, int height, int depth) {
-		createVolume(width, height, depth);
+		createVolumeWithRandom(width, height, depth);
 	}
 
 
-	public Volume(int width, int height, int depth, double v) {
-		createVolume(width, height, depth, v);
+	public Volume(int width, int height, int depth, double c) {
+		createVolumeWithConst(width, height, depth, c);
+	}
+
+
+	public Volume(Volume v, double c) {
+		createVolumeWithConst(v.dim[0], v.dim[1], v.dim[2], c);
 	}
 
 
@@ -39,15 +41,23 @@ public class Volume {
 			W[i] = src.W[i];
 		}
 
-		dW = new double[src.dW.length];
-		for (int i = 0; i < src.dW.length; i++) {
-			dW[i] = src.dW[i];
+		if (src.dW != null) {
+			dW = new double[src.dW.length];
+			for (int i = 0; i < src.dW.length; i++) {
+				dW[i] = src.dW[i];
+			}
 		}
 	}
 
 
-	public Volume(Volume v, double c) {
-		createVolume(v.dim[0], v.dim[1], v.dim[2], c);
+	public Volume(double[] x) {
+		dim[0] = 1;
+		dim[1] = 1;
+		dim[2] = x.length;
+		W = new double[x.length];
+		for (int i = 0; i < x.length; i++) {
+			W[i] = x[i];
+		}
 	}
 
 
@@ -62,29 +72,29 @@ public class Volume {
 	}
 
 
-	private void createVolume(int width, int height, int depth) {
+	private void createVolumeWithRandom(int width, int height, int depth) {
 		dim[0] = width;
 		dim[1] = height;
 		dim[2] = depth;
 		W = new double[dim[0] * dim[1] * dim[2]];
-		initWeights(W);
+		initRandomWeights(W);
 	}
 
 
-	private void createVolume(int width, int height, int depth, double v) {
+	private void createVolumeWithConst(int width, int height, int depth, double c) {
 		this.dim[0] = width;
 		this.dim[1] = height;
 		this.dim[2] = depth;
 
 		W = new double[dim[0] * dim[1] * dim[2]];
-		if (v == 0) return;
+		if (c == 0) return;
 		for (int i = 0; i < W.length; i++) {
-			W[i] = v;
+			W[i] = c;
 		}
 	}
 
 
-	private static void initWeights(double[] w) {
+	private static void initRandomWeights(double[] w) {
 		double scale = Math.sqrt(1.0 / ((double) (w.length)));
 		for (int i = 0; i < w.length; i++) {
 			w[i] = rand.nextGaussian() * scale;
@@ -92,24 +102,19 @@ public class Volume {
 	}
 
 
-	public void initWeights() {
-		initWeights(this.W);
-	}
-
-
-	public static int index(int x, int y, int z) {
-		return 0;
+	public int index(int x, int y, int z) {
+		return ((dim[0] * y) + x) * dim[2] + z;
 	}
 
 
 	public double get(int x, int y, int z) {
 		int i = index(x, y, z);
-		return this.W[i];
+		return W[i];
 	}
 
 
 	public void set(int x, int y, int z, double v) {
-		this.W[index(x, y, z)] = v;
+		W[index(x, y, z)] = v;
 	}
 
 
@@ -136,9 +141,7 @@ public class Volume {
 
 
 	public void add(Volume v) {
-		for (int i = 0; i < W.length; i++) {
-			W[i] += v.W[i];
-		}
+		add(v.W);
 	}
 
 
@@ -150,11 +153,7 @@ public class Volume {
 
 
 	public double dot(Volume v) {
-		double y = 0;
-		for (int i = 0; i < W.length; i++) {
-			y = y + W[i] * v.W[i];
-		}
-		return y;
+		return dot(v.W);
 	}
 
 
@@ -167,16 +166,14 @@ public class Volume {
 	}
 
 
-	public void addScale(double[] d, double scale) {
-		for (int i = 0; i < W.length; i++)
-			W[i] += d[i] * scale;
-
+	public void addScale(Volume v, double scale) {
+		addScale(v.W, scale);
 	}
 
 
-	public void addScale(Volume v, double scale) {
+	public void addScale(double[] d, double scale) {
 		for (int i = 0; i < W.length; i++)
-			W[i] += v.W[i] * scale;
+			W[i] += d[i] * scale;
 
 	}
 
@@ -197,11 +194,7 @@ public class Volume {
 
 
 	public double dotGrad(Volume v) {
-		double y = 0;
-		for (int i = 0; i < dW.length; i++) {
-			y = y + dW[i] * v.dW[i];
-		}
-		return y;
+		return dotGrad(v.dW);
 	}
 
 

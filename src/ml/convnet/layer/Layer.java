@@ -4,7 +4,6 @@ import ml.convnet.ConvNet;
 import ml.convnet.Volume;
 
 public abstract class Layer {
-	public ConvNet net;
 	public LayerType type;
 	public Volume input;
 	public Volume output;
@@ -57,7 +56,7 @@ public abstract class Layer {
 
 
 	public boolean training() {
-		return net.inTraining();
+		return _net.inTraining();
 	}
 
 
