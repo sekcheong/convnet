@@ -6,12 +6,14 @@ public class FullConnect extends Layer {
 	private Volume[] _units;
 
 
+	s
 	public FullConnect(Layer prev, int units, double bias) {
 		super(prev);
 
-		this.inW(prev.outW())
-				.inH(prev.outH())
-				.inD(prev.outD());
+		this.inW(prev.outW());
+		this.inH(prev.outH());
+		this.inD(prev.outD());
+		
 		this.outH(1);
 		this.outW(1);
 		this.outD(units);

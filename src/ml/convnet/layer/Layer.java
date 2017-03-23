@@ -19,11 +19,8 @@ public abstract class Layer {
 	private ConvNet _net;
 
 
-	public Layer(Layer prev) {
-		if (prev != null) {
-			prev.next(this);
-			this.last(prev);
-		}
+	public Layer() {
+
 	}
 
 
@@ -86,8 +83,8 @@ public abstract class Layer {
 	}
 
 
-	public void last(Layer l) {
-		_last = l;
+	public void last(Layer l) {		
+		l.next(this);					
 	}
 
 
