@@ -13,6 +13,7 @@ public class Pool extends Layer {
 
 	public Pool(Layer prev, int w, int h, int stride, int pad) {
 		super(prev);
+		this.type = LayerType.pool;
 
 		int t;
 		_w = w;
@@ -20,9 +21,7 @@ public class Pool extends Layer {
 		_stride = stride;
 		_pad = pad;
 
-		this.inW(prev.outW())
-				.inH(prev.outH())
-				.inD(prev.outD());
+		this.inW(prev.outW()).inH(prev.outH()).inD(prev.outD());
 
 		this.outD(this.inD());
 
@@ -35,24 +34,23 @@ public class Pool extends Layer {
 		// stores mask for x, y coordinates for where the max comes from, for
 		// each output neuron
 		_mask = new int[this.outLength()][2];
-
-		this.type = LayerType.pool;
 	}
 
 
 	public Volume forward(Volume v) {
 		this.input = v;
-
-		Volume A = new Volume(this.outW(), this.outH(), this.outD(), 0.0);
-
+		Volume out = new Volume(this.outW(), this.outH(), this.outD(), 0.0);
+		this.output=out;
+		
 		int n = 0; // a counter for switches
 		for (int d = 0; d < this.outD(); d++) {
 			int x = -this._pad;
 			int y = -this._pad;
+			
 			for (int ax = 0; ax < this.outW(); x += this._stride, ax++) {
 				y = -this._pad;
+				
 				for (int ay = 0; ay < this.outH(); y += this._stride, ay++) {
-
 					// convolve centered at this particular location
 					double a = -99999999999999.0;
 					int winx = -1, winy = -1;
@@ -73,24 +71,25 @@ public class Pool extends Layer {
 							}
 						}
 					}
+					
 					_mask[n][0] = winx;
 					_mask[n][1] = winy;
 					n++;
-					A.set(ax, ay, d, a);
+					out.set(ax, ay, d, a);
 				}
 			}
 		}
-		this.input = A;
-		return A;
+		
+		return out;
 	}
 
 
 	public void backward() {
-		Volume V = this.input;
+		Volume in = this.input;
 
 		// pooling layers have no parameters, so simply compute gradient wrt
 		// data here
-		V.dW = new double[V.W.length];
+		in.dW = new double[in.W.length];
 		Volume A = this.output;
 
 		int n = 0;
@@ -101,7 +100,7 @@ public class Pool extends Layer {
 				y = -this._pad;
 				for (int ay = 0; ay < this.outH(); y += this._stride, ay++) {
 					double chainGrad = this.output.getGrad(ax, ay, d);
-					V.addGrad(_mask[n][0], _mask[n][1], d, chainGrad);
+					in.addGrad(_mask[n][0], _mask[n][1], d, chainGrad);
 					n++;
 				}
 			}
