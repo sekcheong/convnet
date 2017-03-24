@@ -52,7 +52,7 @@ public abstract class Layer {
 
 
 	public Volume[] response() {
-		return null;
+		return new Volume[0];
 	}
 
 

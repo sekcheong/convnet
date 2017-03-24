@@ -124,9 +124,9 @@ public class ConvNet {
 		List<Volume> ret = new ArrayList<Volume>();
 
 		for (int i = 0; i < layers.length; i++) {
-			Volume[] layerResponse = layers[i].response();
-			for (int j = 0; j < layerResponse.length; j++) {
-				ret.add(layerResponse[j]);
+			Volume[] r = layers[i].response();
+			for (int j = 0; j < r.length; j++) {
+				ret.add(r[j]);
 			}
 		}
 
