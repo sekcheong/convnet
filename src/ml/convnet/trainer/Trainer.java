@@ -11,8 +11,8 @@ public abstract class Trainer {
 	protected Example[] _tune;
 
 	protected int _iteration = 0;
-	protected int[] _permu;
-	protected int _trainIdx;
+	protected int _p = 0;
+	protected int _epoch = 0;
 
 
 	public Trainer() {}
@@ -61,11 +61,11 @@ public abstract class Trainer {
 	public ConvNet net() {
 		return _net;
 	}
-
+	
 
 	protected void initExamples(Example[] train) {
 		_train = new Example[train.length];
-		for (int i=0; i<train.length; i++) {
+		for (int i = 0; i < train.length; i++) {
 			_train[i] = train[i];
 		}
 	}
@@ -82,7 +82,14 @@ public abstract class Trainer {
 
 
 	private Example drawOneExample() {
-		return null;
+		Example ex = _train[_p];
+		_p++;
+		if (_p == _train.length) {
+			shuffle(_train);
+			_p = 0;
+			_epoch++;
+		}
+		return ex;
 	}
 
 
