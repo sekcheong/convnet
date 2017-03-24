@@ -5,9 +5,10 @@ import ml.convnet.layer.LayerType;
 
 public class Regression extends LossLayer {
 
-	Regression() {
+	public Regression() {
 		this.type = LayerType.regression;
 	}
+
 
 	public Volume forward(Volume x) {
 		this.input = x;
@@ -34,5 +35,5 @@ public class Regression extends LossLayer {
 		x.dW[0] = dy;
 		return .5 * dy * dy;
 	}
-	
+
 }

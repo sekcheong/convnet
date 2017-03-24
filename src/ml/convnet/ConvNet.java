@@ -19,6 +19,8 @@ public class ConvNet {
 
 	private Layer _current;
 
+	public int epoch;
+
 
 	public ConvNet() {}
 
@@ -39,14 +41,14 @@ public class ConvNet {
 		if (_layerList.size() > 0) {
 			last = _layerList.get(_layerList.size() - 1);
 		}
-		
+
 		layer.net(this);
 		last.next(layer);
 		layer.last(last);
 
 		_layerList.add(layer);
 		layer.connect(last);
-		
+
 		//since we modified the layer list we must clear the layer array so it will generate a new one 
 		_layers = null;
 		return this;
@@ -130,6 +132,11 @@ public class ConvNet {
 		}
 
 		return ret.toArray(new Volume[ret.size()]);
+	}
+
+
+	public void train(Example[] trainSet) {
+		this.train(trainSet, null);
 	}
 
 }

@@ -1,8 +1,10 @@
 package ml.convnet.trainer;
 
 import ml.convnet.Volume;
+import ml.data.Example;
 
 public class SGDTrainer extends Trainer {
+
 	private double _rate;
 	private double _momentum;
 	private double _decayL1;
@@ -20,25 +22,25 @@ public class SGDTrainer extends Trainer {
 		_decayL2 = decayL2;
 		_batchSize = batchSize;
 	}
-
+	
 
 	@Override
-	public void train(double[] x, double[] y) {
+	protected void train(double[] x, double[] y) {
 		double[][] gsum = null;
-		
+
 		_decayLossL1 = 0.0;
 		_decayLossL2 = 0.0;
 		_loss = 0.0;
-		
-		_net.forward(x);
-		_loss = _net.backward(y);
+
+		this.net().forward(x);
+		_loss = this.net().backward(y);
 
 		this.incIteration();
 
 		if ((this.iteration() % _batchSize) == 0) {
 
 			//get the network weights and gradients
-			Volume[] r = _net.response();
+			Volume[] r = this.net().response();
 
 			//for momentum we need to use 
 			if (_momentum > 0 && gsum == null) {
@@ -48,7 +50,7 @@ public class SGDTrainer extends Trainer {
 				}
 			}
 
-			
+
 			for (int i = 0; i < r.length; i++) {
 
 				double[] w = r[i].W;
