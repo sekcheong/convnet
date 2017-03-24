@@ -101,9 +101,8 @@ public class Pool extends Layer {
 
 	public void backward() {
 		Volume in = this.input;
-
-		// pooling layers have no parameters, so simply compute gradient wrt
-		// data here
+		// pooling layers have no parameters, so simply compute gradient
+		// wrt data here
 		in.dW = new double[in.W.length];
 		Volume A = this.output;
 

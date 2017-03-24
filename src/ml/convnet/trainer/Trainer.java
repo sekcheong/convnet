@@ -101,6 +101,12 @@ public abstract class Trainer {
 	public void train(Example[] train, Example[] tune) {
 		initExamples(train);
 		_tune = tune;
+		
+		while(_epoch<_net.epochs) {
+			Example ex = drawOneExample();
+			this.train(ex.x.W, ex.y.W);
+		}
+		
 	}
 
 

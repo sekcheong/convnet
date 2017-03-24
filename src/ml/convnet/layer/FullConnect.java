@@ -16,7 +16,7 @@ public class FullConnect extends Layer {
 
 	public void connect(Layer l) {
 
-		this.inW(l.last().outW());
+		this.inW(l.outW());
 		this.inH(l.outH());
 		this.inD(l.outD());
 

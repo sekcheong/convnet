@@ -25,25 +25,25 @@ public class Test {
 		d[2] = new Example(new double[] {1,0}, new double[] {0});
 		d[3] = new Example(new double[] {1,1}, new double[] {1});
 		
-		net.epoch = 50;
+		net.epochs = 1;
 		net.train(d);
 
-		int[] a = new int[10];
-		
-		for (int i = 0; i < a.length; i++) {
-			a[i] = i;
-		}
-		
-		for (int i = a.length - 1; i >= 1; i--) {
-			int j = (int) (Math.random() * i);
-			int t = a[i];
-			a[i] = a[j];
-			a[j] = t;
-		}
-		
-		for (int i = 0; i < a.length; i++) {
-			System.out.println(a[i]);
-		}
+//		int[] a = new int[10];
+//		
+//		for (int i = 0; i < a.length; i++) {
+//			a[i] = i;
+//		}
+//		
+//		for (int i = a.length - 1; i >= 1; i--) {
+//			int j = (int) (Math.random() * i);
+//			int t = a[i];
+//			a[i] = a[j];
+//			a[j] = t;
+//		}
+//		
+//		for (int i = 0; i < a.length; i++) {
+//			System.out.println(a[i]);
+//		}
 
 	}
 }

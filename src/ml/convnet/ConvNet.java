@@ -18,8 +18,9 @@ public class ConvNet {
 	private Layer[] _layers;
 
 	private Layer _current;
+	
 
-	public int epoch;
+	public int epochs;
 
 
 	public ConvNet() {}
@@ -43,12 +44,14 @@ public class ConvNet {
 		}
 
 		layer.net(this);
-		last.next(layer);
-		layer.last(last);
-
 		_layerList.add(layer);
-		layer.connect(last);
-
+		
+		if (last!=null) {
+			last.next(layer);
+			layer.last(last);
+			layer.connect(last);
+		}
+		
 		//since we modified the layer list we must clear the layer array so it will generate a new one 
 		_layers = null;
 		return this;
@@ -64,8 +67,8 @@ public class ConvNet {
 
 
 	public void trainer(Trainer trainer) {
-		_trainer.net(this);
 		_trainer = trainer;
+		_trainer.net(this);
 	}
 
 
@@ -98,12 +101,12 @@ public class ConvNet {
 
 	public double[] forward(double[] x) {
 		Layer[] layers = this.layers();
-
-		Volume act = layers[0].forward(x);
+		
+		Volume act = layers[0].forward(x);		
 		for (int i = 1; i < layers.length; i++) {
 			act = layers[i].forward(act);
 		}
-
+		
 		return act.W;
 	}
 
