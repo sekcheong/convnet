@@ -110,7 +110,6 @@ public class ConvNet {
 		Layer[] layers = this.layers();
 
 		double loss = layers[layers.length - 1].backward(y);
-
 		for (int i = layers.length - 2; i >= 0; i--) {
 			layers[i].backward();
 		}

@@ -17,6 +17,8 @@ public class Test {
 		
 		net.trainer(new SGDTrainer(0.01, 1, 0, 0, 0));
 		
+		net.train(train, tune);
+		
 
 		// create layer of 10 linear neurons (no activation function by default)
 		// {type:'fc', num_neurons:10}
