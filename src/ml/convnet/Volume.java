@@ -16,21 +16,57 @@ public class Volume {
 	private static Random rand = new Random();
 
 
+	/**
+	 * Creates a volume and initializes it with random weights
+	 * 
+	 * @param width
+	 *            The width of the volume
+	 * @param height
+	 *            The height of the volume
+	 * @param depth
+	 *            The depth of the volume
+	 */
 	public Volume(int width, int height, int depth) {
 		createVolumeWithRandom(width, height, depth);
 	}
 
 
+	/**
+	 * Creates a volume with a specified dimension and fills it will a constant
+	 * 
+	 * @param width
+	 *            The width of the volume
+	 * @param height
+	 *            The height of the volume
+	 * @param depth
+	 *            The depth of the volume
+	 * @param c
+	 *            The constant the volume will be filled with
+	 */
 	public Volume(int width, int height, int depth, double c) {
 		createVolumeWithConst(width, height, depth, c);
 	}
 
 
+	/**
+	 * Creates a volume and fills it will a constant
+	 *
+	 * @param v
+	 *            The volume whose width, height, and depth will be used for creating the new volume
+	 * @param c
+	 *            The constant the volume will be filled with
+	 */
 	public Volume(Volume v, double c) {
 		createVolumeWithConst(v.dim[0], v.dim[1], v.dim[2], c);
 	}
 
 
+	/**
+	 * Creates a copy of a given volume
+	 * 
+	 * @param src
+	 *            The source volume
+	 */
 	public Volume(Volume src) {
 		for (int i = 0; i < src.dim.length; i++) {
 			dim[i] = src.dim[i];
@@ -41,31 +77,45 @@ public class Volume {
 			W[i] = src.W[i];
 		}
 
-		if (src.dW != null) {
-			dW = new double[src.dW.length];
-			for (int i = 0; i < src.dW.length; i++) {
-				dW[i] = src.dW[i];
-			}
+		dW = new double[src.dW.length];
+		for (int i = 0; i < src.dW.length; i++) {
+			dW[i] = src.dW[i];
 		}
+
 	}
 
 
+	/**
+	 * Creates a volume and populates it with a given vector.
+	 * 
+	 * @param x
+	 *            the array of double to populate the volume's W
+	 */
 	public Volume(double[] x) {
 		dim[0] = 1;
 		dim[1] = 1;
 		dim[2] = x.length;
 		W = new double[x.length];
+		dW = new double[x.length];
 		for (int i = 0; i < x.length; i++) {
 			W[i] = x[i];
 		}
 	}
 
 
+	/**
+	 * Creates a volume give given dimension and populates it with the content of
+	 * a given array
+	 * 
+	 * @param x
+	 *            the array of double to populate the volume
+	 */
 	public Volume(int width, int height, int depth, double[] x) {
 		dim[0] = width;
 		dim[1] = height;
 		dim[2] = depth;
 		W = new double[dim[0] * dim[1] * dim[2]];
+		dW = new double[W.length];
 		for (int i = 0; i < W.length; i++) {
 			W[i] = x[i];
 		}
@@ -77,6 +127,7 @@ public class Volume {
 		dim[1] = height;
 		dim[2] = depth;
 		W = new double[dim[0] * dim[1] * dim[2]];
+		dW = new double[W.length];
 		initRandomWeights(W);
 	}
 
@@ -87,7 +138,8 @@ public class Volume {
 		this.dim[2] = depth;
 
 		W = new double[dim[0] * dim[1] * dim[2]];
-		if (c == 0) return;
+		dW = new double[W.length];
+		if (c == 0.0) return;
 		for (int i = 0; i < W.length; i++) {
 			W[i] = c;
 		}

@@ -32,6 +32,7 @@ public class Test {
 		});
 
 		Example[] d = new Example[4];
+		
 		d[0] = new Example(new double[] { 0, 0 }, new double[] { 0 });
 		d[1] = new Example(new double[] { 0, 1 }, new double[] { 0 });
 		d[2] = new Example(new double[] { 1, 0 }, new double[] { 0 });
