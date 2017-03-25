@@ -26,11 +26,6 @@ public class ConvNet {
 	public ConvNet() {}
 
 
-	public ConvNet(Trainer trainer) {
-		this.trainer(trainer);
-	}
-
-
 	public boolean inTraining() {
 		return _training;
 	}
@@ -63,22 +58,6 @@ public class ConvNet {
 			_layers = _layerList.toArray(new Layer[_layerList.size()]);
 		}
 		return _layers;
-	}
-
-
-	public void trainer(Trainer trainer) {
-		_trainer = trainer;
-		_trainer.net(this);
-	}
-
-
-	public Trainer trainer() {
-		return _trainer;
-	}
-
-
-	public void train(Example[] train, Example[] tune) {
-		_training = true;
 	}
 
 
@@ -118,7 +97,7 @@ public class ConvNet {
 		for (int i = layers.length - 2; i >= 0; i--) {
 			layers[i].backward();
 		}
-
+		
 		return loss;
 	}
 
@@ -135,11 +114,6 @@ public class ConvNet {
 		}
 
 		return ret.toArray(new Volume[ret.size()]);
-	}
-
-
-	public void train(Example[] trainSet) {
-		this.train(trainSet, null);
 	}
 
 }

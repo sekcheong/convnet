@@ -3,16 +3,28 @@ package ml.convnet.trainer;
 import ml.convnet.ConvNet;
 import ml.data.Example;
 
-
 public abstract class Trainer {
 
+	public interface TrainerEvent {
+
+		void call(Trainer trainer);
+	}
+
 	protected ConvNet _net;
+
 	protected Example[] _train;
+
 	protected Example[] _tune;
 
 	protected int _iteration = 0;
+
 	protected int _p = 0;
+
 	protected int _epoch = 0;
+
+	protected TrainerEvent _onEpoch;
+
+	protected TrainerEvent _onStep;
 
 
 	public Trainer() {}
@@ -61,7 +73,7 @@ public abstract class Trainer {
 	public ConvNet net() {
 		return _net;
 	}
-	
+
 
 	protected void initExamples(Example[] train) {
 		_train = new Example[train.length];
@@ -88,28 +100,46 @@ public abstract class Trainer {
 			shuffle(_train);
 			_p = 0;
 			_epoch++;
+			_onEpoch.call(this);
 		}
 		return ex;
 	}
 
 
-	public void train(Example[] train) {
-		this.train(train, null);
+	public void onEpoch(TrainerEvent callback) {
+		_onEpoch = callback;
 	}
 
 
-	public void train(Example[] train, Example[] tune) {
+	public void onStep(TrainerEvent callback) {
+		_onStep = callback;
+	}
+
+
+	public void train(ConvNet net, Example[] train) {
+		this.train(net, train, null);
+	}
+
+
+	public void train(ConvNet net, Example[] train, Example[] tune) {
+		_net = net;
 		initExamples(train);
 		_tune = tune;
-		
-		while(_epoch<_net.epochs) {
+		while (_epoch < _net.epochs) {
 			Example ex = drawOneExample();
-			this.train(ex.x.W, ex.y.W);
+			this.incIteration();
+			this.trainOneExample(net, ex.x.W, ex.y.W);
+			if (_onStep != null) _onStep.call(this);
 		}
-		
 	}
 
 
-	protected abstract void train(double[] x, double[] y);
+	public int epoch() {
+		return _epoch;
+	}
+
+	
+	protected abstract void trainOneExample(ConvNet net, double[] x, double[] y);
+
 
 }

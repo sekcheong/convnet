@@ -1,5 +1,6 @@
 package ml.convnet.trainer;
 
+import ml.convnet.ConvNet;
 import ml.convnet.Volume;
 import ml.data.Example;
 
@@ -25,7 +26,7 @@ public class SGDTrainer extends Trainer {
 	
 
 	@Override
-	protected void train(double[] x, double[] y) {
+	protected void trainOneExample(ConvNet net, double[] x, double[] y) {
 		double[][] gsum = null;
 
 		_decayLossL1 = 0.0;
@@ -33,9 +34,7 @@ public class SGDTrainer extends Trainer {
 		_loss = 0.0;
 
 		this.net().forward(x);
-		_loss = this.net().backward(y);
-
-		this.incIteration();
+		_loss = this.net().backward(y);		
 
 		if ((this.iteration() % _batchSize) == 0) {
 

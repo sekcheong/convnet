@@ -17,8 +17,16 @@ public class Test {
 		net.addLayer(new Sigmoid());
 		net.addLayer(new Regression());
 
-		net.trainer(new SGDTrainer(0.5, 1, 0, 0, 0));
+		Trainer trainer = new SGDTrainer(0.5, 1, 0, 0, 0);
 		
+		trainer.onEpoch(t -> {
+			
+		});
+		
+		trainer.onStep(t -> {
+			
+		});
+				
 		Example[] d = new Example[4];
 		d[0] = new Example(new double[] {0,0}, new double[] {0});
 		d[1] = new Example(new double[] {0,1}, new double[] {0});
@@ -26,24 +34,7 @@ public class Test {
 		d[3] = new Example(new double[] {1,1}, new double[] {1});
 		
 		net.epochs = 1;
-		net.train(d);
-
-//		int[] a = new int[10];
-//		
-//		for (int i = 0; i < a.length; i++) {
-//			a[i] = i;
-//		}
-//		
-//		for (int i = a.length - 1; i >= 1; i--) {
-//			int j = (int) (Math.random() * i);
-//			int t = a[i];
-//			a[i] = a[j];
-//			a[j] = t;
-//		}
-//		
-//		for (int i = 0; i < a.length; i++) {
-//			System.out.println(a[i]);
-//		}
+		trainer.train(net, d);
 
 	}
 }
