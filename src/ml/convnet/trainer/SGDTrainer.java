@@ -7,12 +7,19 @@ import ml.data.Example;
 public class SGDTrainer extends Trainer {
 
 	private double _rate;
+
 	private double _momentum;
+
 	private double _decayL1;
+
 	private double _decayL2;
+
 	private double _decayLossL1;
+
 	private double _decayLossL2;
+
 	private double _loss = 0.0;
+
 	private int _batchSize;
 
 
@@ -23,7 +30,7 @@ public class SGDTrainer extends Trainer {
 		_decayL2 = decayL2;
 		_batchSize = batchSize;
 	}
-	
+
 
 	@Override
 	protected void trainOneExample(ConvNet net, double[] x, double[] y) {
@@ -34,14 +41,14 @@ public class SGDTrainer extends Trainer {
 		_loss = 0.0;
 
 		this.net().forward(x);
-		_loss = this.net().backward(y);		
+		_loss = this.net().backward(y);
 
-		if ((this.iteration() % _batchSize) == 0) {
+		if ((this.step() % _batchSize) == 0) {
 
-			//get the network weights and gradients
+			// get the network weights and gradients
 			Volume[] r = this.net().response();
 
-			//for momentum we need to use 
+			// for momentum we need to use
 			if (_momentum > 0 && gsum == null) {
 				gsum = new double[r.length][];
 				for (int i = 0; i < r.length; i++) {
@@ -49,13 +56,13 @@ public class SGDTrainer extends Trainer {
 				}
 			}
 
-
 			for (int i = 0; i < r.length; i++) {
 
 				double[] w = r[i].W;
 				double[] g = r[i].dW;
 
 				for (int j = 0; j < w.length; j++) {
+
 					// accumulate weight decay loss
 					_decayLossL1 += _decayL1 * Math.abs(w[j]);
 					_decayLossL2 += _decayL2 * w[j] * w[j] / 2;
@@ -69,8 +76,10 @@ public class SGDTrainer extends Trainer {
 
 					if (_momentum > 0.0) {
 						double dx = _momentum * gsum_i[j] - _rate * gij;
-						gsum_i[j] = dx; // back this up for next iteration of momentum
-						w[j] += dx;     // apply corrected gradient
+						// back this up for next iteration of momentum
+						gsum_i[j] = dx;
+						// apply corrected gradient
+						w[j] += dx;
 					}
 					else {
 						w[j] += -_rate * gij;

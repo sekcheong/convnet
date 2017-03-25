@@ -7,7 +7,7 @@ public abstract class Trainer {
 
 	public interface TrainerEvent {
 
-		void call(Trainer trainer);
+		boolean call(Trainer trainer);
 	}
 
 	protected ConvNet _net;
@@ -16,11 +16,12 @@ public abstract class Trainer {
 
 	protected Example[] _tune;
 
-	protected int _iteration = 0;
-
-	protected int _p = 0;
+	// the n th example
+	protected int _n = 0;
 
 	protected int _epoch = 0;
+
+	protected int _step = 0;
 
 	protected TrainerEvent _onEpoch;
 
@@ -28,16 +29,6 @@ public abstract class Trainer {
 
 
 	public Trainer() {}
-
-
-	public int iteration() {
-		return _iteration;
-	}
-
-
-	public void incIteration() {
-		_iteration++;
-	}
 
 
 	public double costLoss() {
@@ -94,15 +85,31 @@ public abstract class Trainer {
 
 
 	private Example drawOneExample() {
-		Example ex = _train[_p];
-		_p++;
-		if (_p == _train.length) {
-			shuffle(_train);
-			_p = 0;
-			_epoch++;
-			_onEpoch.call(this);
+		Example ex = _train[_n];
+		_n++;
+		if (_n == _train.length) {
+			this.shuffle(_train);
+			this.incEpoch();
+			_n = 0;
 		}
 		return ex;
+	}
+
+
+	public int step() {
+		return _step;
+	}
+
+
+	public void incStep() {
+		_step++;
+		if (_onStep != null) _onStep.call(this);
+	}
+
+
+	public void incEpoch() {
+		_epoch++;
+		if (_onEpoch != null) _onEpoch.call(this);
 	}
 
 
@@ -113,6 +120,11 @@ public abstract class Trainer {
 
 	public void onStep(TrainerEvent callback) {
 		_onStep = callback;
+	}
+
+
+	public int epoch() {
+		return _epoch;
 	}
 
 
@@ -127,19 +139,12 @@ public abstract class Trainer {
 		_tune = tune;
 		while (_epoch < _net.epochs) {
 			Example ex = drawOneExample();
-			this.incIteration();
 			this.trainOneExample(net, ex.x.W, ex.y.W);
-			if (_onStep != null) _onStep.call(this);
+			this.incStep();
 		}
 	}
 
 
-	public int epoch() {
-		return _epoch;
-	}
-
-	
 	protected abstract void trainOneExample(ConvNet net, double[] x, double[] y);
-
 
 }
