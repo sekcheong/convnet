@@ -1,6 +1,7 @@
 package ml.convnet.layer;
 
 import ml.convnet.Volume;
+import ml.utils.Console;
 
 public class FullConnect extends Layer {
 
@@ -38,7 +39,7 @@ public class FullConnect extends Layer {
 		Volume out = new Volume(1, 1, this.outD(), 0);
 		this.output = out;
 
-		for (int i = 0; i < this.outD(); i++) {
+		for (int i = 0; i < _units.length; i++) {
 			out.W[i] = x.dot(_units[i].W) + this.biases.W[i];
 		}
 
@@ -66,19 +67,19 @@ public class FullConnect extends Layer {
 
 
 	public void backward() {
-		double chainGrad;
+		double grad;
 		Volume in = this.input;
 		in.dW = new double[in.W.length];
 
 		// compute gradient wrt weights and data
-		for (int i = 0; i < this.outD(); i++) {
+		for (int i = 0; i < _units.length; i++) {
 			Volume unit_i = _units[i];
-			chainGrad = this.output.dW[i];
+			grad = this.output.dW[i];
 			for (int d = 0; d < this.inLength(); d++) {
-				in.dW[d] += unit_i.W[d] * chainGrad; // grad wrt input data
-				unit_i.dW[d] += in.W[d] * chainGrad; // grad wrt params
+				in.dW[d] += unit_i.W[d] * grad; // grad wrt input data
+				unit_i.dW[d] += in.W[d] * grad; // grad wrt params
 			}
-			this.biases.dW[i] += chainGrad;
+			this.biases.dW[i] += grad;
 		}
 	}
 

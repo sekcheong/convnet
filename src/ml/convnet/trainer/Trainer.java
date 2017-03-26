@@ -66,11 +66,12 @@ public abstract class Trainer {
 	}
 
 
-	protected void initExamples(Example[] train) {
-		_train = new Example[train.length];
+	protected Example[] makeTrainExamples(Example[] train) {
+		Example[] copy = new Example[train.length];
 		for (int i = 0; i < train.length; i++) {
-			_train[i] = train[i];
+			copy[i] = train[i];
 		}
+		return copy;
 	}
 
 
@@ -135,7 +136,7 @@ public abstract class Trainer {
 
 	public void train(ConvNet net, Example[] train, Example[] tune) {
 		_net = net;
-		initExamples(train);
+		_train = makeTrainExamples(train);
 		_tune = tune;
 		while (_epoch < _net.epochs) {
 			Example ex = drawOneExample();

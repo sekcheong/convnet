@@ -13,7 +13,7 @@ public class Test {
 		ConvNet net = new ConvNet();
 
 		net.addLayer(new Input(1, 1, 2));
-		net.addLayer(new FullConnect(10, 1.0));
+		net.addLayer(new FullConnect(3, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new FullConnect(1, 1.0));
 		net.addLayer(new Sigmoid());

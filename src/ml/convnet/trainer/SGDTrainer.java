@@ -49,12 +49,12 @@ public class SGDTrainer extends Trainer {
 			Volume[] r = this.net().response();
 
 			// for momentum we need to use
-			if (_momentum > 0 && gsum == null) {
-				gsum = new double[r.length][];
-				for (int i = 0; i < r.length; i++) {
-					gsum[i] = new double[r[i].dW.length];
-				}
+
+			gsum = new double[r.length][];
+			for (int i = 0; i < r.length; i++) {
+				gsum[i] = new double[r[i].dW.length];
 			}
+
 
 			for (int i = 0; i < r.length; i++) {
 

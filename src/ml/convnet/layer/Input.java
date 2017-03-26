@@ -19,7 +19,7 @@ public class Input extends Layer {
 
 
 	public Volume forward(double[] x) {
-		Volume v = new Volume(this.inW(), this.inH(), this.inW(), x);
+		Volume v = new Volume(this.inW(), this.inH(), this.inD(), x);
 		return this.forward(v);
 	}
 
