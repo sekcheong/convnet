@@ -30,11 +30,11 @@ public class Regression extends LossLayer {
 	}
 
 
-	public double backward(double y) {
-		Volume x = this.input;
-		double dy = x.W[0] - y;
-		x.dW[0] = dy;
-		return .5 * dy * dy;
-	}
+//	public double backward(double y) {
+//		Volume x = this.input;
+//		double dy = x.W[0] - y;
+//		x.dW[0] = dy;
+//		return .5 * dy * dy;
+//	}
 
 }

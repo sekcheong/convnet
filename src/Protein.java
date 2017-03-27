@@ -20,7 +20,7 @@ public class Protein {
 		net.addLayer(new Sigmoid());
 		net.addLayer(new FullConnect(1, 0.0));
 		net.addLayer(new Sigmoid());
-		net.addLayer(new Regression());
+		net.addLayer(new Softmax());
 
 		Trainer trainer = new SGDTrainer(0.5, 5, 0, 0, 0);
 
@@ -149,15 +149,15 @@ public class Protein {
 		net.addLayer(new LeRu());
 		net.addLayer(new DropOut(0.5));
 		net.addLayer(new FullConnect(outputs, 1));
-		net.addLayer(new Sigmoid());
+		//net.addLayer(new Sigmoid());
+		//net.addLayer(new Regression());
 		net.addLayer(new Softmax());
 
-		double eta = 0.0005;
-		double epsilon = 0.05;
+		double eta = 0.005;
 		double alpha = 0.9;
 		double lambda = 0.00008;
 
-		Trainer trainer = new SGDTrainer(eta, 5, alpha, 0.00005, lambda);
+		Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.0, lambda);
 
 		trainer.onEpoch(t -> {
 			double acc = checkAccuracy(net, tune);

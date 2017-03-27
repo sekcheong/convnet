@@ -13,15 +13,14 @@ public class Softmax extends LossLayer {
 	}
 
 
-	public Volume forward(Volume x) {
-		this.input = x;
+	public Volume forward(Volume V) {
+		this.input = V;
 
-		Volume out = new Volume(1, 1, this.outD(), 0.0);
-		this.output = out;
+		Volume A = new Volume(1, 1, this.outD(), 0.0);
 
 		// compute max activation
-		double[] as = x.W;
-		double amax = x.W[0];
+		double[] as = V.W;
+		double amax = V.W[0];
 		for (int i = 1; i < this.outD(); i++) {
 			if (as[i] > amax) amax = as[i];
 		}
@@ -29,43 +28,47 @@ public class Softmax extends LossLayer {
 		// compute exponentials (carefully to not blow up)
 		double[] es = new double[this.outD()];
 		double esum = 0.0;
-		for (int i = 0; i < es.length; i++) {
+		for (int i = 0; i < this.outD(); i++) {
 			double e = Math.exp(as[i] - amax);
 			esum += e;
 			es[i] = e;
 		}
 
 		// normalize and output to sum to one
-		for (int i = 0; i < es.length; i++) {
-			es[i] /= esum;
-			out.W[i] = es[i];
-		}
-
-		_es = es; // save these for backprop
-
-		return out;
-	}
-
-
-	public double backward(double v) {
-		int y = (int) v;
-		// compute and accumulate gradient wrt weights and bias of this layer
-		Volume x = this.input;
-		x.dW = new double[x.W.length]; // zero out the gradient of input Cube
-
 		for (int i = 0; i < this.outD(); i++) {
-			double indicator = (i == y) ? 1.0 : 0.0;
-			double mul = -(indicator - _es[i]);
-			x.dW[i] = mul;
+			es[i] /= esum;
+			A.W[i] = es[i];
 		}
-		// loss is the class negative log likelihood
-		return -Math.log(_es[y]);
+
+		this._es = es; // save these for backprop
+		this.output = A;
+		return this.output;
+
 	}
 
 
 	public double backward(double[] v) {
-		double y = (int) v[0];
-		return this.backward(y);
+		double max = v[0];
+		int y = 0;
+		for (int i = 1; i < v.length; i++) {
+			if (v[i] > max) {
+				y = i;
+				max = v[i];
+			}
+		}
+
+		// compute the class from vector v;
+		Volume x = this.input;
+		x.dW = new double[x.W.length];
+
+		for (int i = 0; i < this.outD(); i++) {
+			double indicator = (i == y) ? 1.0 : 0.0;
+			double mul = -(indicator - this._es[i]);
+			x.dW[i] = mul;
+		}
+
+		// loss is the class negative log likelihood
+		return -Math.log(this._es[y]);
 	}
 
 }

@@ -46,9 +46,9 @@ public abstract class Layer {
 	}
 
 
-	public double backward(double y) {
-		return 0;
-	}
+//	public double backward(double y) {
+//		return 0;
+//	}
 
 
 	public Volume[] response() {
