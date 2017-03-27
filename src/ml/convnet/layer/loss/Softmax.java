@@ -5,14 +5,11 @@ import ml.convnet.layer.LayerType;
 
 public class Softmax extends LossLayer {
 
-	private int _classes;
-
 	private double[] _es;
 
 
-	public Softmax(int classes) {
+	public Softmax() {
 		this.type = LayerType.softmax;
-		_classes = classes;
 	}
 
 
@@ -63,6 +60,12 @@ public class Softmax extends LossLayer {
 		}
 		// loss is the class negative log likelihood
 		return -Math.log(_es[y]);
+	}
+
+
+	public double backward(double[] v) {
+		double y = (int) v[0];
+		return this.backward(y);
 	}
 
 }

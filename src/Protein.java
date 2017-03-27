@@ -150,7 +150,7 @@ public class Protein {
 		net.addLayer(new DropOut(0.5));
 		net.addLayer(new FullConnect(outputs, 1));
 		net.addLayer(new Sigmoid());
-		net.addLayer(new Regression());
+		net.addLayer(new Softmax());
 
 		double eta = 0.0005;
 		double epsilon = 0.05;

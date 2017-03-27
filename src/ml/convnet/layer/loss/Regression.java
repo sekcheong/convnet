@@ -19,6 +19,7 @@ public class Regression extends LossLayer {
 
 	public double backward(double[] y) {
 		Volume x = this.input;
+		x.dW = new double[x.W.length];
 		double loss = 0.0;
 		for (int i = 0; i < x.W.length; i++) {
 			double dy = x.W[i] - y[i];

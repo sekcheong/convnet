@@ -1,5 +1,6 @@
 import ml.data.DataSet;
 import ml.data.image.*;
+import ml.utils.Console;
 
 public class ImageClassifier {
 
@@ -31,8 +32,9 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 128;
+		int imageSize = 64;
 
+		long start = System.nanoTime();
 		if (args.length > 5) {
 			System.err.println("Usage error: java Lab3 <train_set_folder_path> <tune_set_folder_path> <test_set_folder_path> <imageSize>");
 			System.exit(1);
@@ -51,6 +53,10 @@ public class ImageClassifier {
 		}
 
 		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize);
+		
+		long end = System.nanoTime() - start;
+		
+		Console.writeLine(end * 10e-10);
 
 	}
 
