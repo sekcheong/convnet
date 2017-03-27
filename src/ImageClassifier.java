@@ -7,12 +7,14 @@ import ml.convnet.layer.Pool;
 import ml.convnet.layer.activation.LeRu;
 import ml.convnet.layer.activation.Sigmoid;
 import ml.convnet.layer.loss.Softmax;
+import ml.convnet.trainer.AdamTrainer;
 import ml.convnet.trainer.SGDTrainer;
 import ml.convnet.trainer.Trainer;
 import ml.data.DataSet;
 import ml.data.Example;
 import ml.data.image.*;
 import ml.utils.Console;
+import ml.utils.Format;
 
 public class ImageClassifier {
 
@@ -34,11 +36,31 @@ public class ImageClassifier {
 	}
 
 
+	public static double[] maxOut(double[] v) {
+		double[] out = new double[v.length];
+		double max = v[0];
+		int y = 0;
+		for (int i = 1; i < v.length; i++) {
+			if (v[i] > max) {
+				y = i;
+				max = v[i];
+			}
+		}
+		out[y] = 1;
+		return out;
+	}
+
+
+	private double computeErrorRate(ConvNet net, DataSet[] test) {
+		return 0;
+	}
+
+
 	public static void main(String[] args) {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 64;
+		int imageSize = 32;
 
 		long start = System.nanoTime();
 		if (args.length > 5) {
@@ -64,7 +86,6 @@ public class ImageClassifier {
 
 		Console.writeLine(end * 10e-10);
 
-		
 		Example ex = dataSets[0].get(0);
 		ConvNet net = new ConvNet();
 
@@ -82,16 +103,16 @@ public class ImageClassifier {
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
 		double eta = 0.0005;
-		double epsilon = 0.05;
 		double alpha = 0.9;
 		double lambda = 0.00008;
 
-		Trainer trainer = new SGDTrainer(eta, 5, alpha, 0.00005, lambda);
-
-		trainer.onEpoch(t -> {			
+		//Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.00005, lambda);
+		Trainer trainer = new AdamTrainer(eta, 4, alpha, 0.00005, lambda, 0.9, 0.99, 1e-8);
+		trainer.onEpoch(t -> {
 			return true;
 		});
 
@@ -99,13 +120,18 @@ public class ImageClassifier {
 			if ((t.step() % 10 == 0)) {
 
 			}
-			// Console.writeLine("step: " + t.step());
 			return true;
 		});
 
-		net.epochs = 1;
-		
+		net.epochs = 10;
+
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
+
+		for (Example k : dataSets[2].examples()) {
+			double[] p = net.predict(k.x.W);
+			Console.writeLine("predicted: " + Format.matrix(maxOut(p), 1));
+			Console.writeLine("actual   : " + Format.matrix(k.y.W, 1));
+		}
 
 	}
 

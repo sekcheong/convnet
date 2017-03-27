@@ -6,12 +6,16 @@ import ml.convnet.layer.LayerType;
 public class Softmax extends LossLayer {
 
 	private double[] _es;
-
+	private int _classes;
 
 	public Softmax() {
 		this.type = LayerType.softmax;
 	}
 
+	public Softmax(int classes) {
+		this.type = LayerType.softmax;
+		_classes = classes;
+	}
 
 	public Volume forward(Volume V) {
 		this.input = V;
