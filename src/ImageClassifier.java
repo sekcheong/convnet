@@ -93,22 +93,25 @@ public class ImageClassifier {
 
 		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
-		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0));
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
-
 		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 
 		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new Pool(2, 2, 2, 1));		
 
+		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));		
+
+		net.addLayer(new FullConnect(300, 1.0));
+		net.addLayer(new LeRu());
+		
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));		
 		net.addLayer(new Softmax());
 
-		double eta = 0.0005;
+		double eta = 0.05;
 		double alpha = 0.9;
 		double lambda = 0.00008;
 
@@ -125,7 +128,7 @@ public class ImageClassifier {
 			return true;
 		});
 
-		net.epochs = 30;
+		net.epochs = 50;
 
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 
