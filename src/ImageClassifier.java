@@ -60,7 +60,7 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 32;
+		int imageSize = 64;
 
 		long start = System.nanoTime();
 		if (args.length > 5) {
@@ -123,7 +123,7 @@ public class ImageClassifier {
 			return true;
 		});
 
-		net.epochs = 10;
+		net.epochs = 15;
 
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 
