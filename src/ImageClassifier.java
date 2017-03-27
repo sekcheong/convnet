@@ -1,15 +1,8 @@
 import ml.convnet.ConvNet;
-import ml.convnet.layer.Convolution;
-import ml.convnet.layer.DropOut;
-import ml.convnet.layer.FullConnect;
-import ml.convnet.layer.Input;
-import ml.convnet.layer.Pool;
-import ml.convnet.layer.activation.LeRu;
-import ml.convnet.layer.activation.Sigmoid;
-import ml.convnet.layer.loss.Softmax;
-import ml.convnet.trainer.AdamTrainer;
-import ml.convnet.trainer.SGDTrainer;
-import ml.convnet.trainer.Trainer;
+import ml.convnet.layer.*;
+import ml.convnet.layer.activation.*;
+import ml.convnet.layer.loss.*;
+import ml.convnet.trainer.*;
 import ml.data.DataSet;
 import ml.data.Example;
 import ml.data.image.*;
@@ -49,6 +42,15 @@ public class ImageClassifier {
 		out[y] = 1;
 		return out;
 	}
+	
+	
+	public static boolean isEqual(double[] u, double[] v) {
+		if (u.length != v.length) return false;
+		for (int i = 1; i < v.length; i++) {
+			if (u[i] != v[i]) return false;
+		}
+		return true;
+	}
 
 
 	private double computeErrorRate(ConvNet net, DataSet[] test) {
@@ -60,7 +62,7 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 64;
+		int imageSize = 32;
 
 		long start = System.nanoTime();
 		if (args.length > 5) {
@@ -103,15 +105,15 @@ public class ImageClassifier {
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 
-		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0));		
 		net.addLayer(new Softmax());
 
 		double eta = 0.0005;
 		double alpha = 0.9;
 		double lambda = 0.00008;
 
-		//Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.00005, lambda);
-		Trainer trainer = new AdamTrainer(eta, 4, alpha, 0.00005, lambda, 0.9, 0.99, 1e-8);
+		Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.00005, lambda);
+		//Trainer trainer = new AdamTrainer(eta, 4, alpha, 0.00005, lambda, 0.9, 0.99, 1e-8);
 		trainer.onEpoch(t -> {
 			return true;
 		});
@@ -123,15 +125,20 @@ public class ImageClassifier {
 			return true;
 		});
 
-		net.epochs = 15;
+		net.epochs = 30;
 
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 
+		int correct = 0;
 		for (Example k : dataSets[2].examples()) {
 			double[] p = net.predict(k.x.W);
 			Console.writeLine("predicted: " + Format.matrix(maxOut(p), 1));
 			Console.writeLine("actual   : " + Format.matrix(k.y.W, 1));
+			if (isEqual(p, k.y.W)) correct++;			
 		}
+		
+		double acc = ((double) correct) / dataSets[2].count();
+		Console.writeLine("Accuracy: " + acc);
 
 	}
 
