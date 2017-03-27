@@ -131,8 +131,8 @@ public class ImageClassifier {
 
 		int correct = 0;
 		for (Example k : dataSets[2].examples()) {
-			double[] p = net.predict(k.x.W);
-			Console.writeLine("predicted: " + Format.matrix(maxOut(p), 1));
+			double[] p = maxOut(net.predict(k.x.W));
+			Console.writeLine("predicted: " + Format.matrix(p, 1));
 			Console.writeLine("actual   : " + Format.matrix(k.y.W, 1));
 			if (isEqual(p, k.y.W)) correct++;			
 		}
