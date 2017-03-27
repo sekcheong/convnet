@@ -46,7 +46,7 @@ public class ImageClassifier {
 	
 	public static boolean isEqual(double[] u, double[] v) {
 		if (u.length != v.length) return false;
-		for (int i = 1; i < v.length; i++) {
+		for (int i = 0; i < v.length; i++) {
 			if (u[i] != v[i]) return false;
 		}
 		return true;
