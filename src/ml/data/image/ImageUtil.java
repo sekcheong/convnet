@@ -1,6 +1,8 @@
 package ml.data.image;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -75,8 +77,8 @@ public class ImageUtil {
 			for (int i = 0; i < u.height(); i++) {
 				for (int j = 0; j < u.width(); j++) {
 					double r = u.get(j, i, 0);
-					double g = u.get(j, i, 0);
-					double b = u.get(j, i, 0);
+					double g = u.get(j, i, 1);
+					double b = u.get(j, i, 2);
 					image.setRGB(j, i, rgbToInt(r, g, b));
 				}
 			}
@@ -164,4 +166,28 @@ public class ImageUtil {
 		}
 		return v;
 	}
+
+
+	public static BufferedImage imageToBufferedImage(Image img) {
+		if (img instanceof BufferedImage) {
+			return (BufferedImage) img;
+		}
+
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+
+		Graphics2D g = bimage.createGraphics();
+		g.drawImage(img, 0, 0, null);
+		g.dispose();
+
+		// Return the buffered image
+		return bimage;
+	}
+
+
+	public static BufferedImage scaleImage(BufferedImage img, int width, int height) {
+		Image scaledImage = img.getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT);
+		return imageToBufferedImage(scaledImage);
+	}
+
+
 }
