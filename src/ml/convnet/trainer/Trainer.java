@@ -27,6 +27,8 @@ public abstract class Trainer {
 
 	protected TrainerEvent _onStep;
 
+	boolean _stop = false;
+
 
 	public Trainer() {}
 
@@ -104,13 +106,20 @@ public abstract class Trainer {
 
 	public void incStep() {
 		_step++;
-		if (_onStep != null) _onStep.call(this);
+		if (_onStep != null) {
+			_stop = !_onStep.call(this);
+		}
 	}
 
 
 	public void incEpoch() {
 		_epoch++;
-		if (_onEpoch != null) _onEpoch.call(this);
+		if (_onEpoch != null) {
+			_stop = !_onEpoch.call(this);
+			if (_stop) {
+				_stop=true;
+			}
+		}
 	}
 
 
@@ -138,11 +147,16 @@ public abstract class Trainer {
 		_net = net;
 		_train = makeTrainExamples(train);
 		_tune = tune;
-		while (_epoch < _net.epochs) {
+		_stop = false;
+		_net.inTraining(true);
+		while (_epoch < _net.epochs ) {
 			Example ex = drawOneExample();
+			if (_stop) break;
 			this.trainOneExample(net, ex.x.W, ex.y.W);
 			this.incStep();
+			if (_stop) break;
 		}
+		_net.inTraining(false);
 	}
 
 

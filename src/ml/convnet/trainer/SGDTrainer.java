@@ -2,7 +2,6 @@ package ml.convnet.trainer;
 
 import ml.convnet.ConvNet;
 import ml.convnet.Volume;
-import ml.data.Example;
 
 public class SGDTrainer extends Trainer {
 
@@ -91,6 +90,21 @@ public class SGDTrainer extends Trainer {
 
 		}
 
+	}
+	
+	
+	public double costLoss() {
+		return _loss;
+	}
+
+
+	public double decayLossL1() {
+		return _decayLossL1;
+	}
+
+
+	public double decayLossL2() {
+		return _decayLossL2;
 	}
 
 }

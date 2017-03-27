@@ -2,9 +2,7 @@ package ml.io;
 
 import ml.data.DataSet;
 
-public abstract class DataReader<T> {
+public abstract class DataReader {
 
-	public abstract void read();
-
-	public abstract DataSet<T> dataSet();
+	public abstract DataSet readDataSet();
 }

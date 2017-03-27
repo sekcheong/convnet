@@ -1,7 +1,6 @@
 package ml.convnet.layer;
 
 import ml.convnet.Volume;
-import ml.utils.Console;
 
 public class FullConnect extends Layer {
 
@@ -45,25 +44,6 @@ public class FullConnect extends Layer {
 
 		return out;
 	}
-
-	// public Volume forward(Volume x) {
-	// this.input = x;
-	// Volume out = new Volume(1, 1, this.outD(), 0);
-	// //double[] wx = x.W;
-	// for (int i = 0; i < this.outD(); i++) {
-	// //double a = 0;
-	// // double[] wi = _units[i].W;
-	// // for (int d = 0; d < this.inLength(); i++) {
-	// // a += wx[d] * wi[d];
-	// // }
-	// //
-	// // a += this.biases.W[i];
-	//
-	// out.W[i] = x.dot(_units[i].W) + this.biases.W[i];
-	// }
-	// this.output = out;
-	// return out;
-	// }
 
 
 	public void backward() {

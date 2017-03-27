@@ -7,6 +7,7 @@ public class Convolution extends Layer {
 	private Volume[] _filters;
 	private int _stride;
 	int _pad;
+	
 	int _filterW;
 	int _filterH;
 	int _filterD;

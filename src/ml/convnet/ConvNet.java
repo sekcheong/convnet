@@ -18,7 +18,7 @@ public class ConvNet {
 	private Layer[] _layers;
 
 	private Layer _current;
-	
+
 
 	public int epochs;
 
@@ -40,13 +40,13 @@ public class ConvNet {
 
 		layer.net(this);
 		_layerList.add(layer);
-		
-		if (last!=null) {
+
+		if (last != null) {
 			last.next(layer);
 			layer.last(last);
 			layer.connect(last);
 		}
-		
+
 		//since we modified the layer list we must clear the layer array so it will generate a new one 
 		_layers = null;
 		return this;
@@ -80,12 +80,12 @@ public class ConvNet {
 
 	public double[] forward(double[] x) {
 		Layer[] layers = this.layers();
-		
-		Volume act = layers[0].forward(x);		
+
+		Volume act = layers[0].forward(x);
 		for (int i = 1; i < layers.length; i++) {
 			act = layers[i].forward(act);
 		}
-		
+
 		return act.W;
 	}
 
@@ -97,7 +97,7 @@ public class ConvNet {
 		for (int i = layers.length - 2; i >= 0; i--) {
 			layers[i].backward();
 		}
-		
+
 		return loss;
 	}
 
@@ -114,6 +114,12 @@ public class ConvNet {
 		}
 
 		return ret.toArray(new Volume[ret.size()]);
+	}
+
+
+	public void inTraining(boolean training) {
+		this._training=training;
+		
 	}
 
 }

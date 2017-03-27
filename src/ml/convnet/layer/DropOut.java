@@ -40,6 +40,7 @@ public class DropOut extends Layer {
 					this._dropped[i] = true;
 				}
 				else {
+					
 					this._dropped[i] = false;
 				}
 			}
@@ -56,7 +57,7 @@ public class DropOut extends Layer {
 	}
 
 
-	public void backword() {
+	public void backward() {
 		Volume V = this.input; // we need to set dw of this
 		double[] chainGrad = this.output.dW;
 		int n = V.W.length;
@@ -67,4 +68,5 @@ public class DropOut extends Layer {
 			}
 		}
 	}
+	
 }

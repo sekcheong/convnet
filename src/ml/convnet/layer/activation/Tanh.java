@@ -1,7 +1,6 @@
 package ml.convnet.layer.activation;
 
 import ml.convnet.Volume;
-import ml.convnet.layer.Layer;
 import ml.convnet.layer.LayerType;
 
 public class Tanh extends ActivationLayer {
