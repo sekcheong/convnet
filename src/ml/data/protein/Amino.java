@@ -6,7 +6,7 @@ public class Amino {
 
 	private static int total = 0;
 
-	public int id = 0;
+	public int id = 0; 
 
 	// primary structure category value
 	private int _first;

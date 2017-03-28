@@ -9,7 +9,7 @@ public class Volume {
 
 	// the gradients
 	public double[] dW;
-
+ 
 	// the dimension of the volume dim = [w, h, d]
 	public int[] dim = new int[3];
 

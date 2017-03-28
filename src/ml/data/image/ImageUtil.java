@@ -31,9 +31,9 @@ public class ImageUtil {
 				for (int j = 0; j < height; j++) {
 					Color c = new Color(image.getRGB(i, j));
 					// normalize pixel value to [-0.5, +0.5]
-					v.set(i, j, 0, (((double) c.getRed()) / 255.0) - 0.5);
-					v.set(i, j, 1, (((double) c.getGreen())) / 255.0 - 0.5);
-					v.set(i, j, 2, (((double) c.getBlue())) / 255.0 - 0.5);
+					v.set(i, j, 0, (((double) c.getRed())) / 255);
+					v.set(i, j, 1, (((double) c.getGreen())) / 255);
+					v.set(i, j, 2, (((double) c.getBlue())) / 255);
 				}
 			}
 		}
@@ -42,7 +42,7 @@ public class ImageUtil {
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					Color c = new Color(image.getRGB(i, j));
-					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue()) - 0.5;
+					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
 					v.set(i, j, 0, g);
 				}
 			}

@@ -11,5 +11,5 @@ public enum LayerType {
 	sigmoid,
 	tanh,
 	dropout,
-	maxout
+	maxout 
 }

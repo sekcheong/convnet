@@ -117,7 +117,7 @@ public abstract class Trainer {
 		if (_onEpoch != null) {
 			_stop = !_onEpoch.call(this);
 			if (_stop) {
-				_stop=true;
+				_stop = true;
 			}
 		}
 	}
@@ -148,15 +148,18 @@ public abstract class Trainer {
 		_train = makeTrainExamples(train);
 		_tune = tune;
 		_stop = false;
-		_net.inTraining(true);
-		while (_epoch < _net.epochs ) {
+
+		while (_epoch < _net.epochs) {
 			Example ex = drawOneExample();
 			if (_stop) break;
+			
+			_net.inTraining(true);
 			this.trainOneExample(net, ex.x.W, ex.y.W);
+			_net.inTraining(false);
+			
 			this.incStep();
 			if (_stop) break;
 		}
-		_net.inTraining(false);
 	}
 
 

@@ -11,7 +11,7 @@ public class Console {
 		write(msg, moreMsgs);
 		System.out.println();
 	}
-
+ 
 
 	public static void write(Object msg, Object... moreMsgs) {
 		System.out.print(msg);

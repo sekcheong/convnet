@@ -8,7 +8,7 @@ import ml.convnet.trainer.*;
 import ml.data.Example;
 
 public class ConvNet {
-
+ 
 	private List<Layer> _layerList = new ArrayList<Layer>();
 
 	private boolean _training;

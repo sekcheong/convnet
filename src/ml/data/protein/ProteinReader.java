@@ -10,7 +10,7 @@ import ml.data.DataSet;
 import ml.data.Example;
 import ml.io.DataReader;
 import ml.utils.Console;
-
+ 
 public class ProteinReader extends DataReader {
 
 	private List<Amino> _paddings;

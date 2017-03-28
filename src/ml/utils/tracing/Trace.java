@@ -11,7 +11,7 @@ public class Trace {
 		log(msg, new Object[0]);
 	}
 
-
+ 
 	public static void log(Object msg, Object... moreMsgs) {
 
 		System.out.print(msg);
