@@ -47,33 +47,29 @@ public class Convolution extends Layer {
 	}
 
 
-	public Volume forward(Volume V) {
+	public Volume forward(Volume c) {
 
-		this.input = V;
+		this.input = c;
 		Volume A = new Volume(this.outW(), this.outH(), this.outD(), 0.0);
 
-		int V_sx = V.width();
-		int V_sy = V.height();
-		int xy_stride = _stride;
+		int inW = c.width();
+		int inH = c.height();
 
 		for (int d = 0; d < this.outD(); d++) {
 			Volume f = this._filters[d];
 			int x = -this._pad;
 			int y = -this._pad;
-			for (int ay = 0; ay < this.outH(); y += xy_stride, ay++) { // xy_stride
+			for (int ay = 0; ay < this.outH(); y += _stride, ay++) {
 				x = -this._pad;
-				for (int ax = 0; ax < this.outW(); x += xy_stride, ax++) { // xy_stride
-
-					// convolve centered at this particular location
+				for (int ax = 0; ax < this.outW(); x += _stride, ax++) {
 					double a = 0.0;
 					for (int fy = 0; fy < f.height(); fy++) {
-						int oy = y + fy; // coordinates in the original input array coordinates
+						int oy = y + fy;
 						for (int fx = 0; fx < f.height(); fx++) {
 							int ox = x + fx;
-							if (oy >= 0 && oy < V_sy && ox >= 0 && ox < V_sx) {
+							if (oy >= 0 && oy < inH && ox >= 0 && ox < inW) {
 								for (int fd = 0; fd < f.depth(); fd++) {
-									// avoid function call overhead (x2) for efficiency, compromise modularity :(
-									a += f.W[((f.width() * fy) + fx) * f.depth() + fd] * V.W[((V_sx * oy) + ox) * V.depth() + fd];
+									a += f.W[((f.width() * fy) + fx) * f.depth() + fd] * c.W[((inW * oy) + ox) * c.depth() + fd];
 								}
 							}
 						}
@@ -89,39 +85,35 @@ public class Convolution extends Layer {
 
 
 	public void backward() {
-		Volume V = this.input;
-		V.dW = new double[V.W.length]; // zero out gradient wrt bottom data, we're about to fill it
+		Volume in = this.input;
+		in.dW = new double[in.W.length];
 
-		int V_sx = V.width();
-		int V_sy = V.height();
-		int xy_stride = _stride;
+		int inW = in.width();
+		int inH = in.height();
 
 		for (int d = 0; d < this.outD(); d++) {
 			Volume f = this._filters[d];
 			int x = -this._pad;
 			int y = -this._pad;
-			for (int ay = 0; ay < this.outW(); y += xy_stride, ay++) { // xy_stride
+			for (int ay = 0; ay < this.outW(); y += _stride, ay++) {
 				x = -this._pad;
-				for (int ax = 0; ax < this.outW(); x += xy_stride, ax++) { // xy_stride
-					// convolve centered at this particular location
-					// gradient from above, from chain rule
-					double chain_grad = this.output.getGrad(ax, ay, d);
+				for (int ax = 0; ax < this.outW(); x += _stride, ax++) {
+					double grad = this.output.getGrad(ax, ay, d);
 					for (int fy = 0; fy < f.height(); fy++) {
-						int oy = y + fy; // coordinates in the original input array coordinates
+						int oy = y + fy;
 						for (int fx = 0; fx < f.width(); fx++) {
 							int ox = x + fx;
-							if (oy >= 0 && oy < V_sy && ox >= 0 && ox < V_sx) {
+							if (oy >= 0 && oy < inH && ox >= 0 && ox < inW) {
 								for (int fd = 0; fd < f.depth(); fd++) {
-									// avoid function call overhead (x2) for efficiency, compromise modularity :(
-									int ix1 = ((V_sx * oy) + ox) * V.depth() + fd;
+									int ix1 = ((inW * oy) + ox) * in.depth() + fd;
 									int ix2 = ((f.width() * fy) + fx) * f.depth() + fd;
-									f.dW[ix2] += V.W[ix1] * chain_grad;
-									V.dW[ix1] += f.W[ix2] * chain_grad;
+									f.dW[ix2] += in.W[ix1] * grad;
+									in.dW[ix1] += f.W[ix2] * grad;
 								}
 							}
 						}
 					}
-					this.biases.dW[d] += chain_grad;
+					this.biases.dW[d] += grad;
 				}
 			}
 		}

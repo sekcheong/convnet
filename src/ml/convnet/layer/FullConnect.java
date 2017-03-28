@@ -51,13 +51,12 @@ public class FullConnect extends Layer {
 		Volume in = this.input;
 		in.dW = new double[in.W.length];
 
-		// compute gradient wrt weights and data
 		for (int i = 0; i < _units.length; i++) {
 			Volume unit_i = _units[i];
 			grad = this.output.dW[i];
 			for (int d = 0; d < this.inLength(); d++) {
-				in.dW[d] += unit_i.W[d] * grad; // grad wrt input data
-				unit_i.dW[d] += in.W[d] * grad; // grad wrt params
+				in.dW[d] += unit_i.W[d] * grad;
+				unit_i.dW[d] += in.W[d] * grad;
 			}
 			this.biases.dW[i] += grad;
 		}

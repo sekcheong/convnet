@@ -28,16 +28,16 @@ public class DropOut extends Layer {
 	}
 
 
-	public Volume forward(Volume V) {
-		this.input = V;
+	public Volume forward(Volume x) {
+		this.input = x;
 
-		Volume V2 = new Volume(V);
-		int N = V.W.length;
+		Volume out = new Volume(x);
+		int m = x.W.length;
+
 		if (this.training()) {
-
-			for (int i = 0; i < N; i++) {
+			for (int i = 0; i < m; i++) {
 				if (Math.random() < this._dropProb) {
-					V2.W[i] = 0;
+					out.W[i] = 0;
 					this._dropped[i] = true;
 				} // drop!
 				else {
@@ -46,25 +46,24 @@ public class DropOut extends Layer {
 			}
 		}
 		else {
-			// scale the activations during prediction
-			for (int i = 0; i < N; i++) {
-				V2.W[i] *= this._dropProb;
+			for (int i = 0; i < m; i++) {
+				out.W[i] *= this._dropProb;
 			}
 		}
 
-		this.output = V2;
+		this.output = out;
 		return output;
 	}
 
 
 	public void backward() {
-		Volume V = this.input;
-		Volume chain_grad = this.output;
-		int N = V.W.length;
-		V.dW = new double[N];
-		for (int i = 0; i < N; i++) {
+		Volume in = this.input;
+		Volume grad = this.output;
+		
+		in.dW = new double[in.W.length];
+		for (int i = 0; i < in.W.length; i++) {
 			if (!(this._dropped[i])) {
-				V.dW[i] = chain_grad.dW[i]; // copy over the gradient
+				in.dW[i] = grad.dW[i];
 			}
 		}
 	}

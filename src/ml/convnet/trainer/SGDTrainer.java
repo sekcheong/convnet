@@ -33,7 +33,7 @@ public class SGDTrainer extends Trainer {
 
 	@Override
 	protected void trainOneExample(ConvNet net, double[] x, double[] y) {
-		double[][] gsum = null;
+
 
 		_decayLossL1 = 0.0;
 		_decayLossL2 = 0.0;
@@ -44,13 +44,11 @@ public class SGDTrainer extends Trainer {
 
 		if ((this.step() % _batchSize) == 0) {
 
-			// get the network weights and gradients
-			Volume[] r = this.net()
-					.response();
+			Volume[] r = this.net().response();
 
-			gsum = new double[r.length][];
+			double[][] gs = new double[r.length][];
 			for (int i = 0; i < r.length; i++) {
-				gsum[i] = new double[r[i].dW.length];
+				gs[i] = new double[r[i].dW.length];
 			}
 
 			for (int i = 0; i < r.length; i++) {
@@ -68,18 +66,16 @@ public class SGDTrainer extends Trainer {
 					double gradL2 = _decayL2 * (w[j]);
 
 					// raw batch gradient
-					double gij = (gradL1 + gradL2 + g[j]) / _batchSize;
-					double[] gsum_i = gsum[i];
+					double gradij = (gradL1 + gradL2 + g[j]) / _batchSize;
+					double[] gsum_i = gs[i];
 
 					if (_momentum > 0.0) {
-						double dx = _momentum * gsum_i[j] - _rate * gij;
-						// back this up for next iteration of momentum
+						double dx = _momentum * gsum_i[j] - _rate * gradij;
 						gsum_i[j] = dx;
-						// apply corrected gradient
 						w[j] += dx;
 					}
 					else {
-						w[j] += -_rate * gij;
+						w[j] += -_rate * gradij;
 					}
 					g[j] = 0.0;
 				}
