@@ -121,7 +121,7 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 128;
+		int imageSize = 32;
 
 		long start = System.nanoTime();
 		if (args.length > 5) {
@@ -153,6 +153,10 @@ public class ImageClassifier {
 
 		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
+		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
 		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
@@ -161,18 +165,14 @@ public class ImageClassifier {
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 
-		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
-
-		net.addLayer(new FullConnect(450, 1.0));
-		net.addLayer(new LeRu());
-		net.addLayer(new DropOut(0.5));
+//		net.addLayer(new FullConnect(450, 1.0));
+//		net.addLayer(new LeRu());
+//		net.addLayer(new DropOut(0.5));
 
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
-		double eta = 0.005;
+		double eta = 0.0005;
 		double alpha = 0.90;
 		double lambda = 0.00008;
 
@@ -191,7 +191,7 @@ public class ImageClassifier {
 			return true;
 		});
 
-		net.epochs = 50;
+		net.epochs = 100;
 
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 
