@@ -85,14 +85,16 @@ public class ImageClassifier {
 	}
 
 
-	private static void printConfusionMatrix(ConvNet net, Example[] test) {
+	private static double printConfusionMatrix(ConvNet net, Example[] test) {
 		int w = test[0].y.W.length;
 		int[][] conf = new int[w-1][w-1];
+		int err = 0;
 		for (Example e : test) {
 			double[] yhat = net.predict(e.x.W);
 			int p = maxOut(yhat);
 			int a = maxOut(e.y.W);
 			conf[p][a]++;
+			if (p!=a) err++;
 		}
 
 		String[] cat = new String[] { "  airplane", 
@@ -114,6 +116,8 @@ public class ImageClassifier {
 			}
 			Console.writeLine(cat[i] + sb.toString());
 		}
+		
+		return ((double)err) / test.length;
 	}
 
 
@@ -167,7 +171,7 @@ public class ImageClassifier {
 
 //		net.addLayer(new FullConnect(450, 1.0));
 //		net.addLayer(new LeRu());
-//		net.addLayer(new DropOut(0.5));
+		net.addLayer(new DropOut(0.5));
 
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
@@ -195,11 +199,11 @@ public class ImageClassifier {
 
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 
-		double err = computeError(net, dataSets[2].examples());
+		double err = printConfusionMatrix(net, dataSets[2].examples());
+		Console.writeLine("");
 		Console.writeLine("Accuracy: " + (1 - err));
 		saveErrorImages(net, dataSets[2].examples());
-		printConfusionMatrix(net, dataSets[2].examples());
-
+		
 	}
 
 }

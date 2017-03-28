@@ -24,49 +24,49 @@ public class DropOut extends Layer {
 		this.outW(this.inW());
 		this.outH(this.inH());
 		this.outD(this.inD());
+		_dropped = new boolean[this.outLength()];
 	}
 
 
-	public Volume forward(Volume v) {
-		this.input = v;
-		Volume out = new Volume(v);
-		int n = v.W.length;
+	public Volume forward(Volume V) {
+		this.input = V;
 
+		Volume V2 = new Volume(V);
+		int N = V.W.length;
 		if (this.training()) {
-			this._dropped = new boolean[n];
-			for (int i = 0; i < n; i++) {
+
+			for (int i = 0; i < N; i++) {
 				if (Math.random() < this._dropProb) {
-					out.W[i] = 0;
+					V2.W[i] = 0;
 					this._dropped[i] = true;
-				}
+				} // drop!
 				else {
-					
 					this._dropped[i] = false;
 				}
 			}
 		}
 		else {
-			for (int i = 0; i < n; i++) {
-				// scale the activations during prediction
-				out.W[i] *= this._dropProb;
+			// scale the activations during prediction
+			for (int i = 0; i < N; i++) {
+				V2.W[i] *= this._dropProb;
 			}
 		}
 
-		this.output = out;
-		return out;
+		this.output = V2;
+		return output;
 	}
 
 
 	public void backward() {
-		Volume V = this.input; // we need to set dw of this
-		double[] chainGrad = this.output.dW;
-		int n = V.W.length;
-		V.dW = new double[n]; // zero out gradient wrt data
-		for (int i = 0; i < n; i++) {
+		Volume V = this.input;
+		Volume chain_grad = this.output;
+		int N = V.W.length;
+		V.dW = new double[N];
+		for (int i = 0; i < N; i++) {
 			if (!(this._dropped[i])) {
-				V.dW[i] = chainGrad[i]; // copy over the gradient
+				V.dW[i] = chain_grad.dW[i]; // copy over the gradient
 			}
 		}
 	}
-	
+
 }
