@@ -92,6 +92,7 @@ public class ImageClassifier {
 		int w = test[0].y.W.length;
 		int[][] conf = new int[w - 1][w - 1];
 		int err = 0;
+		
 		for (Example e : test) {
 			double[] yhat = net.predict(e.x.W);
 			int p = maxOut(yhat);
@@ -106,36 +107,17 @@ public class ImageClassifier {
 										"     piano",
 										"  starfish",
 										"     watch" };
-		String header = "";
-		for (int i = 0; i < cat.length; i++) {
-			header = header + cat[i];
-		}
-		Console.writeLine("            airplane  butterfly     flower      piano   starfish      watch    ");
-		
+
+		Console.writeLine("            airplane  butterfly     flower      piano   starfish");
+
 		for (int i = 0; i < conf.length; i++) {
 			StringBuffer sb = new StringBuffer();
-			//int rs=0;
 			for (int j = 0; j < conf[i].length; j++) {
-				//rs = rs + conf[i][j];
 				sb.append(Format.sprintf("%10d", conf[i][j])).append(" ");
 			}
-//			sb.append(Format.sprintf("%10d",rs));
 			Console.writeLine(cat[i] + sb.toString());
 		}
-		
-//		int colSum[] = new int[conf.length];
-//		for (int col=0; col<conf.length; col++) {
-//			for (int row=0; row<conf.length; row++) {
-//				colSum[col] += conf[row][col];
-//			}
-//		}
-//		
-//		StringBuffer sb = new StringBuffer();
-//		for (int j = 0; j < colSum.length; j++) {
-//			sb.append(Format.sprintf("%10d", colSum[j])).append(" ");
-//		}
-//		Console.writeLine("    TOTAL:" + sb.toString());
-		            
+
 		return ((double) err) / test.length;
 	}
 
@@ -155,8 +137,8 @@ public class ImageClassifier {
 
 
 	private static void learningCurve(Example[] train, Example[] tune, Example[] test) {
-		
-		for (int i = 10; i <= 100; i=i+10) {
+
+		for (int i = 10; i <= 100; i = i + 10) {
 
 			train = sampleExamples(train, ((double) i) / 100);
 
@@ -209,10 +191,61 @@ public class ImageClassifier {
 			Console.writeLine("Examples: " + train.length);
 			double err = printConfusionMatrix(net, test);
 			Console.writeLine("");
-			Console.writeLine("Accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+			Console.writeLine("Test set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
 			Console.writeLine(i + " " + err);
 
 		}
+	}
+
+
+	public static void trainAndTest(DataSet[] dataSets) {
+		
+		ConvNet net = new ConvNet();
+		Example ex = dataSets[0].get(0);
+		
+		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
+
+		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new DropOut(0.5));
+
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
+		net.addLayer(new Softmax());
+
+		
+		double eta = 0.007;
+		double alpha = 0.90;
+		double lambda = 0.0001;
+
+		Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
+
+		trainer.onEpoch(t -> {
+			Console.writeLine("Epoch: " + t.epoch());
+			double err = printConfusionMatrix(t.net(), dataSets[1].examples());
+			Console.writeLine("Tune set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+			Console.writeLine("");
+			if (err < 0.21) return false;
+			return true;
+		});
+
+		net.epochs = 150;
+
+		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
+		Console.writeLine("Final Result:");
+		double err = printConfusionMatrix(net, dataSets[2].examples());
+		Console.writeLine("Test set accuracy:    " + Format.sprintf("%1.8f", (1 - err)));
+		saveErrorImages(net, dataSets[2].examples());
+
+		Console.writeLine("");
 	}
 
 
@@ -244,8 +277,6 @@ public class ImageClassifier {
 
 		long end = System.nanoTime() - start;
 
-		//Console.writeLine(end * 10e-10);
-
 		Example ex = dataSets[0].get(0);
 
 		ConvNet net = new ConvNet();
@@ -264,7 +295,7 @@ public class ImageClassifier {
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 		net.addLayer(new DropOut(0.5));
-		
+
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
@@ -277,30 +308,22 @@ public class ImageClassifier {
 		trainer.onEpoch(t -> {
 			Console.writeLine("Epoch: " + t.epoch());
 			double err = printConfusionMatrix(t.net(), dataSets[1].examples());
-			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - err)));
-//			err = computeError(net, dataSets[0].examples());
-//			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+			Console.writeLine("Tune set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
 			Console.writeLine("");
-			if (err<0.21) return false;
+			if (err < 0.21) return false;
 			return true;
 		});
 
-//		trainer.onStep(t -> {
-//			//Console.writeLine("step: " + t.step());
-//			return true;
-//		});
-
 		net.epochs = 150;
-
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
+		
 		Console.writeLine("Final Result:");
 		double err = printConfusionMatrix(net, dataSets[2].examples());
 		Console.writeLine("Accuracy:    " + Format.sprintf("%1.8f", (1 - err)));
 		saveErrorImages(net, dataSets[2].examples());
-		
+
 		Console.writeLine("");
 		
-		//learningCurve(dataSets[0].examples(), dataSets[1].examples(), dataSets[2].examples());
 	}
 
 }

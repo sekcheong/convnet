@@ -42,9 +42,7 @@ public class AdamTrainer extends Trainer {
 
 	@Override
 	protected void trainOneExample(ConvNet net, double[] x, double[] y) {
-		double[][] gsum = null;
-		double[][] xsum = null;
-		
+
 		_decayLossL1 = 0.0;
 		_decayLossL2 = 0.0;
 		_loss = 0.0;
@@ -56,11 +54,11 @@ public class AdamTrainer extends Trainer {
 
 			Volume[] r = this.net().response();
 
-			gsum = new double[r.length][];
-			xsum = new double[r.length][];
+			double[][] gs = new double[r.length][];
+			double[][] xs = new double[r.length][];
 			for (int i = 0; i < r.length; i++) {
-				gsum[i] = new double[r[i].dW.length];
-				xsum[i] = new double[r[i].dW.length];
+				gs[i] = new double[r[i].dW.length];
+				xs[i] = new double[r[i].dW.length];
 			}
 
 			for (int i = 0; i < r.length; i++) {
@@ -75,14 +73,14 @@ public class AdamTrainer extends Trainer {
 					double gradL1 = _decayL1 * (w[j] > 0 ? 1 : -1);
 					double gradL2 = _decayL2 * (w[j]);
 
-					double gij = (gradL1 + gradL2 + g[j]) / _batchSize;
-					double[] gsumi = gsum[i];
-					double[] xsumi = xsum[i];
-				
-					gsumi[j] = gsumi[j] * this._beta1 + (1 - this._beta1) * gij; 
-					xsumi[j] = xsumi[j] * this._beta2 + (1 - this._beta2) * gij * gij; 
-					double biasCorr1 = gsumi[j] * (1 - Math.pow(this._beta1, this.step())); 
-					double biasCorr2 = xsumi[j] * (1 - Math.pow(this._beta2, this.step())); 
+					double delta = (gradL1 + gradL2 + g[j]) / _batchSize;
+					double[] gsumi = gs[i];
+					double[] xsumi = xs[i];
+
+					gsumi[j] = gsumi[j] * this._beta1 + (1 - this._beta1) * delta;
+					xsumi[j] = xsumi[j] * this._beta2 + (1 - this._beta2) * delta * delta;
+					double biasCorr1 = gsumi[j] * (1 - Math.pow(this._beta1, this.step()));
+					double biasCorr2 = xsumi[j] * (1 - Math.pow(this._beta2, this.step()));
 					double dx = -this._rate * biasCorr1 / (Math.sqrt(biasCorr2) + this._eps);
 					w[j] += dx;
 					g[j] = 0.0;

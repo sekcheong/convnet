@@ -58,24 +58,22 @@ public class SGDTrainer extends Trainer {
 
 				for (int j = 0; j < w.length; j++) {
 
-					// accumulate weight decay loss
 					_decayLossL1 += _decayL1 * Math.abs(w[j]);
 					_decayLossL2 += _decayL2 * w[j] * w[j] / 2;
 
 					double gradL1 = _decayL1 * (w[j] > 0 ? 1 : -1);
 					double gradL2 = _decayL2 * (w[j]);
 
-					// raw batch gradient
-					double gradij = (gradL1 + gradL2 + g[j]) / _batchSize;
-					double[] gsum_i = gs[i];
+					double delta = (gradL1 + gradL2 + g[j]) / _batchSize;
+					double[] gs_i = gs[i];
 
 					if (_momentum > 0.0) {
-						double dx = _momentum * gsum_i[j] - _rate * gradij;
-						gsum_i[j] = dx;
+						double dx = _momentum * gs_i[j] - _rate * delta;
+						gs_i[j] = dx;
 						w[j] += dx;
 					}
 					else {
-						w[j] += -_rate * gradij;
+						w[j] += -_rate * delta;
 					}
 					g[j] = 0.0;
 				}
