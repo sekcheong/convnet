@@ -94,8 +94,6 @@ public class ImageDataSetReader extends DataReader {
 				}
 				Example e = imageToExample(fileName, img);
 				examples.add(e);
-				BufferedImage im =  ImageUtil.volumeToImage(e.x);
-				ImageUtil.saveImage(e.x, "./bin/z_" + fileName + ".png");
 			}
 			catch (IOException ex) {
 				System.err.println("Error: cannot load in the image file '" + file.getName() + "'");
