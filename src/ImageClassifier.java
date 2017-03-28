@@ -4,7 +4,7 @@ import ml.convnet.layer.activation.*;
 import ml.convnet.layer.loss.*;
 import ml.convnet.trainer.*;
 import ml.data.DataSet;
-import ml.data.Example; 
+import ml.data.Example;
 import ml.data.image.*;
 import ml.utils.Console;
 import ml.utils.Format;
@@ -70,24 +70,58 @@ public class ImageClassifier {
 		return rate;
 	}
 
+
 	private static void saveErrorImages(ConvNet net, Example[] test) {
-		int cnt=0;
+		int cnt = 0;
 		for (Example e : test) {
 			double[] yhat = net.predict(e.x.W);
 			int p = maxOut(yhat);
 			int a = maxOut(e.y.W);
 			if (p != a) {
 				cnt++;
-				ImageUtil.saveImage(e.x, "./bin/images/"+(cnt+"_"+a+"_"+p) + ".png");
+				ImageUtil.saveImage(e.x, "./bin/images/" + (cnt + "_" + a + "_" + p) + ".png");
 			}
 		}
 	}
+
+
+	private static void printConfusionMatrix(ConvNet net, Example[] test) {
+		int w = test[0].y.W.length;
+		int[][] conf = new int[w-1][w-1];
+		for (Example e : test) {
+			double[] yhat = net.predict(e.x.W);
+			int p = maxOut(yhat);
+			int a = maxOut(e.y.W);
+			conf[p][a]++;
+		}
+
+		String[] cat = new String[] { "  airplane", 
+		                              " butterfly", 
+		                              "    flower", 
+		                              "     piano", 
+		                              "  starfish", 
+		                              "     watch" };
+		String header = "";
+		for (int i=0; i<cat.length; i++) {
+			header = header + cat[i];
+		}
+		Console.writeLine("            airplane  butterfly     flower      piano   starfish      watch");
+		
+		for (int i = 0; i < conf.length; i++) {
+			StringBuffer sb = new StringBuffer();
+			for (int j = 0; j < conf[i].length; j++) {
+				sb.append(Format.sprintf("%10d", conf[i][j])).append(" ");
+			}
+			Console.writeLine(cat[i] + sb.toString());
+		}
+	}
+
 
 	public static void main(String[] args) {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		int imageSize = 64;
+		int imageSize = 128;
 
 		long start = System.nanoTime();
 		if (args.length > 5) {
@@ -130,8 +164,8 @@ public class ImageClassifier {
 		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
-	
-		net.addLayer(new FullConnect(400, 1.0));
+
+		net.addLayer(new FullConnect(450, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new DropOut(0.5));
 
@@ -164,6 +198,7 @@ public class ImageClassifier {
 		double err = computeError(net, dataSets[2].examples());
 		Console.writeLine("Accuracy: " + (1 - err));
 		saveErrorImages(net, dataSets[2].examples());
+		printConfusionMatrix(net, dataSets[2].examples());
 
 	}
 
