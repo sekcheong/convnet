@@ -295,6 +295,32 @@ public class Volume {
 		}
 		return v;
 	}
+	
+
+	public Volume normalize(int z) {
+		double min;
+		double max;
+		Volume v = new Volume(this);
+
+		min = v.get(0, 0, z);
+		max = min;
+		for (int i = 0; i < v.dim[0]; i++) {
+			for (int j = 0; j < v.dim[1]; j++) {
+				if (v.get(i, j, z) > max) max = v.get(i, j, z);
+				if (v.get(i, j, z) < min) min = v.get(i, j, z);
+			}
+		}
+		
+		double m = (max - min);
+		for (int i = 0; i < v.dim[0]; i++) {
+			for (int j = 0; j < v.dim[1]; j++) {
+				double p = v.get(i, j, z);
+				p = (p - min) / m;
+				v.set(i, j, z, p);
+			}
+		}
+		return v;
+	}
 
 
 	public void zeroMean() {

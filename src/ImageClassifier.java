@@ -167,18 +167,18 @@ public class ImageClassifier {
 			Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
 
 			//
-			//			trainer.onEpoch(t -> {
-			//				Console.writeLine("Epoch: " + t.epoch());
-			//				double err = printConfusionMatrix(t.net(), dataSets[1].examples());
-			//				Console.writeLine("Accuracy: " + Format.sprintf("%1.8f", (1 - err)));
-			//				Console.writeLine("");
-			//				return true;
-			//			});
+			// trainer.onEpoch(t -> {
+			// Console.writeLine("Epoch: " + t.epoch());
+			// double err = printConfusionMatrix(t.net(), dataSets[1].examples());
+			// Console.writeLine("Accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+			// Console.writeLine("");
+			// return true;
+			// });
 
-			//			trainer.onStep(t -> {
-			//				//Console.writeLine("step: " + t.step());
-			//				return true;
-			//			});
+			// trainer.onStep(t -> {
+			// //Console.writeLine("step: " + t.step());
+			// return true;
+			// });
 
 			net.epochs = 50;
 
@@ -215,7 +215,6 @@ public class ImageClassifier {
 
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
-
 
 		double eta = 0.007;
 		double alpha = 0.90;
@@ -268,7 +267,7 @@ public class ImageClassifier {
 			imageSize = Integer.parseInt(args[3]);
 		}
 
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, 1);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize,3);
 
 		long end = System.nanoTime() - start;
 

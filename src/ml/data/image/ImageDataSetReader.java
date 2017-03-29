@@ -1,6 +1,5 @@
 package ml.data.image;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,13 +37,15 @@ public class ImageDataSetReader extends DataReader {
 		_cats = categories;
 		_options = options;
 		for (int i = 0; i < categories.length; i++) {
-			categories[i] = categories[i].trim().toLowerCase();
+			categories[i] = categories[i].trim()
+					.toLowerCase();
 		}
 	}
 
 
 	private int getCatNumber(String name) {
-		name = name.trim().toLowerCase();
+		name = name.trim()
+				.toLowerCase();
 		for (int i = 0; i < _cats.length; i++) {
 			if (_cats[i].compareTo(name) == 0) return i;
 		}
@@ -85,13 +86,14 @@ public class ImageDataSetReader extends DataReader {
 
 		File dir = new File(_fileDir);
 
-		if (_size <= 0) _size = 128;
+		if (_size <= 0) _size = 32;
 
 		for (File file : dir.listFiles()) {
 
 			if (!file.isFile()) continue;
 
-			String fileName = file.getName().toLowerCase();
+			String fileName = file.getName()
+					.toLowerCase();
 			if (!(fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png"))) continue;
 
 			try {
@@ -101,8 +103,8 @@ public class ImageDataSetReader extends DataReader {
 				}
 				Example e = imageToExample(fileName, img, _options);
 				examples.add(e);
-				ImageUtil.saveImage(e.x, "./bin/images/z" + fileName + ".png");
-				//ImageUtil.saveImageEdges(e.x, "./bin/images/z" + fileName + "_e.png");				
+				ImageUtil.saveImageLayer(e.x, 3,  "./bin/images/z" + fileName + ".png");
+				// ImageUtil.(e.x, "./bin/images/z" + fileName + "_e.png");
 			}
 			catch (IOException ex) {
 				System.err.println("Error: cannot load in the image file '" + file.getName() + "'");

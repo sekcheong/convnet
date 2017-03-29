@@ -67,7 +67,7 @@ public class Convolution extends Layer {
 						int oy = y + fy;
 						for (int fx = 0; fx < f.height(); fx++) {
 							int ox = x + fx;
-							if (oy >= 0 && oy < inH && ox >= 0 && ox < inW) {
+							if (oy >= 0 && oy < inH && ox >= 0 && ox < inW) {								
 								for (int fd = 0; fd < f.depth(); fd++) {
 									a += f.W[((f.width() * fy) + fx) * f.depth() + fd] * c.W[((inW * oy) + ox) * c.depth() + fd];
 								}
