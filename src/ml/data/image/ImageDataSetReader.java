@@ -102,7 +102,7 @@ public class ImageDataSetReader extends DataReader {
 				Example e = imageToExample(fileName, img, _options);
 				examples.add(e);
 				ImageUtil.saveImage(e.x, "./bin/images/z" + fileName + ".png");
-				ImageUtil.saveImageEdges(e.x, "./bin/images/z" + fileName + "_e.png");				
+				//ImageUtil.saveImageEdges(e.x, "./bin/images/z" + fileName + "_e.png");				
 			}
 			catch (IOException ex) {
 				System.err.println("Error: cannot load in the image file '" + file.getName() + "'");
