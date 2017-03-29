@@ -2,13 +2,25 @@ Lab 3 - Simple Deep Neural Network
 
 Submit your code (Lab3.java) for your simple deep neural network here.  Also submit your lab report (Lab3.pdf).
 
-Groups of four can work together.  ALL should submit the SAME code and report.  Be sure all names on both.  The report should clarify who worked on which parts of the code and experimentation.  BY TURNING IN CODE AND A REPORT, YOU ARE AFFIRMING YOU DID A SUBSTANTIAL AMOUNT OF THE WORK AND HAVE A SOLID UNDERSTANDING OF THE MATERIAL.
+Groups of four can work together.  ALL should submit the SAME code and report.  Be sure all names on both.  
+The report should clarify who worked on which parts of the code and experimentation.  
+BY TURNING IN CODE AND A REPORT, YOU ARE AFFIRMING YOU DID A SUBSTANTIAL AMOUNT OF THE WORK AND HAVE A SOLID 
+UNDERSTANDING OF THE MATERIAL.
 
-We need to follow a standard convention for your code in order to simplify testing it.  For Lab 3 (code in Lab3.java) we will call your code this way:
+We need to follow a standard convention for your code in order to simplify testing it.  
+For Lab 3 (code in Lab3.java) we will call your code this way:
 
         Lab3 trainDirectoryName tuneDirectoryName testDirectoryName
 
-See the Week 4 Lab3 lecture notes for what your code should output (a 'confusion matrix').  Your lab report should briefly describe the size of your convolution and pooling layers - include a drawing of it like Slide 2 of the my cs540 Lecture 20 (linked on http://pages.cs.wisc.edu/~shavlik/cs638_cs838.html).  You do not need to explain convolution, pooling, drop out, etc.  Focus on presenting and discussing your experimental results.
+See the Week 4 Lab3 lecture notes for what your code should output (a 'confusion matrix').  
+Your lab report should briefly describe the size of your convolution and pooling 
+layers - include a drawing of it like Slide 2 of the my cs540 Lecture 20
+(linked on http://pages.cs.wisc.edu/~shavlik/cs638_cs838.html).  
+
+You do not need to explain convolution, pooling, drop out, etc.  
+Focus on presenting and discussing your experimental results.
+
+
 
 Summary (from a 3/9/17 Piazza posting):
 
@@ -29,3 +41,77 @@ Summary (from a 3/9/17 Piazza posting):
    if you did any additional experiments, briefly discuss them (if more than a page or so, create an appendix
 
    containing your additional experiments), but no need to report everything you did
+   
+   
+   report
+   ======
+   Look at the Lab3 powerpoint from Week 4, linked to the class home page.
+
+ 
+
+I had said "Use ReLU for hiddens and the six output nodes" but fine to use sigmoid or softmax for the 
+outputs (and leaky ReLU is recommended for all HUs).
+
+ 
+
+Summary:
+
+ 
+
+   provide a drawing that illustrates your network topology
+
+   output a testset CONFUSION matrix and overall testset accuracy
+
+   you need to use early stopping (ok to report a TUNE set confusion matrix after every epoch
+   and a testset confusion matrix whenever the tuneset accuracy improves; maybe output the trainset
+
+   confusion matrix every 10 epochs, to save cpu cycles - but also fine to just have your turned-in code output
+   a testset confusion matrix before terminating)
+
+
+   show (and discuss) in your report a learning curve;  ok to only have points at 25%, 50%, 75% and 100% of the training examples
+   experiment (and discuss) with DropOut, need not use it in the configuration you turn in for our testing
+
+   if you did any additional experiments, briefly discuss them (if more than a page or so, create an appendix
+   containing your additional experiments), but no need to report everything you did
+
+ 
+
+====
+
+I was planning to start Condor runs on them this weekend, but unfortunately my father-in-law died Tuesday at 
+4am and I need to leave town tomorrow until late next Tuesday.
+
+I recommend you try to wrapup Lab 3 in the next day or day, then come back fresh after spring break so 
+you can start on your class project.
+
+ 
+
+If you havent turned in Lab 3 yet, remember to put ALL TEAM MEMBER names in your *.java (and also your *.pdf) 
+file names, in alphabetic order.  This will help us deal with the duplicated files.
+
+ 
+
+If you aren't able to get your Deep ANN to learn, turn in what you have and make sure your 
+report communicates the effort expended.  As I mentioned Day 1, cs 638/838 will be graded as more 
+of an "effort expended" class than solely on 'results achieved' (eg, exam grades, etc).  
+Be sure to report the confusion tables, implement dropout, and do a learning curve, even if your learning curve is flat.
+
+ 
+
+If you are still debugging, I recommend you 'turn off' most of the 'sliding window' aspect of convolution 
+neural networks and have the first layer be 2x2, the second layer have ONE pool node and the 3rd layer have ONE 
+conv layer, then have 10 HUs (and 6 output nodes).  Use the finite-differencing method and some println's or 
+the debugger to debug this design.  After than have the 1st POOL node be 2x2 (and the first CONV node be 4x4), debug that, 
+then work on debugging the case with a larger 2nd convolution layer, etc.  Maybe even try 8x8 images and only 
+one plate per layer in the beginning.  Doing this helped me find some bugs due to some 
+typo's (eg, an X where a Y should have been).
+
+ 
+
+If you are in town Thurs or Fri of next week, let me know and we could meet to talk about Lab3 or projects.  
+I'll mainly be catching up on various tasks on Weds.
+
+ 
+
+Best wishes for your spring break.
