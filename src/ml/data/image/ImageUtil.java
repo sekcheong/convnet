@@ -16,38 +16,91 @@ import ml.convnet.Volume;
 public class ImageUtil {
 
 	public static Volume imageToVolume(BufferedImage image) {
-		return imageToVolume(image, false);
+		return imageToVolume(image, 0);
 	}
 
 
-	public static Volume imageToVolume(BufferedImage image, boolean toGrayScale) {
+	public static Volume imageToVolume(BufferedImage image, int options) {
 		int width = image.getWidth();
 		int height = image.getHeight();
-		Volume v;
+		Volume v = null;
 
-		if (!toGrayScale) {
-			v = new Volume(width, height, 3);
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					// normalize pixel value to [-0.5, +0.5]
-					v.set(i, j, 0, (((double) c.getRed())) / 255);
-					v.set(i, j, 1, (((double) c.getGreen())) / 255);
-					v.set(i, j, 2, (((double) c.getBlue())) / 255);
+		switch (options) {
+			case 0:
+				//RGB volume
+				v = new Volume(width, height, 3);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+					}
 				}
-			}
-		}
-		else {
-			v = new Volume(width, height, 1);
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
-					v.set(i, j, 0, g);
+				break;
+
+			case 1:
+				//Gray scale volume
+				v = new Volume(width, height, 1);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 0, g);
+					}
 				}
-			}
+				break;
+
+			case 2:
+				//RGB and gray scale volume
+				v = new Volume(width, height, 4);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 3, g / 255);
+					}
+				}
+				break;
+			case 3:
+				//RGB and edges volume
+				v = new Volume(width, height, 4);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 3, g / 255);
+					}
+				}
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
+						double g = grad(v, x, y, 3);
+						v.set(x, y, 3, g);
+					}
+				}
+				break;
 		}
+
 		return v;
+	}
+
+
+	private static double grad(Volume v, int x, int y, int z) {
+		double g = v.getSafe(x - 1, y + 1, z)
+				+ v.getSafe(x, y + 1, z)
+				+ v.getSafe(x + 1, y + 1, z)
+				+ v.getSafe(x + 1, y, z)
+				+ v.getSafe(x + 1, y - 1, z)
+				+ v.getSafe(x, y - 1, z)
+				+ v.getSafe(x - 1, y - 1, z)
+				+ v.getSafe(y, x - 1, z) - 8 * v.getSafe(x, y, z);
+		return g;
 	}
 
 
@@ -65,6 +118,20 @@ public class ImageUtil {
 		rgb = (rgb << 8) + (int) (g * 255);
 		rgb = (rgb << 8) + (int) (b * 255);
 		return rgb;
+	}
+
+
+	private static BufferedImage volumeToImageEdges(Volume v) {
+		BufferedImage image;
+		Volume u = v.normalize();
+		image = new BufferedImage(u.width(), u.height(), BufferedImage.TYPE_BYTE_GRAY);
+		for (int i = 0; i < u.height(); i++) {
+			for (int j = 0; j < u.width(); j++) {
+				int c = (int) (u.get(j, i, 3)) * 255;
+				image.setRGB(j, i, c);
+			}
+		}
+		return image;
 	}
 
 
@@ -93,6 +160,13 @@ public class ImageUtil {
 			}
 		}
 		return image;
+	}
+
+
+	public static Volume distortImage(Volume image) {
+		BufferedImage img = volumeToImage(image);
+		img = distortImage(img);
+		return imageToVolume(img);
 	}
 
 
@@ -128,13 +202,6 @@ public class ImageUtil {
 	}
 
 
-	public static Volume distortImage(Volume image) {
-		BufferedImage img = volumeToImage(image);
-		img = distortImage(img);
-		return imageToVolume(img);
-	}
-
-
 	public static void saveImage(Volume v, String fileName) {
 		BufferedImage image = volumeToImage(v);
 		saveImage(image, fileName);
@@ -153,12 +220,18 @@ public class ImageUtil {
 	}
 
 
-	public static Volume loadImage(String fileName) {
+	public static void saveImageEdges(Volume v, String fileName) {
+		BufferedImage image = volumeToImageEdges(v);
+		saveImage(image, fileName);
+	}
+
+
+	public static Volume loadImage(String fileName, int options) {
 		Volume v = null;
 		File inputFile = new File(fileName);
 		try {
 			BufferedImage image = ImageIO.read(inputFile);
-			v = imageToVolume(image);
+			v = imageToVolume(image, options);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -178,7 +251,6 @@ public class ImageUtil {
 		g.drawImage(img, 0, 0, null);
 		g.dispose();
 
-		// Return the buffered image
 		return bimage;
 	}
 

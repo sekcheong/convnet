@@ -15,57 +15,64 @@ import ml.io.DataReader;
 
 public class ImageDataSetReader extends DataReader {
 
-
-	private static enum ImageCategory {
-		airplane(0),
-		butterfly(1),
-		flower(2),
-		piano(3),
-		starfish(4),
-		watch(5),
-		unknown(6);
-
-		private final int value;
+	private String _fileDir;
+	private int _size;
+	private int _options;
+	private String[] _cats;
 
 
-		private ImageCategory(int value) {
-			this.value = value;
-		}
+	public ImageDataSetReader(String fileDir, String[] categories, int size) {
+		init(fileDir, categories, size, 0);
+
+	}
 
 
-		public int getValue() {
-			return value;
+	public ImageDataSetReader(String fileDir, String[] categories, int size, int options) {
+		init(fileDir, categories, size, options);
+	}
+
+
+	private void init(String fileDir, String[] categories, int size, int options) {
+		_fileDir = fileDir;
+		_size = size;
+		_cats = categories;
+		_options = options;
+		for (int i = 0; i < categories.length; i++) {
+			categories[i] = categories[i].trim().toLowerCase();
 		}
 	}
 
 
-	private String _fileDir;
-	private int _size;
-
-
-	public ImageDataSetReader(String fileDir, int size) {
-		_fileDir = fileDir;
-		_size = size;
+	private int getCatNumber(String name) {
+		name = name.trim().toLowerCase();
+		for (int i = 0; i < _cats.length; i++) {
+			if (_cats[i].compareTo(name) == 0) return i;
+		}
+		return -1;
 	}
 
 
 	private Volume imageNameToVolume(String name) {
-		ImageCategory cat = ImageCategory.unknown;
-		for (ImageCategory c : ImageCategory.values()) {
-			String catName = c.toString().toLowerCase();
-			if (name.contains(catName)) {
-				cat = c;
+
+		name = name.toLowerCase();
+		int cat = 0;
+
+		for (int i = 0; i < _cats.length; i++) {
+			if (name.contains(_cats[i])) {
+				cat = i;
 				break;
 			}
 		}
-		double[] y = new double[ImageCategory.values().length];
-		y[cat.value] = 1.0;
+
+		double[] y = new double[_cats.length];
+		y[cat] = 1.0;
 		return new Volume(y);
 	}
 
 
-	private Example imageToExample(String name, BufferedImage image) {
-		Volume x = ImageUtil.imageToVolume(image);
+	private Example imageToExample(String name, BufferedImage image, int options) {
+		Volume x = ImageUtil.imageToVolume(image, options);
+		x.zeroMean();
 		Volume y = imageNameToVolume(name);
 		return new Example(x, y);
 	}
@@ -92,8 +99,10 @@ public class ImageDataSetReader extends DataReader {
 				if (img.getWidth() != _size || img.getHeight() != _size) {
 					img = ImageUtil.scaleImage(img, _size, _size);
 				}
-				Example e = imageToExample(fileName, img);
+				Example e = imageToExample(fileName, img, _options);
 				examples.add(e);
+				ImageUtil.saveImage(e.x, "./bin/images/z" + fileName + ".png");
+				ImageUtil.saveImageEdges(e.x, "./bin/images/z" + fileName + "_e.png");				
 			}
 			catch (IOException ex) {
 				System.err.println("Error: cannot load in the image file '" + file.getName() + "'");

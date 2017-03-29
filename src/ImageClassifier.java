@@ -14,15 +14,13 @@ import ml.utils.Format;
 
 public class ImageClassifier {
 
-	private static enum Category {
-		airplane, butterfly, flower, piano, starfish, watch
-	};
+	private static String[] _cats = new String[] { "airplane", "butterfly", "flower", "piano", "starfish", "watch" };
 
 
-	private static DataSet[] loadImageDataSets(String trainDir, String tuneDir, String testDir, int imageSize) {
-		ImageDataSetReader train = new ImageDataSetReader(trainDir, imageSize);
-		ImageDataSetReader tune = new ImageDataSetReader(tuneDir, imageSize);
-		ImageDataSetReader test = new ImageDataSetReader(testDir, imageSize);
+	private static DataSet[] loadImageDataSets(String trainDir, String tuneDir, String testDir, int imageSize, int options) {
+		ImageDataSetReader train = new ImageDataSetReader(trainDir, _cats, imageSize, options);
+		ImageDataSetReader tune = new ImageDataSetReader(tuneDir, _cats, imageSize, options);
+		ImageDataSetReader test = new ImageDataSetReader(testDir, _cats, imageSize, options);
 		DataSet[] set = new DataSet[3];
 		set[0] = train.readDataSet();
 		set[1] = tune.readDataSet();
@@ -49,7 +47,7 @@ public class ImageClassifier {
 	private static int maxOut(double[] y) {
 		int maxi = 0;
 		double max = y[0];
-		for (int i = 0; i < y.length; i++) {
+		for (int i = 0; i < y.length - 1; i++) {
 			if (y[i] > max) {
 				max = y[i];
 				maxi = i;
@@ -90,32 +88,29 @@ public class ImageClassifier {
 
 	private static double printConfusionMatrix(ConvNet net, Example[] test) {
 		int w = test[0].y.W.length;
-		int[][] conf = new int[w - 1][w - 1];
+		int[][] confusion = new int[w][w];
 		int err = 0;
-		
+
 		for (Example e : test) {
 			double[] yhat = net.predict(e.x.W);
 			int p = maxOut(yhat);
 			int a = maxOut(e.y.W);
-			conf[p][a]++;
+			confusion[p][a]++;
 			if (p != a) err++;
 		}
 
-		String[] cat = new String[] {	"  airplane",
-										" butterfly",
-										"    flower",
-										"     piano",
-										"  starfish",
-										"     watch" };
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < _cats.length; i++) {
+			sb.append(Format.sprintf("%10s", _cats[i]));
+		}
+		Console.writeLine("          " + sb.toString());
 
-		Console.writeLine("            airplane  butterfly     flower      piano   starfish");
-
-		for (int i = 0; i < conf.length; i++) {
-			StringBuffer sb = new StringBuffer();
-			for (int j = 0; j < conf[i].length; j++) {
-				sb.append(Format.sprintf("%10d", conf[i][j])).append(" ");
+		for (int i = 0; i < confusion.length; i++) {
+			sb = new StringBuffer();
+			for (int j = 0; j < confusion[i].length; j++) {
+				sb.append(Format.sprintf("%10d", confusion[i][j]));
 			}
-			Console.writeLine(cat[i] + sb.toString());
+			Console.writeLine(Format.sprintf("%10s", _cats[i]) + sb.toString());
 		}
 
 		return ((double) err) / test.length;
@@ -199,10 +194,10 @@ public class ImageClassifier {
 
 
 	public static void trainAndTest(DataSet[] dataSets) {
-		
+
 		ConvNet net = new ConvNet();
 		Example ex = dataSets[0].get(0);
-		
+
 		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
 		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
@@ -221,7 +216,7 @@ public class ImageClassifier {
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
-		
+
 		double eta = 0.007;
 		double alpha = 0.90;
 		double lambda = 0.0001;
@@ -273,7 +268,7 @@ public class ImageClassifier {
 			imageSize = Integer.parseInt(args[3]);
 		}
 
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, 1);
 
 		long end = System.nanoTime() - start;
 
@@ -316,14 +311,14 @@ public class ImageClassifier {
 
 		net.epochs = 150;
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
-		
+
 		Console.writeLine("Final Result:");
 		double err = printConfusionMatrix(net, dataSets[2].examples());
 		Console.writeLine("Accuracy:    " + Format.sprintf("%1.8f", (1 - err)));
 		saveErrorImages(net, dataSets[2].examples());
 
 		Console.writeLine("");
-		
+
 	}
 
 }

@@ -163,8 +163,26 @@ public class Volume {
 	}
 
 
+	public double getSafe(int x, int y, int z) {
+		if (x < 0 || x >= dim[0]) return 0;
+		if (y < 0 || y >= dim[1]) return 0;
+		if (z < 0 || x >= dim[2]) return 0;
+		int i = index(x, y, z);
+		return W[i];
+	}
+
+
 	public void set(int x, int y, int z, double v) {
 		W[index(x, y, z)] = v;
+	}
+
+
+	public double setSafe(int x, int y, int z, double v) {
+		if (x < 0 || x >= dim[0]) return 0;
+		if (y < 0 || y >= dim[1]) return 0;
+		if (z < 0 || x >= dim[2]) return 0;
+		int i = index(x, y, z);
+		return W[i] = v;
 	}
 
 
@@ -276,6 +294,24 @@ public class Volume {
 			u[i] = (u[i] - min) / z;
 		}
 		return v;
+	}
+
+
+	public void zeroMean() {
+		for (int z = 0; z < dim[2]; z++) {
+			double mean = 0;
+			for (int x = 0; x < dim[0]; x++) {
+				for (int y = 0; y < dim[1]; y++) {
+					mean += W[((dim[0] * y) + x) * dim[2] + z];
+				}
+			}
+			mean /= dim[0] * dim[1];
+			for (int x = 0; x < dim[0]; x++) {
+				for (int y = 0; y < dim[1]; y++) {
+					W[((dim[0] * y) + x) * dim[2] + z] -= mean;
+				}
+			}
+		}
 	}
 
 }

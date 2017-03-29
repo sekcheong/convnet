@@ -74,11 +74,6 @@ public class ConvNet {
 	}
 
 
-	public boolean validate(Example ex) {
-		return false;
-	}
-
-
 	public double[] forward(double[] x) {
 		Layer[] layers = this.layers();
 
