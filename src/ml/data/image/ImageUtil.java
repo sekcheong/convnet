@@ -83,14 +83,44 @@ public class ImageUtil {
 		return v;
 	}
 
+	private static double pixelAt(Volume v, int x, int y, int z) {
+		if (x<0 || x>=v.width()) return 0;
+		if (y<0 || y>=v.width()) return 0;
+		if (y<0 || y>=v.width()) return 0;
+		if (z<0 || z>=v.depth()) return 0;
+		return v.get(x, y, z);
+	}
+	
 
 	private static Volume sobelFilter(Volume v, int z) {
-		double[][] sobelX = new double[3][3]; 
-		sobelX[0][0] = -1;
-		sobelX[0][1] = 0;
-		sobelX[0][2] = 1;
-		
+		Volume u = new Volume(v);
+		int[][] sobelX = new int[][] {
+			new int[] { -1, 0, 1 }, 
+			new int[] { -2, 0, 2 }, 
+			new int[] { -1, 0, 1 }
+		};
 
+		int[][] sobelY = new int[][] { 
+			new int[] { -1, -2, -1 }, 
+			new int[] { 0, 0, 0 }, 
+			new int[] { 1, 2, 1 }
+		};
+
+		for (int x=0; x<v.width(); x++) {
+			for (int y=0; y<v.height(); y++) {				
+				double px = (sobelX[0][0] * pixelAt(v,x-1,y-1,z)) + (sobelX[0][1] * pixelAt(v,x,y-1,z)) + (sobelX[0][2] * pixelAt(v, x+1,y-1,z)) 
+			              + (sobelX[1][0] * pixelAt(v,x-1,y,z))   + (sobelX[1][1] * pixelAt(v,x,y,z))   + (sobelX[1][2] * pixelAt(v,x+1,y,z))
+			              + (sobelX[2][0] * pixelAt(v,x-1,y+1,z)) + (sobelX[2][1] * pixelAt(v,x,y+1,z)) + (sobelX[2][2] * pixelAt(v,x+1,y+1,z));
+				
+			    double py = (sobelY[0][0] * pixelAt(v,x-1,y-1,z)) + (sobelY[0][1] * pixelAt(v,x,y-1,z)) + (sobelY[0][2] * pixelAt(v,x+1,y-1,z))
+			              + (sobelY[1][0] * pixelAt(v,x-1,y,z))   + (sobelY[1][1] * pixelAt(v,x,y,z))   + (sobelY[1][2] * pixelAt(v,x+1,y,z)) 
+			              + (sobelY[2][0] * pixelAt(v,x-1,y+1,z)) + (sobelY[2][1] * pixelAt(v,x,y+1,z)) + (sobelY[2][2] * pixelAt(v,x+1,y+1,z));
+				
+				double p = Math.sqrt(px * px + py * py);
+				
+			}
+		}
+		
 		return null;
 	}
 
