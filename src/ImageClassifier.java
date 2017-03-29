@@ -47,7 +47,7 @@ public class ImageClassifier {
 	private static int maxOut(double[] y) {
 		int maxi = 0;
 		double max = y[0];
-		for (int i = 0; i < y.length - 1; i++) {
+		for (int i = 1; i < y.length; i++) {
 			if (y[i] > max) {
 				max = y[i];
 				maxi = i;
@@ -267,7 +267,7 @@ public class ImageClassifier {
 			imageSize = Integer.parseInt(args[3]);
 		}
 
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize,3);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, 3);
 
 		long end = System.nanoTime() - start;
 
@@ -304,7 +304,7 @@ public class ImageClassifier {
 			double err = printConfusionMatrix(t.net(), dataSets[1].examples());
 			Console.writeLine("Tune set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
 			Console.writeLine("");
-			if (err < 0.21) return false;
+			if (err < 0.1) return false;
 			return true;
 		});
 

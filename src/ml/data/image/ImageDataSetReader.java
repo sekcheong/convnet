@@ -103,7 +103,7 @@ public class ImageDataSetReader extends DataReader {
 				}
 				Example e = imageToExample(fileName, img, _options);
 				examples.add(e);
-				ImageUtil.saveImageLayer(e.x, 3,  "./bin/images/z" + fileName + ".png");
+				// saveImageLayer(e.x, 3,  "./bin/images/z" + fileName + ".png");
 				// ImageUtil.(e.x, "./bin/images/z" + fileName + "_e.png");
 			}
 			catch (IOException ex) {

@@ -49,6 +49,7 @@ public class ImageUtil {
 					v.set(i, j, 0, g);
 				}
 			}
+			v = sobelFilter(v, 0);		
 			break;
 
 		case 2:
@@ -117,11 +118,11 @@ public class ImageUtil {
 			              + (sobelY[2][0] * pixelAt(v,x-1,y+1,z)) + (sobelY[2][1] * pixelAt(v,x,y+1,z)) + (sobelY[2][2] * pixelAt(v,x+1,y+1,z));
 				
 				double p = Math.sqrt(px * px + py * py);
-				
+				u.set(x, y, z, p);
 			}
 		}
-		
-		return null;
+		u = u.normalize(z);
+		return u;
 	}
 
 
