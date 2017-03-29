@@ -147,8 +147,8 @@ public class ImageUtil {
 			ImageIO.write(image, "png", outputfile);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -161,8 +161,8 @@ public class ImageUtil {
 			v = imageToVolume(image);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		return v;
 	}
@@ -174,7 +174,6 @@ public class ImageUtil {
 		}
 
 		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-
 		Graphics2D g = bimage.createGraphics();
 		g.drawImage(img, 0, 0, null);
 		g.dispose();

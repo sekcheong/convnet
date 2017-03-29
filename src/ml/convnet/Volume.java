@@ -9,7 +9,7 @@ public class Volume {
 
 	// the gradients
 	public double[] dW;
- 
+
 	// the dimension of the volume dim = [w, h, d]
 	public int[] dim = new int[3];
 
@@ -81,7 +81,6 @@ public class Volume {
 		for (int i = 0; i < src.dW.length; i++) {
 			dW[i] = src.dW[i];
 		}
-
 	}
 
 
@@ -136,7 +135,6 @@ public class Volume {
 		this.dim[0] = width;
 		this.dim[1] = height;
 		this.dim[2] = depth;
-
 		W = new double[dim[0] * dim[1] * dim[2]];
 		dW = new double[W.length];
 		if (c == 0.0) return;
@@ -262,17 +260,17 @@ public class Volume {
 	public Volume normalize() {
 		double min;
 		double max;
-		
+
 		Volume v = new Volume(this);
 		double[] u = v.W;
-		
+
 		min = u[0];
 		max = u[1];
 		for (int i = 0; i < u.length; i++) {
 			if (u[i] > max) max = u[i];
 			if (u[i] < min) min = u[i];
 		}
-		
+
 		double z = (max - min);
 		for (int i = 0; i < u.length; i++) {
 			u[i] = (u[i] - min) / z;
