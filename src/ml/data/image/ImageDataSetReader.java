@@ -38,15 +38,15 @@ public class ImageDataSetReader extends DataReader {
 		_cats = categories;
 		_option = option;
 		for (int i = 0; i < categories.length; i++) {
-			categories[i] = categories[i]	.trim()
-											.toLowerCase();
+			categories[i] = categories[i].trim()
+					.toLowerCase();
 		}
 	}
 
 
 	private int getCatNumber(String name) {
-		name = name	.trim()
-					.toLowerCase();
+		name = name.trim()
+				.toLowerCase();
 		for (int i = 0; i < _cats.length; i++) {
 			if (_cats[i].compareTo(name) == 0) return i;
 		}
@@ -93,8 +93,7 @@ public class ImageDataSetReader extends DataReader {
 
 			if (!file.isFile()) continue;
 
-			String fileName = file	.getName()
-									.toLowerCase();
+			String fileName = file.getName().toLowerCase();
 			if (!(fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png"))) continue;
 
 			try {
@@ -104,7 +103,7 @@ public class ImageDataSetReader extends DataReader {
 				}
 				Example e = imageToExample(fileName, img, _option);
 				examples.add(e);
-				// saveImageLayer(e.x, 3,  "./bin/images/z" + fileName + ".png");
+				// saveImageLayer(e.x, 3, "./bin/images/z" + fileName + ".png");
 				// ImageUtil.(e.x, "./bin/images/z" + fileName + "_e.png");
 			}
 			catch (IOException ex) {

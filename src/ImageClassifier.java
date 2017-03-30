@@ -210,6 +210,10 @@ public class ImageClassifier {
 		Example ex = dataSets[0].get(0);
 
 		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
+		
+		net.addLayer(new Convolution(3, 3, 30, 1, 2, 1.0));		
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
 
 		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
 		net.addLayer(new LeRu());
@@ -239,30 +243,35 @@ public class ImageClassifier {
 			double testerr;
 			double tuneerr;
 
-			Console.writeLine("Train size: " + dataSets[0].examples().length);
-			trainerr = printConfusionMatrix(net, dataSets[0].examples());
-			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
-			Console.writeLine("");
+//			Console.writeLine("Train size: " + dataSets[0].examples().length);
+//			trainerr = printConfusionMatrix(net, dataSets[0].examples());
+//			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
+//			Console.writeLine("");
 
 			Console.writeLine("Tune size: " + dataSets[1].examples().length);
 			tuneerr = printConfusionMatrix(net, dataSets[1].examples());
 			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
 			Console.writeLine("");
 
-			Console.writeLine("Test size: " + dataSets[2].examples().length);
-			testerr = printConfusionMatrix(net, dataSets[2].examples());
-			Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
-			Console.writeLine("");
-			Console.writeLine("");
+//			Console.writeLine("Test size: " + dataSets[2].examples().length);
+//			testerr = printConfusionMatrix(net, dataSets[2].examples());
+//			Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
+//			Console.writeLine("");
+//			Console.writeLine("");
 
 			if (tuneerr <0.2) return false;
 
 			return true;
 		});
-
+				
 
 		net.epochs = epochs;
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
+		
+		Console.writeLine("Test size: " + dataSets[2].examples().length);
+		double testerr = printConfusionMatrix(net, dataSets[2].examples());
+		Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
+		Console.writeLine("");
 
 		saveErrorImages(net, dataSets[2].examples());
 
@@ -297,7 +306,7 @@ public class ImageClassifier {
 
 		StopWatch timer = new StopWatch();
 		timer.start();
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.EDGES);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB_EDGES);
 		timer.stop();
 
 		Console.writeLine("Data sets loading time: " + timer.elapsedTime() + "sec");
