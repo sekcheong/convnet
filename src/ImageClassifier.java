@@ -255,7 +255,7 @@ public class ImageClassifier {
 			Console.writeLine("");
 			Console.writeLine("");
 
-			if (trainerr == 0.0) return false;
+			if (tuneerr <0.2) return false;
 
 			return true;
 		});
@@ -297,14 +297,14 @@ public class ImageClassifier {
 
 		StopWatch timer = new StopWatch();
 		timer.start();
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB_EDGES);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.EDGES);
 		timer.stop();
 
 		Console.writeLine("Data sets loading time: " + timer.elapsedTime() + "sec");
 
-		learningCurve(dataSets);
+		//learningCurve(dataSets);
 
-		//trainAndTest(dataSets, 200);
+		trainAndTest(dataSets, 500);
 
 	}
 
