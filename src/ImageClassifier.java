@@ -306,7 +306,7 @@ public class ImageClassifier {
 
 		StopWatch timer = new StopWatch();
 		timer.start();
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB_EDGES);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB);
 		timer.stop();
 
 		Console.writeLine("Data sets loading time: " + timer.elapsedTime() + "sec");
