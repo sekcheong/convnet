@@ -10,42 +10,43 @@ import javax.imageio.ImageIO;
 import ml.convnet.Volume;
 import ml.data.DataSet;
 import ml.data.Example;
+import ml.data.image.ImageUtil.LoadOption;
 import ml.io.DataReader;
 
 public class ImageDataSetReader extends DataReader {
 
 	private String _fileDir;
 	private int _size;
-	private int _options;
 	private String[] _cats;
+	private LoadOption _option;
 
 
 	public ImageDataSetReader(String fileDir, String[] categories, int size) {
-		init(fileDir, categories, size, 0);
+		init(fileDir, categories, size, LoadOption.RGB);
 
 	}
 
 
-	public ImageDataSetReader(String fileDir, String[] categories, int size, int options) {
-		init(fileDir, categories, size, options);
+	public ImageDataSetReader(String fileDir, String[] categories, int size, LoadOption option) {
+		init(fileDir, categories, size, option);
 	}
 
 
-	private void init(String fileDir, String[] categories, int size, int options) {
+	private void init(String fileDir, String[] categories, int size, LoadOption option) {
 		_fileDir = fileDir;
 		_size = size;
 		_cats = categories;
-		_options = options;
+		_option = option;
 		for (int i = 0; i < categories.length; i++) {
-			categories[i] = categories[i].trim()
-					.toLowerCase();
+			categories[i] = categories[i]	.trim()
+											.toLowerCase();
 		}
 	}
 
 
 	private int getCatNumber(String name) {
-		name = name.trim()
-				.toLowerCase();
+		name = name	.trim()
+					.toLowerCase();
 		for (int i = 0; i < _cats.length; i++) {
 			if (_cats[i].compareTo(name) == 0) return i;
 		}
@@ -71,7 +72,7 @@ public class ImageDataSetReader extends DataReader {
 	}
 
 
-	private Example imageToExample(String name, BufferedImage image, int options) {
+	private Example imageToExample(String name, BufferedImage image, LoadOption options) {
 		Volume x = ImageUtil.imageToVolume(image, options);
 		x.zeroMean();
 		Volume y = imageNameToVolume(name);
@@ -92,8 +93,8 @@ public class ImageDataSetReader extends DataReader {
 
 			if (!file.isFile()) continue;
 
-			String fileName = file.getName()
-					.toLowerCase();
+			String fileName = file	.getName()
+									.toLowerCase();
 			if (!(fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png"))) continue;
 
 			try {
@@ -101,7 +102,7 @@ public class ImageDataSetReader extends DataReader {
 				if (img.getWidth() != _size || img.getHeight() != _size) {
 					img = ImageUtil.scaleImage(img, _size, _size);
 				}
-				Example e = imageToExample(fileName, img, _options);
+				Example e = imageToExample(fileName, img, _option);
 				examples.add(e);
 				// saveImageLayer(e.x, 3,  "./bin/images/z" + fileName + ".png");
 				// ImageUtil.(e.x, "./bin/images/z" + fileName + "_e.png");

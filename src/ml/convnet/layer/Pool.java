@@ -1,6 +1,7 @@
 package ml.convnet.layer;
 
 import ml.convnet.Volume;
+import ml.utils.Console;
 
 public class Pool extends Layer {
 
@@ -96,9 +97,15 @@ public class Pool extends Layer {
 			for (int ax = 0; ax < this.outW(); x += this._stride, ax++) {
 				y = -this._pad;
 				for (int ay = 0; ay < this.outW(); y += this._stride, ay++) {
-					double chain_grad = this.output.getGrad(ax, ay, d);
-					V.addGrad(_mapx[n], _mapy[n], d, chain_grad);
+					double grad = this.output.getGrad(ax, ay, d);
+					try {
+					V.addGrad(_mapx[n], _mapy[n], d, grad);
+					
 					n++;
+					}
+					catch (Exception ex) {
+						Console.writeLine(ex.getMessage());
+					}
 				}
 			}
 		}

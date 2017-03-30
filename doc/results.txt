@@ -1,3 +1,1553 @@
+DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, 1);
+		timer.stop();
+		
+		Console.writeLine("Data sets loading time:" + timer.elapsedTime());
+		
+		Example ex = dataSets[0].get(0);
+
+		ConvNet net = new ConvNet();
+
+		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
+
+		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new DropOut(0.5));
+
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
+		net.addLayer(new Softmax());
+
+		double eta = 0.007;
+		double alpha = 0.90;
+		double lambda = 0.0001;
+
+		Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
+
+
+Epoch: 1
+            airplane butterfly    flower     piano  starfish     watch
+  airplane         0         0         0         0         0         0
+ butterfly         0         0         0         0         0         0
+    flower         0         0         0         0         0         0
+     piano         0         0         0         0         0         0
+  starfish         0         0         0         0         0         0
+     watch        42        18        37        19        17        47
+Tune set accuracy: 0.26111111
+
+Epoch: 2
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        42        18        37        19        16        47
+ butterfly         0         0         0         0         0         0
+    flower         0         0         0         0         0         0
+     piano         0         0         0         0         0         0
+  starfish         0         0         0         0         0         0
+     watch         0         0         0         0         1         0
+Tune set accuracy: 0.23333333
+
+Epoch: 3
+            airplane butterfly    flower     piano  starfish     watch
+  airplane         4         0         0         0         0         0
+ butterfly         0         0         0         0         0         0
+    flower         0         0         0         0         0         0
+     piano         0         0         0         0         0         0
+  starfish         0         0         0         0         0         0
+     watch        38        18        37        19        17        47
+Tune set accuracy: 0.28333333
+
+Epoch: 4
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         4         5         3         2         6
+ butterfly         0         0         0         0         0         0
+    flower         0         0         0         0         0         0
+     piano         0         0         0         0         0         0
+  starfish         0         0         0         0         0         0
+     watch         3        14        32        16        15        41
+Tune set accuracy: 0.44444444
+
+Epoch: 5
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         3         2         3         5        13
+ butterfly         0         0         0         0         0         0
+    flower         4        15        35         9        12        32
+     piano         0         0         0         7         0         0
+  starfish         0         0         0         0         0         0
+     watch         0         0         0         0         0         2
+Tune set accuracy: 0.45555556
+
+Epoch: 6
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         1         0         2         0         4
+ butterfly         0         0         0         0         0         0
+    flower         3        14        30         5        10        10
+     piano         0         0         0         5         0         0
+  starfish         0         0         0         0         0         0
+     watch         2         3         7         7         7        33
+Tune set accuracy: 0.58333333
+
+Epoch: 7
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         4         4         2         2         9
+ butterfly         0         0         0         0         0         0
+    flower         1         8        13         4         6         5
+     piano         0         0         3         8         0         1
+  starfish         0         0         0         0         1         0
+     watch         2         6        17         5         8        32
+Tune set accuracy: 0.51666667
+
+Epoch: 8
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         3         2         2         1         8
+ butterfly         0         1         0         0         0         0
+    flower         1         8        17         5        10         4
+     piano         0         0         1         6         0         0
+  starfish         0         0         0         0         0         0
+     watch         2         6        17         6         6        35
+Tune set accuracy: 0.54444444
+
+Epoch: 9
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         2         1         2         2         8
+ butterfly         0         7         8         2         1         0
+    flower         1         5        11         2         7         3
+     piano         0         0         1        10         1         1
+  starfish         0         1         0         0         0         0
+     watch         1         3        16         3         6        35
+Tune set accuracy: 0.57222222
+
+Epoch: 10
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         1         0         1         0         6
+ butterfly         0         3         2         1         0         0
+    flower         2        10        25         3        10         8
+     piano         0         0         2        11         0         1
+  starfish         0         1         0         0         0         0
+     watch         3         3         8         3         7        32
+Tune set accuracy: 0.60000000
+
+Epoch: 11
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         2         1         8
+ butterfly         0         3         1         1         0         0
+    flower         1         6        14         2         9         4
+     piano         0         0         3        10         0         0
+  starfish         0         2         1         0         0         0
+     watch         1         6        17         4         7        35
+Tune set accuracy: 0.56666667
+
+Epoch: 12
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        41         1         1         2         0         7
+ butterfly         0         4         5         1         0         0
+    flower         0         6        13         2         7         3
+     piano         0         0         1        10         0         0
+  starfish         0         2         5         0         3         0
+     watch         1         5        12         4         7        37
+Tune set accuracy: 0.60000000
+
+Epoch: 13
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         2         2         8
+ butterfly         0         5         4         0         0         0
+    flower         2         8        24         2        10        12
+     piano         0         1         3        12         0         1
+  starfish         0         1         1         0         2         0
+     watch         0         2         4         3         3        26
+Tune set accuracy: 0.60555556
+
+Epoch: 14
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         2         2         9
+ butterfly         0         3         2         0         0         0
+    flower         1        11        29         5        10         9
+     piano         0         0         0         9         0         0
+  starfish         0         1         0         0         2         0
+     watch         1         2         5         3         3        29
+Tune set accuracy: 0.62222222
+
+Epoch: 15
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         2         1         9
+ butterfly         0         7         6         1         1         0
+    flower         1         7        18         2        10         6
+     piano         0         0         1        11         0         0
+  starfish         0         1         1         0         2         0
+     watch         1         2        10         3         3        32
+Tune set accuracy: 0.61111111
+
+Epoch: 16
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         1         1         0         3
+ butterfly         1         8         8         2         1         0
+    flower         1         6        21         2        10         8
+     piano         0         0         1        11         0         0
+  starfish         0         1         0         0         2         0
+     watch         1         2         6         3         4        36
+Tune set accuracy: 0.65000000
+
+Epoch: 17
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         1         0         4
+ butterfly         1         8         7         2         2         0
+    flower         0         6        17         2         8         6
+     piano         0         0         1        11         1         0
+  starfish         0         1         1         0         2         0
+     watch         1         2        10         3         4        37
+Tune set accuracy: 0.63888889
+
+Epoch: 18
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         1         1         1         0         1
+ butterfly         2         8         7         2         0         0
+    flower         1         5        16         3         8         2
+     piano         0         0         1         9         1         0
+  starfish         0         1         1         0         2         0
+     watch         1         3        11         4         6        44
+Tune set accuracy: 0.65000000
+
+Epoch: 19
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         2         0         6
+ butterfly         1         5         3         0         1         0
+    flower         2        10        29         5        11        13
+     piano         0         0         0         8         0         0
+  starfish         0         0         0         0         1         0
+     watch         0         2         5         4         4        28
+Tune set accuracy: 0.61111111
+
+Epoch: 20
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         1         1         1         0         2
+ butterfly         3         9        10         3         0         0
+    flower         0         4        12         1         6         2
+     piano         0         0         1        11         1         0
+  starfish         0         1         5         0         4         0
+     watch         1         3         8         3         6        43
+Tune set accuracy: 0.65000000
+
+Epoch: 21
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        35         1         0         1         0         0
+ butterfly         1         5         5         2         0         0
+    flower         1         8        24         2         9         6
+     piano         0         0         0        10         0         0
+  starfish         0         1         0         0         1         0
+     watch         5         3         8         4         7        41
+Tune set accuracy: 0.64444444
+
+Epoch: 22
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         1
+ butterfly         2         5         4         2         0         0
+    flower         0         9        24         2        10        10
+     piano         0         0         2        10         0         0
+  starfish         0         1         2         0         2         0
+     watch         1         2         5         4         5        36
+Tune set accuracy: 0.64444444
+
+Epoch: 23
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         1         0         1         0         0
+ butterfly         3         8         5         2         0         0
+    flower         1         6        23         2         9         6
+     piano         0         0         1        10         0         0
+  starfish         0         1         2         0         1         0
+     watch         1         2         6         4         7        41
+Tune set accuracy: 0.66666667
+
+Epoch: 24
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        41         1         1         1         1         4
+ butterfly         0         6         5         1         0         0
+    flower         0         8        22         2         9        11
+     piano         0         0         2        12         1         0
+  starfish         0         1         1         0         2         0
+     watch         1         2         6         3         4        32
+Tune set accuracy: 0.63888889
+
+Epoch: 25
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         1         0         1
+ butterfly         1         8         6         2         0         0
+    flower         0         6        21         2        10         8
+     piano         0         0         1        10         0         0
+  starfish         0         1         3         0         2         0
+     watch         1         2         5         4         5        38
+Tune set accuracy: 0.66111111
+
+Epoch: 26
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        41         1         1         1         1         2
+ butterfly         0        10         4         1         0         0
+    flower         0         4        20         1         9         8
+     piano         0         1         4        13         1         0
+  starfish         0         1         2         0         3         0
+     watch         1         1         6         3         3        37
+Tune set accuracy: 0.68888889
+
+Epoch: 27
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         1         2
+ butterfly         2        11         6         2         0         0
+    flower         1         3        24         1         9         9
+     piano         0         1         2        13         1         2
+  starfish         0         1         2         0         4         0
+     watch         0         1         3         2         2        34
+Tune set accuracy: 0.69444444
+
+Epoch: 28
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         0
+ butterfly         1         9         5         2         0         0
+    flower         1         6        21         2         9         7
+     piano         0         0         1        10         1         0
+  starfish         0         1         1         0         3         0
+     watch         1         1         9         4         4        40
+Tune set accuracy: 0.67777778
+
+Epoch: 29
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         0
+ butterfly         1        10         3         2         0         0
+    flower         0         3         9         1         6         1
+     piano         0         0         2        11         1         0
+  starfish         0         1         8         0         3         0
+     watch         2         3        15         4         7        46
+Tune set accuracy: 0.65555556
+
+Epoch: 30
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         1         1
+ butterfly         1        11         9         2         0         0
+    flower         0         3        19         1         8         3
+     piano         0         0         0        11         0         0
+  starfish         0         1         1         0         1         0
+     watch         1         2         8         4         7        43
+Tune set accuracy: 0.69444444
+
+Epoch: 31
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         1         1         0         0
+ butterfly         2        10         8         2         0         0
+    flower         0         3        20         2         8         6
+     piano         0         0         0        10         1         1
+  starfish         0         1         1         0         2         0
+     watch         1         3         7         4         6        40
+Tune set accuracy: 0.67222222
+
+Epoch: 32
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         2
+ butterfly         1         7         2         0         0         0
+    flower         2         8        29         3        11        13
+     piano         0         0         0        13         0         1
+  starfish         0         1         2         0         4         0
+     watch         0         1         4         2         2        31
+Tune set accuracy: 0.68333333
+
+Epoch: 33
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         2
+ butterfly         1         5         3         2         0         0
+    flower         2        11        30         2        11        14
+     piano         0         0         0        10         0         0
+  starfish         0         0         1         0         4         0
+     watch         0         1         3         4         2        31
+Tune set accuracy: 0.66111111
+
+Epoch: 34
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         1
+ butterfly         2         8         5         2         0         0
+    flower         1         7        24         2        10         8
+     piano         0         0         0        10         0         0
+  starfish         0         0         0         0         1         0
+     watch         0         2         8         4         6        38
+Tune set accuracy: 0.66666667
+
+Epoch: 35
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         2         0         4
+ butterfly         0         8         5         1         0         0
+    flower         2         7        28         2        10        15
+     piano         0         0         1        12         0         0
+  starfish         0         1         0         0         5         0
+     watch         0         1         3         2         2        28
+Tune set accuracy: 0.67222222
+
+Epoch: 36
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         0
+ butterfly         3        10         7         2         0         0
+    flower         1         6        24         2        10        12
+     piano         0         0         1        11         0         1
+  starfish         0         1         2         0         5         0
+     watch         0         1         3         3         2        34
+Tune set accuracy: 0.67777778
+
+Epoch: 37
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         1         1         0         0
+ butterfly         1        11         5         2         0         0
+    flower         2         6        25         2        11        11
+     piano         0         0         1        11         0         1
+  starfish         0         0         1         0         2         0
+     watch         0         1         4         3         4        35
+Tune set accuracy: 0.68333333
+
+Epoch: 38
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         0
+ butterfly         1         8         5         2         0         0
+    flower         2         8        27         2        10         9
+     piano         0         0         1        10         0         0
+  starfish         0         0         0         0         4         0
+     watch         1         2         4         4         3        38
+Tune set accuracy: 0.69444444
+
+Epoch: 39
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         1         0         1
+ butterfly         1        10         7         2         0         0
+    flower         1         4        24         1         9         9
+     piano         0         0         1        12         1         0
+  starfish         0         1         1         0         4         0
+     watch         0         2         3         3         3        37
+Tune set accuracy: 0.70555556
+
+Epoch: 40
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         0
+ butterfly         1         6         5         2         0         0
+    flower         1         9        28         4        11        13
+     piano         0         0         0         8         0         0
+  starfish         0         1         0         0         4         0
+     watch         0         1         4         4         2        34
+Tune set accuracy: 0.66666667
+
+Epoch: 41
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         2
+ butterfly         1         8         4         2         0         0
+    flower         0         5        24         1         8         7
+     piano         0         1         3        12         1         0
+  starfish         0         1         1         0         3         0
+     watch         1         2         5         3         5        38
+Tune set accuracy: 0.69444444
+
+Epoch: 42
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         1         1         1         0
+ butterfly         1         8         4         2         0         0
+    flower         0         5        22         2         9         8
+     piano         0         1         1        11         1         0
+  starfish         0         1         2         0         4         0
+     watch         1         2         7         3         2        39
+Tune set accuracy: 0.68888889
+
+Epoch: 43
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        41         2         0         1         0         6
+ butterfly         1         5         4         1         0         0
+    flower         0        10        27         3        11        12
+     piano         0         0         0        11         0         0
+  starfish         0         0         0         0         4         0
+     watch         0         1         6         3         2        29
+Tune set accuracy: 0.65000000
+
+Epoch: 44
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         1
+ butterfly         1        11         5         2         0         0
+    flower         1         4        26         2        10        12
+     piano         0         0         0        12         0         0
+  starfish         0         1         1         0         5         0
+     watch         1         1         5         2         2        34
+Tune set accuracy: 0.70555556
+
+Epoch: 45
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         0
+ butterfly         1         6         2         1         0         0
+    flower         1         9        29         3         9        11
+     piano         0         1         1        11         1         1
+  starfish         0         0         0         0         4         0
+     watch         0         1         5         3         3        35
+Tune set accuracy: 0.69444444
+
+Epoch: 46
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         0
+ butterfly         1         9         3         2         1         0
+    flower         0         3        16         2         6         3
+     piano         0         0         4        10         1         1
+  starfish         0         1         5         0         4         0
+     watch         1         4         9         4         5        43
+Tune set accuracy: 0.67777778
+
+Epoch: 47
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         2         0         3
+ butterfly         1        10         4         2         1         1
+    flower         0         3        20         1         7         6
+     piano         0         0         3        11         1         0
+  starfish         0         1         2         0         4         0
+     watch         1         3         8         3         4        37
+Tune set accuracy: 0.67777778
+
+Epoch: 48
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         0
+ butterfly         1         9         4         2         1         0
+    flower         1         4        23         1         9         4
+     piano         0         0         2        12         0         0
+  starfish         0         1         0         0         5         0
+     watch         1         3         8         3         2        43
+Tune set accuracy: 0.72777778
+
+Epoch: 49
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         1
+ butterfly         1        10         5         2         0         0
+    flower         0         3        24         2         8         6
+     piano         0         0         1        11         1         0
+  starfish         0         1         2         0         4         0
+     watch         1         3         5         3         4        40
+Tune set accuracy: 0.71666667
+
+Epoch: 50
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         1
+ butterfly         1         8         6         1         1         0
+    flower         2         9        26         3         9        12
+     piano         0         0         1        11         0         0
+  starfish         0         0         1         0         5         0
+     watch         0         1         3         3         2        34
+Tune set accuracy: 0.68333333
+
+Epoch: 51
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         3
+ butterfly         1         9         6         3         1         0
+    flower         0         5        22         2         8         6
+     piano         0         0         1         8         0         0
+  starfish         0         0         1         0         5         1
+     watch         1         3         7         5         3        37
+Tune set accuracy: 0.67222222
+
+Epoch: 52
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        10         6         2         1         0
+    flower         1         3        16         1         6         4
+     piano         0         0         1        10         1         0
+  starfish         0         1         5         0         5         0
+     watch         0         4         9         5         4        43
+Tune set accuracy: 0.68888889
+
+Epoch: 53
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        10         9         2         0         0
+    flower         1         5        20         1         9         8
+     piano         0         1         1        10         1         0
+  starfish         0         0         0         0         4         0
+     watch         0         2         7         5         3        39
+Tune set accuracy: 0.68333333
+
+Epoch: 54
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         0
+ butterfly         2         8         5         0         0         0
+    flower         1         8        28         4        10        13
+     piano         0         0         0         9         0         0
+  starfish         0         0         0         0         4         0
+     watch         0         2         4         5         3        34
+Tune set accuracy: 0.67777778
+
+Epoch: 55
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         1
+ butterfly         1         4         4         1         0         0
+    flower         1        11        32         3        10        16
+     piano         0         0         0        11         0         0
+  starfish         0         0         0         0         4         0
+     watch         0         2         1         3         3        30
+Tune set accuracy: 0.67222222
+
+Epoch: 56
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        11         6         1         0         0
+    flower         1         5        23         3        10         9
+     piano         0         0         2        11         0         0
+  starfish         0         0         2         0         4         0
+     watch         0         2         4         3         3        38
+Tune set accuracy: 0.70555556
+
+Epoch: 57
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        41         0         1         1         0         0
+ butterfly         1         9         5         1         0         0
+    flower         0         5        22         3         9         8
+     piano         0         0         1         9         1         0
+  starfish         0         1         2         0         4         0
+     watch         0         3         6         5         3        39
+Tune set accuracy: 0.68888889
+
+Epoch: 58
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         1        11         5         1         1         0
+    flower         1         4        22         2         8         9
+     piano         0         1         3        11         1         0
+  starfish         1         1         3         0         5         0
+     watch         1         1         4         5         2        38
+Tune set accuracy: 0.69444444
+
+Epoch: 59
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         0
+ butterfly         1         8         5         1         0         0
+    flower         0         6        24         1         9        11
+     piano         0         0         1        13         1         0
+  starfish         0         1         4         0         5         0
+     watch         1         2         3         3         2        36
+Tune set accuracy: 0.70000000
+
+Epoch: 60
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        10         6         1         0         0
+    flower         0         6        25         2         9        11
+     piano         0         0         0        13         1         0
+  starfish         0         1         3         0         5         0
+     watch         1         1         3         2         2        35
+Tune set accuracy: 0.71111111
+
+Epoch: 61
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         0
+ butterfly         2        12        10         2         0         1
+    flower         0         3        18         1         8         5
+     piano         0         0         1        10         1         0
+  starfish         0         1         2         0         5         1
+     watch         1         2         6         5         3        40
+Tune set accuracy: 0.68888889
+
+Epoch: 62
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         1
+ butterfly         1         9         8         1         1         0
+    flower         0         5        18         3         9         9
+     piano         0         0         0         9         0         0
+  starfish         0         1         5         0         4         1
+     watch         1         2         6         5         3        36
+Tune set accuracy: 0.64444444
+
+Epoch: 63
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         1        10         5         1         0         1
+    flower         2         6        23         2         9         7
+     piano         0         1         1        13         1         0
+  starfish         1         0         3         0         4         0
+     watch         0         1         5         3         3        39
+Tune set accuracy: 0.70555556
+
+Epoch: 64
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         1
+ butterfly         3        12         8         3         0         2
+    flower         0         3        21         2        10         6
+     piano         0         0         1         8         0         0
+  starfish         0         1         3         1         5         1
+     watch         0         2         4         4         2        37
+Tune set accuracy: 0.67777778
+
+Epoch: 65
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         0
+ butterfly         2        10         6         1         1         1
+    flower         0         5        21         1         8         7
+     piano         0         0         2        12         1         0
+  starfish         0         0         1         0         4         0
+     watch         1         3         7         4         3        39
+Tune set accuracy: 0.69444444
+
+Epoch: 66
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         0
+ butterfly         2        11         4         2         1         0
+    flower         0         3        18         1         6         6
+     piano         0         0         1        10         1         0
+  starfish         1         1         4         0         5         0
+     watch         1         3        10         5         4        41
+Tune set accuracy: 0.68333333
+
+Epoch: 67
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         2         0         1
+ butterfly         1        12         3         2         0         0
+    flower         0         3        16         1         6         4
+     piano         0         0         1         9         1         0
+  starfish         0         0         4         0         6         0
+     watch         1         3        13         5         4        42
+Tune set accuracy: 0.69444444
+
+Epoch: 68
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         1        12         6         1         1         0
+    flower         0         3        21         2         9         7
+     piano         0         1         1        12         1         0
+  starfish         2         1         3         0         4         0
+     watch         1         1         6         4         2        40
+Tune set accuracy: 0.70555556
+
+Epoch: 69
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         2         0         1
+ butterfly         1         9         4         1         0         0
+    flower         1         5        24         1         8         6
+     piano         0         0         2        10         1         0
+  starfish         0         0         1         0         4         0
+     watch         0         3         6         5         4        40
+Tune set accuracy: 0.70555556
+
+Epoch: 70
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         0
+ butterfly         1         8         4         2         0         0
+    flower         1         7        25         2        10        10
+     piano         0         0         1        10         0         0
+  starfish         1         0         2         0         5         0
+     watch         0         2         5         4         2        37
+Tune set accuracy: 0.68888889
+
+Epoch: 71
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         1         0         2         0         0
+ butterfly         1        10         6         1         0         1
+    flower         0         3        16         1         7         4
+     piano         0         0         3        12         1         0
+  starfish         2         1         4         0         5         0
+     watch         1         3         8         3         4        42
+Tune set accuracy: 0.68333333
+
+Epoch: 72
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         1         0         0
+ butterfly         2         9         4         2         0         0
+    flower         0         5        24         2        10         8
+     piano         0         1         1         9         0         0
+  starfish         0         0         3         0         4         0
+     watch         1         2         5         5         3        39
+Tune set accuracy: 0.68888889
+
+Epoch: 73
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         2         0         0
+ butterfly         1         9         5         1         1         0
+    flower         1         5        22         2         8         5
+     piano         0         1         1        10         0         0
+  starfish         1         1         3         0         6         0
+     watch         1         2         6         4         2        42
+Tune set accuracy: 0.70555556
+
+Epoch: 74
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         1
+ butterfly         2        13         9         3         1         1
+    flower         1         4        23         1         6        11
+     piano         0         0         0        12         1         0
+  starfish         1         0         2         0         6         0
+     watch         0         1         3         2         3        34
+Tune set accuracy: 0.70000000
+
+Epoch: 75
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         1         0         0
+ butterfly         2        10         4         4         1         0
+    flower         0         5        20         1         8         6
+     piano         0         0         2         8         0         0
+  starfish         1         0         2         0         4         0
+     watch         2         3         9         5         4        41
+Tune set accuracy: 0.66666667
+
+Epoch: 76
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        10         4         1         0         0
+    flower         1         5        26         1         8         9
+     piano         0         0         1        11         1         0
+  starfish         0         0         2         0         5         0
+     watch         0         3         4         5         3        37
+Tune set accuracy: 0.71666667
+
+Epoch: 77
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         0         0         0
+ butterfly         4        13         5         3         1         1
+    flower         0         2        19         1         6         6
+     piano         0         0         2        11         1         0
+  starfish         1         2         4         0         5         1
+     watch         0         1         7         4         4        39
+Tune set accuracy: 0.68888889
+
+Epoch: 78
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        12         6         1         1         1
+    flower         0         3        20         1         7         6
+     piano         0         1         4        14         1         0
+  starfish         0         1         2         0         6         1
+     watch         1         1         5         2         2        38
+Tune set accuracy: 0.72222222
+
+Epoch: 79
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         2         0         0
+ butterfly         1         9         3         1         0         0
+    flower         1         7        28         2         8        11
+     piano         0         1         1        10         1         0
+  starfish         2         0         2         0         6         0
+     watch         0         1         3         4         2        36
+Tune set accuracy: 0.70555556
+
+Epoch: 80
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         0
+ butterfly         1        12         5         2         1         0
+    flower         0         2        19         1         6         8
+     piano         0         0         1        12         0         0
+  starfish         2         2         6         0         7         1
+     watch         0         2         6         3         3        38
+Tune set accuracy: 0.70555556
+
+Epoch: 81
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        11         4         1         1         0
+    flower         1         5        25         3         8        10
+     piano         0         0         1        11         0         0
+  starfish         0         0         1         0         5         0
+     watch         0         2         6         3         3        37
+Tune set accuracy: 0.71666667
+
+Epoch: 82
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        14         9         4         1         1
+    flower         0         3        22         1         9        11
+     piano         0         0         1        10         0         0
+  starfish         0         0         1         0         5         0
+     watch         1         1         4         3         2        35
+Tune set accuracy: 0.70000000
+
+Epoch: 83
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         2
+ butterfly         2        12        10         1         1         1
+    flower         1         2        22         2         8        11
+     piano         0         1         1        14         0         0
+  starfish         0         2         1         0         6         1
+     watch         0         1         3         1         2        32
+Tune set accuracy: 0.69444444
+
+Epoch: 84
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         2
+ butterfly         2        11         7         1         1         0
+    flower         1         3        21         3         8        13
+     piano         0         2         2        14         1         0
+  starfish         0         2         2         0         5         0
+     watch         0         0         5         1         2        32
+Tune set accuracy: 0.67777778
+
+Epoch: 85
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         0
+ butterfly         1        11         8         2         1         1
+    flower         0         5        20         1         7         8
+     piano         0         1         2        12         1         0
+  starfish         0         0         0         0         5         0
+     watch         1         1         7         3         3        38
+Tune set accuracy: 0.70000000
+
+Epoch: 86
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        11         5         1         2         0
+    flower         1         5        25         2         7        11
+     piano         0         1         1        12         1         0
+  starfish         0         0         2         0         5         0
+     watch         0         1         4         3         2        35
+Tune set accuracy: 0.71111111
+
+Epoch: 87
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         1         0         1
+ butterfly         1         8         7         1         2         0
+    flower         1         3        20         2         4         7
+     piano         0         0         1        10         1         0
+  starfish         0         2         2         0         6         0
+     watch         0         4         7         5         4        39
+Tune set accuracy: 0.68333333
+
+Epoch: 88
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         0
+ butterfly         1         7         6         2         1         1
+    flower         0         8        22         2         7         8
+     piano         0         0         2         9         0         0
+  starfish         1         0         2         0         5         0
+     watch         1         3         5         5         4        38
+Tune set accuracy: 0.66666667
+
+Epoch: 89
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         0         0         0
+ butterfly         1         7         7         1         1         2
+    flower         3        10        24         2        10        11
+     piano         0         0         2        13         0         0
+  starfish         1         0         1         0         4         0
+     watch         0         1         3         3         2        34
+Tune set accuracy: 0.66111111
+
+Epoch: 90
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         0
+ butterfly         2        10         5         2         1         0
+    flower         1         4        23         3         8        10
+     piano         0         0         1         8         0         0
+  starfish         1         2         3         0         6         0
+     watch         0         2         5         5         2        37
+Tune set accuracy: 0.67777778
+
+Epoch: 91
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         1
+ butterfly         2        10         8         1         1         1
+    flower         0         4        17         2         7         5
+     piano         0         1         1        12         1         0
+  starfish         1         1         1         0         5         0
+     watch         1         2        10         3         3        40
+Tune set accuracy: 0.67777778
+
+Epoch: 92
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         1
+ butterfly         1        10         5         1         1         1
+    flower         2         5        25         3         8         9
+     piano         0         1         1        11         1         0
+  starfish         1         1         2         0         4         0
+     watch         0         1         4         3         3        36
+Tune set accuracy: 0.68888889
+
+Epoch: 93
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        11         5         1         1         1
+    flower         1         4        24         3         8        10
+     piano         0         1         1        11         1         0
+  starfish         0         1         2         0         4         0
+     watch         0         1         5         3         3        35
+Tune set accuracy: 0.69444444
+
+Epoch: 94
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         1         0         0         0         1
+ butterfly         2         9         7         0         1         1
+    flower         0         5        17         2         6         5
+     piano         0         1         3        14         1         0
+  starfish         1         1         2         0         6         0
+     watch         1         1         8         3         3        40
+Tune set accuracy: 0.68888889
+
+Epoch: 95
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1         8         6         0         0         1
+    flower         1         8        24         2        10        13
+     piano         0         1         2        14         0         0
+  starfish         0         0         2         0         4         0
+     watch         0         1         3         2         3        32
+Tune set accuracy: 0.67777778
+
+Epoch: 96
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        12         8         2         4         1
+    flower         1         2        20         1         5         8
+     piano         0         1         3        14         1         0
+  starfish         0         2         2         0         5         0
+     watch         0         1         4         2         2        37
+Tune set accuracy: 0.71111111
+
+Epoch: 97
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         1
+ butterfly         1        10         8         1         0         0
+    flower         1         5        20         2         9        11
+     piano         0         0         1        12         1         0
+  starfish         2         2         2         0         5         0
+     watch         0         1         6         3         2        35
+Tune set accuracy: 0.66666667
+
+Epoch: 98
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         1        11         9         0         0         1
+    flower         0         3        18         2         8         9
+     piano         0         1         2        14         1         0
+  starfish         2         2         2         0         5         0
+     watch         1         1         6         3         3        37
+Tune set accuracy: 0.68333333
+
+Epoch: 99
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1        12         7         2         0         1
+    flower         1         2        20         1         8        10
+     piano         0         1         3        13         1         0
+  starfish         1         2         2         0         5         0
+     watch         0         1         5         3         3        36
+Tune set accuracy: 0.69444444
+
+Epoch: 100
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1        11         9         2         0         1
+    flower         1         4        21         3         9        11
+     piano         0         1         1        11         1         0
+  starfish         0         1         1         0         4         0
+     watch         0         1         5         3         3        35
+Tune set accuracy: 0.67777778
+
+Epoch: 101
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         0         0         0
+ butterfly         1         6         4         0         0         0
+    flower         1         7        26         2         8         9
+     piano         0         1         1        13         1         0
+  starfish         1         0         1         0         4         0
+     watch         0         3         5         4         4        38
+Tune set accuracy: 0.70000000
+
+Epoch: 102
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         0         0         0
+ butterfly         1         7         7         0         0         0
+    flower         3         8        24         2         9        13
+     piano         0         1         3        12         1         0
+  starfish         1         0         0         0         4         0
+     watch         0         2         3         5         3        34
+Tune set accuracy: 0.65555556
+
+Epoch: 103
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         1
+ butterfly         2        10         7         1         1         0
+    flower         1         5        21         2         8        11
+     piano         0         1         3        14         1         0
+  starfish         1         1         2         0         4         0
+     watch         0         1         4         2         3        35
+Tune set accuracy: 0.67777778
+
+Epoch: 104
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         1         1
+ butterfly         1         9         7         0         2         1
+    flower         0         5        18         2         6         8
+     piano         0         1         4        14         1         0
+  starfish         1         1         2         0         5         0
+     watch         1         2         6         3         2        37
+Tune set accuracy: 0.67777778
+
+Epoch: 105
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         0
+ butterfly         2        11         9         2         1         1
+    flower         0         5        19         2         9         9
+     piano         0         1         1        10         0         0
+  starfish         1         0         0         0         4         0
+     watch         1         1         8         4         3        37
+Tune set accuracy: 0.66111111
+
+Epoch: 106
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         0         0         1
+ butterfly         1        10         5         0         0         1
+    flower         1         4        19         2         7         8
+     piano         0         1         5        13         1         0
+  starfish         1         1         5         0         6         1
+     watch         0         1         3         4         3        36
+Tune set accuracy: 0.68333333
+
+Epoch: 107
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         0         0         0
+ butterfly         2        12         8         0         2         0
+    flower         1         3        23         2         7         9
+     piano         1         1         1        14         1         0
+  starfish         1         1         2         0         4         0
+     watch         0         1         3         3         3        38
+Tune set accuracy: 0.71111111
+
+Epoch: 108
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1        10         7         1         0         0
+    flower         1         6        25         4        10        12
+     piano         0         0         1        12         0         0
+  starfish         0         1         1         0         5         0
+     watch         0         1         3         2         2        35
+Tune set accuracy: 0.70555556
+
+Epoch: 109
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         1         1
+ butterfly         1        11         6         0         3         1
+    flower         1         5        20         2         5         9
+     piano         0         1         4        14         1         0
+  starfish         0         0         3         0         6         0
+     watch         0         1         4         2         1        36
+Tune set accuracy: 0.70555556
+
+Epoch: 110
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         1
+ butterfly         1        12         9         2         3         1
+    flower         1         2        15         1         5         9
+     piano         0         1         2        14         0         0
+  starfish         1         2         5         0         6         0
+     watch         0         1         6         2         3        36
+Tune set accuracy: 0.67777778
+
+Epoch: 111
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         1         0         1
+ butterfly         1        11         9         2         2         1
+    flower         1         4        19         2         8         9
+     piano         0         0         1        13         0         0
+  starfish         0         2         4         0         5         1
+     watch         0         1         4         1         2        35
+Tune set accuracy: 0.68333333
+
+Epoch: 112
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         0         0         1
+ butterfly         1         8         6         1         2         0
+    flower         1         6        20         2         7         9
+     piano         0         1         3        12         1         0
+  starfish         0         0         2         0         4         0
+     watch         0         2         6         4         3        37
+Tune set accuracy: 0.67222222
+
+Epoch: 113
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         2         8         5         1         3         0
+    flower         1         8        26         2         8        13
+     piano         0         0         1        15         0         0
+  starfish         0         1         2         0         4         0
+     watch         0         1         3         1         2        34
+Tune set accuracy: 0.70000000
+
+Epoch: 114
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         1         1
+ butterfly         1        12         9         1         2         1
+    flower         1         2        15         1         5         4
+     piano         0         1         2        15         1         0
+  starfish         0         2         3         0         5         1
+     watch         0         1         8         2         3        40
+Tune set accuracy: 0.70555556
+
+Epoch: 115
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         3        12         9         1         1         1
+    flower         0         3        19         2         8         9
+     piano         0         1         1        13         1         0
+  starfish         0         1         1         0         3         0
+     watch         1         1         7         3         4        37
+Tune set accuracy: 0.67777778
+
+Epoch: 116
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        35         0         0         0         0         0
+ butterfly         4        11         6         0         1         1
+    flower         1         4        21         2         8         7
+     piano         1         1         4        14         1         0
+  starfish         1         1         2         0         4         1
+     watch         0         1         4         3         3        38
+Tune set accuracy: 0.68333333
+
+Epoch: 117
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         9         4         1         0         0
+    flower         0         6        24         2         9        10
+     piano         0         1         2        13         0         0
+  starfish         0         1         2         0         5         1
+     watch         1         1         5         3         3        36
+Tune set accuracy: 0.70555556
+
+Epoch: 118
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        11         5         1         2         0
+    flower         0         3        21         2         8        12
+     piano         0         1         2        14         0         0
+  starfish         0         2         3         0         5         0
+     watch         1         1         6         2         2        34
+Tune set accuracy: 0.69444444
+
+Epoch: 119
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         1
+ butterfly         1         9         5         1         0         0
+    flower         1         5        22         2        10        10
+     piano         0         1         2        13         0         0
+  starfish         1         2         5         0         5         1
+     watch         0         1         3         3         2        35
+Tune set accuracy: 0.68333333
+
+Epoch: 120
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         1
+ butterfly         1        11         7         1         1         0
+    flower         0         3        19         2         9         7
+     piano         0         1         1        12         0         0
+  starfish         2         2         5         0         4         1
+     watch         0         1         5         3         3        38
+Tune set accuracy: 0.68333333
+
+Epoch: 121
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         9         6         1         0         0
+    flower         1         7        23         2         9        11
+     piano         0         1         2        11         1         0
+  starfish         0         0         2         0         3         0
+     watch         0         1         4         5         4        36
+Tune set accuracy: 0.67777778
+
+Epoch: 122
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         1         1
+ butterfly         1        11         6         1         3         0
+    flower         1         3        18         2         5        11
+     piano         0         1         4        14         1         0
+  starfish         0         2         7         0         6         1
+     watch         0         1         2         2         1        34
+Tune set accuracy: 0.68333333
+
+Epoch: 123
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1         8         3         0         0         0
+    flower         1         4        21         2         7        10
+     piano         0         1         2        12         1         0
+  starfish         1         2         6         0         6         1
+     watch         0         3         5         5         3        36
+Tune set accuracy: 0.67777778
+
+Epoch: 124
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         9         5         1         0         0
+    flower         1         3        22         3         8        11
+     piano         0         1         1        10         1         0
+  starfish         0         2         5         0         5         0
+     watch         0         3         4         5         3        36
+Tune set accuracy: 0.67777778
+
+Epoch: 125
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1         9         8         1         1         0
+    flower         1         5        19         2         8         9
+     piano         0         1         2        14         1         0
+  starfish         0         0         3         0         4         1
+     watch         0         3         5         2         3        36
+Tune set accuracy: 0.67777778
+
+Epoch: 126
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         2         0         0         0         1
+ butterfly         1         6         3         0         1         0
+    flower         1         8        29         2         9        14
+     piano         0         1         2        15         0         0
+  starfish         0         0         2         0         5         0
+     watch         0         1         1         2         2        32
+Tune set accuracy: 0.70555556
+
+Epoch: 127
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         1
+ butterfly         1        11         7         1         1         1
+    flower         2         4        20         2         9        10
+     piano         0         1         2        12         0         0
+  starfish         1         1         3         0         4         0
+     watch         0         1         5         4         3        35
+Tune set accuracy: 0.66666667
+
+Epoch: 128
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1        11         7         2         1         1
+    flower         1         5        21         2         9        12
+     piano         0         1         2        11         0         0
+  starfish         0         0         2         0         4         0
+     watch         1         1         5         4         3        34
+Tune set accuracy: 0.66666667
+
+Epoch: 129
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         1         0         1
+ butterfly         1        11         8         2         3         1
+    flower         1         4        20         1         8        11
+     piano         0         1         1        12         0         0
+  starfish         1         1         3         0         4         0
+     watch         0         1         5         3         2        34
+Tune set accuracy: 0.66666667
+
+Epoch: 130
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        36         0         0         0         0         0
+ butterfly         3        10         7         1         2         1
+    flower         2         6        25         2         8        12
+     piano         0         1         2        12         0         0
+  starfish         1         0         1         0         4         1
+     watch         0         1         2         4         3        33
+Tune set accuracy: 0.66666667
+
+Epoch: 131
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1         8         5         0         1         1
+    flower         1         6        20         2         6         8
+     piano         0         1         4        13         1         0
+  starfish         0         0         1         0         6         1
+     watch         0         3         7         4         3        36
+Tune set accuracy: 0.68333333
+
+Epoch: 132
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        37         0         0         0         0         0
+ butterfly         1         9         4         0         0         1
+    flower         3         7        28         2         9        11
+     piano         0         1         2        15         1         0
+  starfish         1         0         1         0         4         0
+     watch         0         1         2         2         3        35
+Tune set accuracy: 0.71111111
+
+Epoch: 133
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         0         0         1
+ butterfly         1         7         5         0         1         0
+    flower         1         5        21         2         9         9
+     piano         0         1         1        12         0         0
+  starfish         0         1         2         0         4         0
+     watch         0         3         8         5         3        37
+Tune set accuracy: 0.67222222
+
+Epoch: 134
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        10         9         1         1         0
+    flower         1         4        23         2         8        11
+     piano         0         1         2        14         1         0
+  starfish         0         1         1         0         4         0
+     watch         0         2         2         2         3        35
+Tune set accuracy: 0.70000000
+
+Epoch: 135
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         8         4         1         0         0
+    flower         1         7        26         3        10        11
+     piano         0         1         2        13         0         0
+  starfish         0         0         2         0         4         0
+     watch         0         2         3         2         3        36
+Tune set accuracy: 0.70555556
+
+Epoch: 136
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         1         0         0         0         1
+ butterfly         1         9         9         0         1         1
+    flower         1         6        18         2         8         7
+     piano         0         1         2        14         0         0
+  starfish         0         0         1         0         4         0
+     watch         0         1         7         3         4        38
+Tune set accuracy: 0.68333333
+
+Epoch: 137
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         1         0         0         0         1
+ butterfly         1         7         2         1         0         0
+    flower         2         8        27         3        10        12
+     piano         0         0         1        10         0         0
+  starfish         0         0         2         0         4         0
+     watch         0         2         5         5         3        34
+Tune set accuracy: 0.67222222
+
+Epoch: 138
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         2         9         8         0         1         0
+    flower         1         6        20         2         8         9
+     piano         1         1         4        14         1         0
+  starfish         0         0         1         0         4         0
+     watch         0         2         4         3         3        38
+Tune set accuracy: 0.68333333
+
+Epoch: 139
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1         8         5         0         0         1
+    flower         2         6        25         2         9        10
+     piano         0         1         2        14         0         0
+  starfish         0         1         2         0         5         0
+     watch         0         2         3         3         3        36
+Tune set accuracy: 0.70555556
+
+Epoch: 140
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        10         8         2         2         0
+    flower         0         3        18         1         6         6
+     piano         0         1         2        13         1         0
+  starfish         0         2         3         0         5         1
+     watch         1         2         6         3         3        39
+Tune set accuracy: 0.69444444
+
+Epoch: 141
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1         7         2         0         0         0
+    flower         2         6        29         2        10        12
+     piano         0         1         1        14         0         0
+  starfish         0         1         2         0         4         0
+     watch         0         3         3         3         3        35
+Tune set accuracy: 0.71111111
+
+Epoch: 142
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1         9         6         1         1         0
+    flower         1         3        21         1         8        10
+     piano         0         1         5        16         1         0
+  starfish         0         2         2         0         4         0
+     watch         0         3         3         1         3        36
+Tune set accuracy: 0.70000000
+
+Epoch: 143
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         1
+ butterfly         1         9         7         2         2         1
+    flower         2         4        19         1         7         8
+     piano         0         1         1        13         1         0
+  starfish         1         2         4         0         4         1
+     watch         0         2         6         3         3        36
+Tune set accuracy: 0.66111111
+
+Epoch: 144
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        10         9         2         2         1
+    flower         1         4        21         1         8         6
+     piano         0         1         1        13         0         0
+  starfish         0         2         1         0         4         1
+     watch         0         1         5         3         3        38
+Tune set accuracy: 0.70000000
+
+Epoch: 145
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         1
+ butterfly         1        11         6         1         1         0
+    flower         1         3        21         2         9        11
+     piano         0         1         2        15         0         0
+  starfish         0         2         3         0         5         1
+     watch         0         1         5         1         2        34
+Tune set accuracy: 0.70000000
+
+Epoch: 146
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         2         0         0         0         0
+ butterfly         1         7         2         0         1         0
+    flower         1         4        21         3         9         7
+     piano         0         1         1        11         0         0
+  starfish         0         1         7         0         4         1
+     watch         0         3         6         5         3        39
+Tune set accuracy: 0.67777778
+
+Epoch: 147
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         8         5         1         0         0
+    flower         1         4        23         3         9         8
+     piano         0         1         1        11         1         0
+  starfish         0         2         3         0         4         0
+     watch         0         3         5         4         3        39
+Tune set accuracy: 0.69444444
+
+Epoch: 148
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        40         0         0         0         0         0
+ butterfly         1         9         5         1         2         0
+    flower         1         3        17         3         7         6
+     piano         0         1         1        10         0         0
+  starfish         0         2         4         0         6         1
+     watch         0         3        10         5         2        40
+Tune set accuracy: 0.67777778
+
+Epoch: 149
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         0         0         0
+ butterfly         3        10         7         0         2         1
+    flower         1         5        23         3         7         9
+     piano         0         1         1        15         1         0
+  starfish         0         1         2         0         5         1
+     watch         0         1         4         1         2        36
+Tune set accuracy: 0.70555556
+
+Epoch: 150
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        39         0         0         0         0         0
+ butterfly         1        10         7         1         1         1
+    flower         2         6        23         2         8        10
+     piano         0         1         1        14         1         0
+  starfish         0         0         2         0         4         0
+     watch         0         1         4         2         3        36
+Tune set accuracy: 0.70000000
+
+Final Result:
+            airplane butterfly    flower     piano  starfish     watch
+  airplane        38         0         0         1         0         2
+ butterfly         1        14         2         1         0         0
+    flower         2         3        27         2         8         5
+     piano         0         0         2        14         1         0
+  starfish         0         0         0         1         5         0
+     watch         0         1         6         0         3        39
+Accuracy:    0.76966292
+
+
+
+
+
+
+
 Config:
 	net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 

@@ -27,34 +27,44 @@ public abstract class Trainer {
 
 	protected TrainerEvent _onStep;
 
-	boolean _stop = false;
+	protected double _forwardTime;
+
+	protected double _backwardtime;
+
+	protected boolean _stop = false;
+
+	protected double _loss;
+
+	protected double _decayLossL1;
+
+	protected double _decayLossL2;
 
 
 	public Trainer() {}
 
 
+	public double forwardTime() {
+		return _forwardTime;
+	}
+
+
+	public double backwardTime() {
+		return _backwardtime;
+	}
+
+
 	public double costLoss() {
-		return 0;
+		return _loss;
 	}
 
 
 	public double decayLossL1() {
-		return 0;
+		return _decayLossL1;
 	}
 
 
 	public double decayLossL2() {
-		return 0;
-	}
-
-
-	public int forwardTime() {
-		return 0;
-	}
-
-
-	public int backwardTime() {
-		return 0;
+		return _decayLossL2;
 	}
 
 
@@ -152,11 +162,11 @@ public abstract class Trainer {
 		while (_epoch < _net.epochs) {
 			Example ex = drawOneExample();
 			if (_stop) break;
-			
+
 			_net.inTraining(true);
 			this.trainOneExample(net, ex.x.W, ex.y.W);
 			_net.inTraining(false);
-			
+
 			this.incStep();
 			if (_stop) break;
 		}

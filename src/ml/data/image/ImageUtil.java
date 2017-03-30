@@ -15,108 +15,132 @@ import ml.convnet.Volume;
 
 public class ImageUtil {
 
+	public enum LoadOption {
+		RGB,
+		RGB_EDGES,
+		GRAY,
+		RGB_GRAY,
+		EDGES,
+	}
+
 	public static Volume imageToVolume(BufferedImage image) {
-		return imageToVolume(image, 0);
+		return imageToVolume(image, LoadOption.RGB);
 	}
 
 
-	public static Volume imageToVolume(BufferedImage image, int options) {
+	public static Volume imageToVolume(BufferedImage image, LoadOption option) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		Volume v = null;
 
-		switch (options) {
-		case 0:
-			// RGB volume
-			v = new Volume(width, height, 3);
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					v.set(i, j, 0, (((double) c.getRed())) / 255);
-					v.set(i, j, 1, (((double) c.getGreen())) / 255);
-					v.set(i, j, 2, (((double) c.getBlue())) / 255);
-				}
-			}
-			break;
+		switch (option) {
 
-		case 1:
-			// Gray scale volume
-			v = new Volume(width, height, 1);
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
-					v.set(i, j, 0, g);
+			case RGB:
+				// RGB volume
+				v = new Volume(width, height, 3);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+					}
 				}
-			}
-			v = sobelFilter(v, 0);		
-			break;
+				break;
 
-		case 2:
-			// RGB and gray scale volume
-			v = new Volume(width, height, 4);
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					v.set(i, j, 0, (((double) c.getRed())) / 255);
-					v.set(i, j, 1, (((double) c.getGreen())) / 255);
-					v.set(i, j, 2, (((double) c.getBlue())) / 255);
-					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
-					v.set(i, j, 3, g);
+			case GRAY:
+				// Gray scale volume
+				v = new Volume(width, height, 1);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 0, g);
+					}
 				}
-			}
-			break;
-		case 3:
-			// RGB and edges volume
-			v = new Volume(width, height, 4);			
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					Color c = new Color(image.getRGB(i, j));
-					v.set(i, j, 0, (((double) c.getRed())) / 255);
-					v.set(i, j, 1, (((double) c.getGreen())) / 255);
-					v.set(i, j, 2, (((double) c.getBlue())) / 255);
-					double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
-					v.set(i, j, 3, g);
+				break;
+
+			case RGB_GRAY:
+				// RGB and gray scale volume
+				v = new Volume(width, height, 4);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 3, g);
+					}
 				}
-			}						
-			v = sobelFilter(v, 3);						
+				break;
+
+			case RGB_EDGES:
+				// RGB and edges volume
+				v = new Volume(width, height, 4);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						v.set(i, j, 0, (((double) c.getRed())) / 255);
+						v.set(i, j, 1, (((double) c.getGreen())) / 255);
+						v.set(i, j, 2, (((double) c.getBlue())) / 255);
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 3, g);
+					}
+				}
+				v = sobelFilter(v, 3);
+				break;
+
+			case EDGES:
+				// Gray scale volume
+				v = new Volume(width, height, 1);
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
+						Color c = new Color(image.getRGB(i, j));
+						double g = rgbToGrayScale(c.getRed(), c.getGreen(), c.getBlue());
+						v.set(i, j, 0, g);
+					}
+				}
+				v = sobelFilter(v, 0);
+
+				break;
 		}
 		return v;
 	}
 
 	private static double pixelAt(Volume v, int x, int y, int z) {
-		if (x<0 || x>=v.width()) return 0;
-		if (y<0 || y>=v.width()) return 0;
-		if (y<0 || y>=v.width()) return 0;
-		if (z<0 || z>=v.depth()) return 0;
+		if (x < 0 || x >= v.width()) return 0;
+		if (y < 0 || y >= v.width()) return 0;
+		if (y < 0 || y >= v.width()) return 0;
+		if (z < 0 || z >= v.depth()) return 0;
 		return v.get(x, y, z);
 	}
-	
+
 
 	private static Volume sobelFilter(Volume v, int z) {
 		Volume u = new Volume(v);
 		int[][] sobelX = new int[][] {
-			new int[] { -1, 0, 1 }, 
-			new int[] { -2, 0, 2 }, 
-			new int[] { -1, 0, 1 }
+										new int[] { -1, 0, 1 },
+										new int[] { -2, 0, 2 },
+										new int[] { -1, 0, 1 }
 		};
 
-		int[][] sobelY = new int[][] { 
-			new int[] { -1, -2, -1 }, 
-			new int[] { 0, 0, 0 }, 
-			new int[] { 1, 2, 1 }
+		int[][] sobelY = new int[][] {
+										new int[] { -1, -2, -1 },
+										new int[] { 0, 0, 0 },
+										new int[] { 1, 2, 1 }
 		};
 
-		for (int x=0; x<v.width(); x++) {
-			for (int y=0; y<v.height(); y++) {				
-				double px = (sobelX[0][0] * pixelAt(v,x-1,y-1,z)) + (sobelX[0][1] * pixelAt(v,x,y-1,z)) + (sobelX[0][2] * pixelAt(v, x+1,y-1,z)) 
-			              + (sobelX[1][0] * pixelAt(v,x-1,y,z))   + (sobelX[1][1] * pixelAt(v,x,y,z))   + (sobelX[1][2] * pixelAt(v,x+1,y,z))
-			              + (sobelX[2][0] * pixelAt(v,x-1,y+1,z)) + (sobelX[2][1] * pixelAt(v,x,y+1,z)) + (sobelX[2][2] * pixelAt(v,x+1,y+1,z));
-				
-			    double py = (sobelY[0][0] * pixelAt(v,x-1,y-1,z)) + (sobelY[0][1] * pixelAt(v,x,y-1,z)) + (sobelY[0][2] * pixelAt(v,x+1,y-1,z))
-			              + (sobelY[1][0] * pixelAt(v,x-1,y,z))   + (sobelY[1][1] * pixelAt(v,x,y,z))   + (sobelY[1][2] * pixelAt(v,x+1,y,z)) 
-			              + (sobelY[2][0] * pixelAt(v,x-1,y+1,z)) + (sobelY[2][1] * pixelAt(v,x,y+1,z)) + (sobelY[2][2] * pixelAt(v,x+1,y+1,z));
-				
+		for (int x = 0; x < v.width(); x++) {
+			for (int y = 0; y < v.height(); y++) {
+				double px = (sobelX[0][0] * pixelAt(v, x - 1, y - 1, z)) + (sobelX[0][1] * pixelAt(v, x, y - 1, z)) + (sobelX[0][2] * pixelAt(v, x + 1, y - 1, z))
+						+ (sobelX[1][0] * pixelAt(v, x - 1, y, z)) + (sobelX[1][1] * pixelAt(v, x, y, z)) + (sobelX[1][2] * pixelAt(v, x + 1, y, z))
+						+ (sobelX[2][0] * pixelAt(v, x - 1, y + 1, z)) + (sobelX[2][1] * pixelAt(v, x, y + 1, z)) + (sobelX[2][2] * pixelAt(v, x + 1, y + 1, z));
+
+				double py = (sobelY[0][0] * pixelAt(v, x - 1, y - 1, z)) + (sobelY[0][1] * pixelAt(v, x, y - 1, z)) + (sobelY[0][2] * pixelAt(v, x + 1, y - 1, z))
+						+ (sobelY[1][0] * pixelAt(v, x - 1, y, z)) + (sobelY[1][1] * pixelAt(v, x, y, z)) + (sobelY[1][2] * pixelAt(v, x + 1, y, z))
+						+ (sobelY[2][0] * pixelAt(v, x - 1, y + 1, z)) + (sobelY[2][1] * pixelAt(v, x, y + 1, z)) + (sobelY[2][2] * pixelAt(v, x + 1, y + 1, z));
+
 				double p = Math.sqrt(px * px + py * py);
 				u.set(x, y, z, p);
 			}
@@ -145,7 +169,7 @@ public class ImageUtil {
 
 	private static BufferedImage volumeToImageLayer(Volume v, int layer) {
 		BufferedImage image;
-		Volume u = v.normalize(layer);		
+		Volume u = v.normalize(layer);
 		image = new BufferedImage(u.width(), u.height(), BufferedImage.TYPE_INT_RGB);
 		for (int i = 0; i < u.height(); i++) {
 			for (int j = 0; j < u.width(); j++) {
@@ -198,28 +222,28 @@ public class ImageUtil {
 
 		int r = (int) (Math.random() * 2);
 		switch (r) {
-		case 0:
-			// Flip the image vertically
-			AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-			tx.translate(0, -image.getHeight(null));
-			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-			image = op.filter(image, null);
-			break;
+			case 0:
+				// Flip the image vertically
+				AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+				tx.translate(0, -image.getHeight(null));
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				image = op.filter(image, null);
+				break;
 
-		case 1:
-			// Flip the image horizontally
-			tx = AffineTransform.getScaleInstance(-1, 1);
-			tx.translate(-image.getWidth(null), 0);
-			op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-			image = op.filter(image, null);
-			break;
-		case 2:
-			// Flip the image vertically and horizontally; equivalent to rotating the image 180 degrees
-			tx = AffineTransform.getScaleInstance(-1, -1);
-			tx.translate(-image.getWidth(null), -image.getHeight(null));
-			op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-			image = op.filter(image, null);
-			break;
+			case 1:
+				// Flip the image horizontally
+				tx = AffineTransform.getScaleInstance(-1, 1);
+				tx.translate(-image.getWidth(null), 0);
+				op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				image = op.filter(image, null);
+				break;
+			case 2:
+				// Flip the image vertically and horizontally; equivalent to rotating the image 180 degrees
+				tx = AffineTransform.getScaleInstance(-1, -1);
+				tx.translate(-image.getWidth(null), -image.getHeight(null));
+				op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				image = op.filter(image, null);
+				break;
 		}
 
 		return image;
@@ -250,7 +274,7 @@ public class ImageUtil {
 	}
 
 
-	public static Volume loadImage(String fileName, int options) {
+	public static Volume loadImage(String fileName, LoadOption options) {
 		Volume v = null;
 		File inputFile = new File(fileName);
 		try {
@@ -266,7 +290,9 @@ public class ImageUtil {
 
 
 	public static BufferedImage imageToBufferedImage(Image img) {
-		if (img instanceof BufferedImage) { return (BufferedImage) img; }
+		if (img instanceof BufferedImage) {
+			return (BufferedImage) img;
+		}
 
 		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = bimage.createGraphics();

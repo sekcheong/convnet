@@ -2,24 +2,19 @@ package ml.convnet.trainer;
 
 import ml.convnet.ConvNet;
 import ml.convnet.Volume;
+import ml.utils.tracing.StopWatch;
 
 public class SGDTrainer extends Trainer {
 
 	private double _rate;
-
 	private double _momentum;
-
 	private double _decayL1;
-
 	private double _decayL2;
-
 	private double _decayLossL1;
-
 	private double _decayLossL2;
-
 	private double _loss = 0.0;
-
 	private int _batchSize;
+
 
 
 	public SGDTrainer(double learningRate, int batchSize, double momentum, double decayL1, double decayL2) {
@@ -34,13 +29,21 @@ public class SGDTrainer extends Trainer {
 	@Override
 	protected void trainOneExample(ConvNet net, double[] x, double[] y) {
 
-
 		_decayLossL1 = 0.0;
 		_decayLossL2 = 0.0;
 		_loss = 0.0;
 
+		StopWatch timer = new StopWatch();
+
+		timer.start();
 		this.net().forward(x);
+		timer.stop();
+		_forwardTime = timer.elapsedTime();
+
+		timer.start();
 		_loss = this.net().backward(y);
+		timer.stop();
+		_backwardtime = timer.elapsedTime();
 
 		if ((this.step() % _batchSize) == 0) {
 
@@ -82,21 +85,6 @@ public class SGDTrainer extends Trainer {
 
 		}
 
-	}
-
-
-	public double costLoss() {
-		return _loss;
-	}
-
-
-	public double decayLossL1() {
-		return _decayLossL1;
-	}
-
-
-	public double decayLossL2() {
-		return _decayLossL2;
 	}
 
 }

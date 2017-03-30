@@ -1,26 +1,25 @@
 package ml.utils.tracing;
 
 public class StopWatch {
-	private long _startTime;
+
+	private long _start;
 	private long _elapsedTime;
 
 
-	public StopWatch() {
-		_startTime = System.currentTimeMillis();
-	}
+	public StopWatch() {}
 
 
-	public static StopWatch start() {
-		return new StopWatch();
+	public void start() {
+		_start = System.nanoTime();
 	}
- 
+
 
 	public void stop() {
-		_elapsedTime = System.currentTimeMillis() - _startTime;
+		_elapsedTime = System.nanoTime() - _start;
 	}
 
 
 	public double elapsedTime() {
-		return ((double) _elapsedTime) / 1000;
+		return ((double) _elapsedTime) * 10e-10;
 	}
 }
