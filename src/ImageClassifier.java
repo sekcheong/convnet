@@ -223,10 +223,16 @@ public class ImageClassifier {
 			Console.writeLine("Epoch: " + t.epoch());
 			double trainerr;
 			double testerr;
-
+			double tuneerr;
+			
 			Console.writeLine("Train size: " + dataSets[0].examples().length);
 			trainerr = printConfusionMatrix(net, dataSets[0].examples());
 			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
+			Console.writeLine("");
+			
+			Console.writeLine("Tune size: " + dataSets[1].examples().length);
+			tuneerr = printConfusionMatrix(net, dataSets[1].examples());
+			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
 			Console.writeLine("");
 
 			Console.writeLine("Test size: " + dataSets[2].examples().length);
@@ -235,7 +241,7 @@ public class ImageClassifier {
 			Console.writeLine("");
 			Console.writeLine("");
 
-			if (trainerr < 0.1) return false;
+			if (trainerr == 0.0) return false;
 
 			return true;
 		});
@@ -255,9 +261,9 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
+		
 		int imageSize = 32;
 
-		long start = System.nanoTime();
 		if (args.length > 5) {
 			System.err.println("Usage error: java Lab3 <train_set_folder_path> <tune_set_folder_path> <test_set_folder_path> <imageSize>");
 			System.exit(1);
