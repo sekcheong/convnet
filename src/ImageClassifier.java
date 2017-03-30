@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ml.convnet.ConvNet;
@@ -125,6 +126,7 @@ public class ImageClassifier {
 		for (Example e : data) {
 			items.add(e);
 		}
+		Collections.shuffle(items);
 		Example[] ret = new Example[n];
 		for (int i = 0; i < n; i++) {
 			ret[i] = items.get(i);
@@ -141,11 +143,10 @@ public class ImageClassifier {
 
 		for (int i = 10; i <= 100; i = i + 10) {
 
-			train = sampleExamples(train, ((double) i) / 100);
+			Example[] subSet = sampleExamples(train, ((double) i) / 100);
 
 			ConvNet net = new ConvNet();
-
-			Example ex = train[0];
+			Example ex = dataSets[0].get(0);
 
 			net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
@@ -160,7 +161,6 @@ public class ImageClassifier {
 			net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
 			net.addLayer(new LeRu());
 			net.addLayer(new Pool(2, 2, 2, 1));
-
 			net.addLayer(new DropOut(0.5));
 
 			net.addLayer(new FullConnect(ex.y.depth(), 1.0));
@@ -172,19 +172,33 @@ public class ImageClassifier {
 
 			Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
 
+			trainer.onEpoch(t -> {
+				Console.writeLine("Epoch: " + t.epoch());
+				double trainerr;
+				double testerr;
+				double tuneerr;
+
+				Console.writeLine("Train size: " + subSet.length);
+				trainerr = printConfusionMatrix(net, subSet);
+				Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
+				Console.writeLine("");
+
+				Console.writeLine("Tune size: " + dataSets[1].examples().length);
+				tuneerr = printConfusionMatrix(net, dataSets[1].examples());
+				Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
+				Console.writeLine("");
+
+				Console.writeLine("Test size: " + dataSets[2].examples().length);
+				testerr = printConfusionMatrix(net, dataSets[2].examples());
+				Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
+				Console.writeLine("");
+				Console.writeLine("");
+
+				return true;
+			});
+
 			net.epochs = 50;
-
-			trainer.train(net, train, tune);
-
-			Console.writeLine("Tune examples: " + tune.length);
-			double err = printConfusionMatrix(net, tune);
-			Console.writeLine("Test set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
-
-			Console.writeLine("Tune examples: " + test.length);
-			err = printConfusionMatrix(net, test);
-			Console.writeLine("Test set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
-
-			Console.writeLine("");
+			trainer.train(net, subSet, dataSets[1].examples());
 
 		}
 	}
@@ -224,12 +238,12 @@ public class ImageClassifier {
 			double trainerr;
 			double testerr;
 			double tuneerr;
-			
+
 			Console.writeLine("Train size: " + dataSets[0].examples().length);
 			trainerr = printConfusionMatrix(net, dataSets[0].examples());
 			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
 			Console.writeLine("");
-			
+
 			Console.writeLine("Tune size: " + dataSets[1].examples().length);
 			tuneerr = printConfusionMatrix(net, dataSets[1].examples());
 			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
@@ -261,7 +275,7 @@ public class ImageClassifier {
 		String trainDirectory = "./data/images/trainset/";
 		String tuneDirectory = "./data/images/tuneset/";
 		String testDirectory = "./data/images/testset/";
-		
+
 		int imageSize = 32;
 
 		if (args.length > 5) {
@@ -288,7 +302,9 @@ public class ImageClassifier {
 
 		Console.writeLine("Data sets loading time: " + timer.elapsedTime() + "sec");
 
-		trainAndTest(dataSets, 200);
+		learningCurve(dataSets);
+
+		//trainAndTest(dataSets, 200);
 
 	}
 
