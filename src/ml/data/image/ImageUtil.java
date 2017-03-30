@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import ml.convnet.Volume;
+import ml.utils.Console;
 
 public class ImageUtil {
 
@@ -269,6 +270,55 @@ public class ImageUtil {
 
 	public static void saveImageLayer(Volume v, int layer, String fileName) {
 		BufferedImage image = volumeToImageLayer(v, layer);
+		saveImage(image, fileName);
+	}
+
+
+	public static void saveVolumeLayers(Volume v, int cols, String fileName) {
+		int pad = 1;
+		int rows = v.depth() / cols;
+		int r = v.depth() % cols;
+		if (r > 0) rows = rows + 1;
+		int width = cols * v.width() + pad * (cols + 1);
+		int height = rows * v.height() + pad * (rows + 1);
+		int ox = pad;
+		int oy = pad;
+
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+		int c = 0xb3b3ff;
+		//c = c + (c << 8) + (c << 16);
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {				
+				image.setRGB(i, j, c);
+			}
+		}
+
+		for (int l = 0; l < v.depth(); l++) {
+			Volume u = v.normalize(l);
+			for (int i = 0; i < u.width(); i++) {
+				for (int j = 0; j < u.height(); j++) {
+					int p = (int) (u.get(i, j, l) * 255);
+					p = p + (p << 8) + (p << 16);
+					try {
+					image.setRGB(ox + i, oy + j, p);
+					}
+					catch (Exception ex) {
+						Console.writeLine(ex.getMessage());						
+					}
+				}
+			}
+			if ((l + 1) % cols == 0) {
+				oy = oy + v.height() + pad;
+				ox = pad;
+			}
+			else {
+				ox = ox + v.width() + pad;
+			}
+
+		}
+
+		image = scaleImage(image, 512, 512);
 		saveImage(image, fileName);
 	}
 

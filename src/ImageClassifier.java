@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ml.convnet.ConvNet;
+import ml.convnet.Volume;
 import ml.convnet.layer.*;
 import ml.convnet.layer.activation.*;
 import ml.convnet.layer.loss.*;
@@ -209,27 +210,27 @@ public class ImageClassifier {
 		ConvNet net = new ConvNet();
 		Example ex = dataSets[0].get(0);
 
-		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
+		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth())); //0
 		
-		net.addLayer(new Convolution(3, 3, 30, 1, 2, 1.0));		
+		net.addLayer(new Convolution(3, 3, 30, 1, 2, 1.0));	//1	
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new Pool(2, 2, 2, 1)); //3
 
-		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
+		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0)); //4
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new Pool(2, 2, 2, 1)); //6
 
-		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0));
+		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0)); //7
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
-
-		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new Pool(2, 2, 2, 1)); //9
+ 
+		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0)); //10
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
-		net.addLayer(new DropOut(0.5));
+		net.addLayer(new Pool(2, 2, 2, 1)); //12
+		net.addLayer(new DropOut(0.5));  //13
 
-		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
-		net.addLayer(new Softmax());
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0)); //14
+		net.addLayer(new Softmax()); //15
 
 		double eta = 0.007;
 		double alpha = 0.90;
@@ -241,9 +242,30 @@ public class ImageClassifier {
 			Console.writeLine("Epoch: " + t.epoch());
 			double trainerr;
 			double testerr;
-			double tuneerr;
-
-//			Console.writeLine("Train size: " + dataSets[0].examples().length);
+			double tuneerr;			
+			
+			if (t.epoch() % 2 == 0) {
+				Volume[] r = net.layers()[1].response();
+//				 r = net.layers()[4].response();
+//				 r = net.layers()[6].response();
+//				 r = net.layers()[9].response();
+//				 r = net.layers()[12].response();
+//				 r = net.layers()[14].response();
+				 
+				
+//				ImageUtil.saveVolumeLayers(net.layers()[1].output, 5, "epoc_" + t.epoch() + "_layer4.png");
+//				ImageUtil.saveVolumeLayers(net.layers()[4].output, 5, "epoc_" + t.epoch() + "_layer4.png");
+//				ImageUtil.saveVolumeLayers(net.layers()[6].output, 5, "epoc_" + t.epoch() + "_layer6.png");
+//				ImageUtil.saveVolumeLayers(net.layers()[9].output, 4, "epoc_" + t.epoch() + "_layer9.png");
+//				ImageUtil.saveVolumeLayers(net.layers()[12].output, 5, "epoc_" + t.epoch() + "_layer12.png");
+//				ImageUtil.saveVolumeLayers(net.layers()[14].input, 5, "epoc_" + t.epoch() + "_layer14.png");
+				for (int i = 0; i < net.layers().length; i++) {				
+					Layer l = net.layers()[i];
+					Console.writeLine(i + " in: (" + l.input.width() + "," + l.input.height() + "," + l.input.depth() + ")");
+					Console.writeLine(i + " out: (" + l.output.width() + "," + l.output.height() + "," + l.output.depth() + ")");
+				}
+			}
+			//			Console.writeLine("Train size: " + dataSets[0].examples().length);
 //			trainerr = printConfusionMatrix(net, dataSets[0].examples());
 //			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
 //			Console.writeLine("");
@@ -252,7 +274,7 @@ public class ImageClassifier {
 			tuneerr = printConfusionMatrix(net, dataSets[1].examples());
 			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
 			Console.writeLine("");
-
+						
 //			Console.writeLine("Test size: " + dataSets[2].examples().length);
 //			testerr = printConfusionMatrix(net, dataSets[2].examples());
 //			Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
@@ -263,11 +285,16 @@ public class ImageClassifier {
 
 			return true;
 		});
-				
-
+		
+		
 		net.epochs = epochs;
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
 		
+		ImageUtil.saveVolumeLayers(net.layers()[4].output, 5, "final_layer4.png");
+		ImageUtil.saveVolumeLayers(net.layers()[6].output, 5, "final_layer6.png");
+		ImageUtil.saveVolumeLayers(net.layers()[9].output, 4, "final_layer9.png");
+		ImageUtil.saveVolumeLayers(net.layers()[12].output, 5, "final_layer12.png");
+						
 		Console.writeLine("Test size: " + dataSets[2].examples().length);
 		double testerr = printConfusionMatrix(net, dataSets[2].examples());
 		Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
