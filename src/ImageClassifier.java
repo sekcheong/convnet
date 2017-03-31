@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ml.convnet.ConvNet;
@@ -127,7 +126,6 @@ public class ImageClassifier {
 		for (Example e : data) {
 			items.add(e);
 		}
-		Collections.shuffle(items);
 		Example[] ret = new Example[n];
 		for (int i = 0; i < n; i++) {
 			ret[i] = items.get(i);
@@ -144,10 +142,12 @@ public class ImageClassifier {
 
 		for (int i = 10; i <= 100; i = i + 10) {
 
-			Example[] subSet = sampleExamples(train, ((double) i) / 100);
+			train = sampleExamples(train, ((double) i) / 100);
 
 			ConvNet net = new ConvNet();
-			Example ex = dataSets[0].get(0);
+
+			Example ex = train[0];
+
 
 			net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
@@ -172,34 +172,20 @@ public class ImageClassifier {
 			double lambda = 0.0001;
 
 			Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
-
-			trainer.onEpoch(t -> {
-				Console.writeLine("Epoch: " + t.epoch());
-				double trainerr;
-				double testerr;
-				double tuneerr;
-
-				Console.writeLine("Train size: " + subSet.length);
-				trainerr = printConfusionMatrix(net, subSet);
-				Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
-				Console.writeLine("");
-
-				Console.writeLine("Tune size: " + dataSets[1].examples().length);
-				tuneerr = printConfusionMatrix(net, dataSets[1].examples());
-				Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
-				Console.writeLine("");
-
-				Console.writeLine("Test size: " + dataSets[2].examples().length);
-				testerr = printConfusionMatrix(net, dataSets[2].examples());
-				Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
-				Console.writeLine("");
-				Console.writeLine("");
-
-				return true;
-			});
-
+			
 			net.epochs = 50;
-			trainer.train(net, subSet, dataSets[1].examples());
+
+			trainer.train(net, train, tune);
+
+			Console.writeLine("Tune examples: " + tune.length);
+			double err = printConfusionMatrix(net, tune);
+			Console.writeLine("Test set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+
+			Console.writeLine("Tune examples: " + test.length);
+			err = printConfusionMatrix(net, test);
+			Console.writeLine("Test set accuracy: " + Format.sprintf("%1.8f", (1 - err)));
+
+			Console.writeLine("");
 
 		}
 	}
@@ -210,27 +196,26 @@ public class ImageClassifier {
 		ConvNet net = new ConvNet();
 		Example ex = dataSets[0].get(0);
 
-		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth())); //0
+		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
+
+		net.addLayer(new Convolution(5, 5, 36, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
+
+		net.addLayer(new Convolution(3, 3, 25, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		net.addLayer(new Pool(2, 2, 2, 1));
 		
-		net.addLayer(new Convolution(3, 3, 30, 1, 2, 1.0));	//1	
+		net.addLayer(new FullConnect(400, 1.0));
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1)); //3
+		net.addLayer(new DropOut(0.5));
 
-		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0)); //4
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1)); //6
-
-		net.addLayer(new Convolution(5, 5, 16, 1, 2, 1.0)); //7
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1)); //9
- 
-		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0)); //10
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1)); //12
-		net.addLayer(new DropOut(0.5));  //13
-
-		net.addLayer(new FullConnect(ex.y.depth(), 1.0)); //14
-		net.addLayer(new Softmax()); //15
+		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
+		net.addLayer(new Softmax());
 
 		double eta = 0.007;
 		double alpha = 0.90;
@@ -242,63 +227,41 @@ public class ImageClassifier {
 			Console.writeLine("Epoch: " + t.epoch());
 			double trainerr;
 			double testerr;
-			double tuneerr;			
-			
-			if (t.epoch() % 2 == 0) {
-				Volume[] r = net.layers()[1].response();
-//				 r = net.layers()[4].response();
-//				 r = net.layers()[6].response();
-//				 r = net.layers()[9].response();
-//				 r = net.layers()[12].response();
-//				 r = net.layers()[14].response();
-				 
-				
-//				ImageUtil.saveVolumeLayers(net.layers()[1].output, 5, "epoc_" + t.epoch() + "_layer4.png");
-//				ImageUtil.saveVolumeLayers(net.layers()[4].output, 5, "epoc_" + t.epoch() + "_layer4.png");
-//				ImageUtil.saveVolumeLayers(net.layers()[6].output, 5, "epoc_" + t.epoch() + "_layer6.png");
-//				ImageUtil.saveVolumeLayers(net.layers()[9].output, 4, "epoc_" + t.epoch() + "_layer9.png");
-//				ImageUtil.saveVolumeLayers(net.layers()[12].output, 5, "epoc_" + t.epoch() + "_layer12.png");
-//				ImageUtil.saveVolumeLayers(net.layers()[14].input, 5, "epoc_" + t.epoch() + "_layer14.png");
-				for (int i = 0; i < net.layers().length; i++) {				
-					Layer l = net.layers()[i];
-					Console.writeLine(i + " in: (" + l.input.width() + "," + l.input.height() + "," + l.input.depth() + ")");
-					Console.writeLine(i + " out: (" + l.output.width() + "," + l.output.height() + "," + l.output.depth() + ")");
-				}
-			}
-			//			Console.writeLine("Train size: " + dataSets[0].examples().length);
-//			trainerr = printConfusionMatrix(net, dataSets[0].examples());
-//			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
-//			Console.writeLine("");
+			double tuneerr;
+
+			Console.writeLine("Train size: " + dataSets[0].examples().length);
+			trainerr = printConfusionMatrix(net, dataSets[0].examples());
+			Console.writeLine("Train accuracy: " + Format.sprintf("%1.8f", (1 - trainerr)));
+			Console.writeLine("");
 
 			Console.writeLine("Tune size: " + dataSets[1].examples().length);
 			tuneerr = printConfusionMatrix(net, dataSets[1].examples());
 			Console.writeLine("Tune accuracy: " + Format.sprintf("%1.8f", (1 - tuneerr)));
 			Console.writeLine("");
-						
-//			Console.writeLine("Test size: " + dataSets[2].examples().length);
-//			testerr = printConfusionMatrix(net, dataSets[2].examples());
-//			Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
-//			Console.writeLine("");
-//			Console.writeLine("");
 
-			if (tuneerr <0.2) return false;
+			Console.writeLine("Test size: " + dataSets[2].examples().length);
+			testerr = printConfusionMatrix(net, dataSets[2].examples());
+			Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
+			Console.writeLine("");
+			Console.writeLine("");
+			
+			Volume[] filters = net.layers()[1].response();
+			ImageUtil.saveFilters(filters, 6, "./images/epoch_" + t.epoch() + "_l1_filters" + ".png");
+			ImageUtil.saveVolumeLayers(net.layers()[2].output, 6, "./images/epoch_" + t.epoch() + "_l2_activation" + ".png");
+			
+			filters = net.layers()[4].response();
+			ImageUtil.saveFilters(filters, 5, "./images/epoch_" + t.epoch() + "_l5_filters" + ".png");
+			ImageUtil.saveVolumeLayers(net.layers()[5].output, 5, "./images/epoch_" + t.epoch() + "_l5_activation" + ".png");
+			
+
+			//if (trainerr == 0.0) return false;
 
 			return true;
 		});
-		
-		
+
+
 		net.epochs = epochs;
 		trainer.train(net, dataSets[0].examples(), dataSets[1].examples());
-		
-		ImageUtil.saveVolumeLayers(net.layers()[4].output, 5, "final_layer4.png");
-		ImageUtil.saveVolumeLayers(net.layers()[6].output, 5, "final_layer6.png");
-		ImageUtil.saveVolumeLayers(net.layers()[9].output, 4, "final_layer9.png");
-		ImageUtil.saveVolumeLayers(net.layers()[12].output, 5, "final_layer12.png");
-						
-		Console.writeLine("Test size: " + dataSets[2].examples().length);
-		double testerr = printConfusionMatrix(net, dataSets[2].examples());
-		Console.writeLine("Test accuracy: " + Format.sprintf("%1.8f", (1 - testerr)));
-		Console.writeLine("");
 
 		saveErrorImages(net, dataSets[2].examples());
 
@@ -333,12 +296,10 @@ public class ImageClassifier {
 
 		StopWatch timer = new StopWatch();
 		timer.start();
-		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB);
+		DataSet[] dataSets = loadImageDataSets(trainDirectory, tuneDirectory, testDirectory, imageSize, LoadOption.RGB_EDGES);
 		timer.stop();
 
 		Console.writeLine("Data sets loading time: " + timer.elapsedTime() + "sec");
-
-		//learningCurve(dataSets);
 
 		trainAndTest(dataSets, 500);
 
