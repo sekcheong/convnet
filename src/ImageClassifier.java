@@ -200,7 +200,7 @@ public class ImageClassifier {
 
 		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
 		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 1));
+		net.addLayer(new Pool(2, 2, 2, 2));
 
 		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
 		net.addLayer(new LeRu());
@@ -213,13 +213,12 @@ public class ImageClassifier {
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
-
-
 		double eta = 0.007;
 		double alpha = 0.90;
 		double lambda = 0.0001;
 
 		Trainer trainer = new SGDTrainer(eta, 4, alpha, 0.005, lambda);
+
 
 		trainer.onEpoch(t -> {
 			Console.writeLine("Epoch: " + t.epoch());
@@ -243,6 +242,7 @@ public class ImageClassifier {
 			Console.writeLine("");
 			Console.writeLine("");
 			
+<<<<<<< HEAD
 //			Volume[] filters = net.layers()[1].response();
 //			ImageUtil.saveFilters(filters, 4, "./images/epoch_" + t.epoch() + "_l1_filters" + ".png");
 //			ImageUtil.saveVolumeLayers(net.layers()[2].output, 4, "./images/epoch_" + t.epoch() + "_l2_activation" + ".png");
@@ -251,6 +251,12 @@ public class ImageClassifier {
 //			ImageUtil.saveFilters(filters, 4, "./images/epoch_" + t.epoch() + "_l5_filters" + ".png");
 //			ImageUtil.saveVolumeLayers(net.layers()[5].output, 4, "./images/epoch_" + t.epoch() + "_l5_activation" + ".png");
 			
+=======
+			Volume[] filters = net.layers()[1].response();
+			ImageUtil.saveFilters(filters, 5, "./images/epoch_" + t.epoch() + "_l1_filters" + ".png");
+			ImageUtil.saveVolumeLayers(net.layers()[2].output, 5, "./images/epoch_" + t.epoch() + "_l1_activation" + ".png");
+									
+>>>>>>> 33c708812be3fba94c67eec41902ab6413d1f599
 
 			if (trainerr == 0.0 || testerr <=0.20) return false;
 
