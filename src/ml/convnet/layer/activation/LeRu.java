@@ -5,14 +5,12 @@ import ml.convnet.layer.LayerType;
 
 public class LeRu extends ActivationLayer {
 
+	private static double SLOPE = 0.01;
+
 	public LeRu() {
 		this.type = LayerType.leru;
 	}
 
-
-	private double noise() {
-		return Math.random() * 0.001;
-	}
 
 	public Volume forward(Volume x) {
 		this.input = x;
@@ -20,7 +18,7 @@ public class LeRu extends ActivationLayer {
 		int n = x.W.length;
 		double[] outW = out.W;
 		for (int i = 0; i < n; i++) {
-			if (outW[i] < 0) outW[i] = 0;// = noise();
+			if (outW[i] < 0) outW[i] = outW[i] * SLOPE;
 		}
 		this.output = out;
 		return out;

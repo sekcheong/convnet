@@ -1,6 +1,6 @@
 package ml.convnet;
 
-import java.util.Random;
+import ml.utils.RandomUtil;
 
 public class Volume {
 
@@ -12,8 +12,6 @@ public class Volume {
 
 	// the dimension of the volume dim = [w, h, d]
 	public int[] dim = new int[3];
-
-	private static Random rand = new Random();
 
 
 	/**
@@ -147,7 +145,7 @@ public class Volume {
 	private static void initRandomWeights(double[] w) {
 		double scale = Math.sqrt(1.0 / ((double) (w.length)));
 		for (int i = 0; i < w.length; i++) {
-			w[i] = rand.nextGaussian() * scale;
+			w[i] = RandomUtil.nextGaussian() * scale;
 		}
 	}
 

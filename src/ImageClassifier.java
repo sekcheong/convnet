@@ -198,18 +198,20 @@ public class ImageClassifier {
 
 		net.addLayer(new Input(ex.x.width(), ex.x.height(), ex.x.depth()));
 
-		net.addLayer(new Convolution(5, 5, 25, 1, 2, 1.0));
-		net.addLayer(new LeRu());
-		net.addLayer(new Pool(2, 2, 2, 2));
-
-		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new Convolution(7, 7, 64, 1, 2, 1.0));
 		net.addLayer(new LeRu());
 		net.addLayer(new Pool(2, 2, 2, 1));
 
-		net.addLayer(new FullConnect(120, 1.0));
+		net.addLayer(new Convolution(5, 5, 64, 1, 2, 1.0));
 		net.addLayer(new LeRu());
-		net.addLayer(new DropOut(0.5));
+		net.addLayer(new Pool(2, 2, 2, 1));
 
+		net.addLayer(new Convolution(5, 5, 20, 1, 2, 1.0));
+		net.addLayer(new LeRu());
+		
+		net.addLayer(new FullConnect(300, 1.0));
+		net.addLayer(new LeRu());
+		
 		net.addLayer(new FullConnect(ex.y.depth(), 1.0));
 		net.addLayer(new Softmax());
 
@@ -243,17 +245,15 @@ public class ImageClassifier {
 			Console.writeLine("");
 			
 
-//			Volume[] filters = net.layers()[1].response();
-//			ImageUtil.saveFilters(filters, 4, "./images/epoch_" + t.epoch() + "_l1_filters" + ".png");
-//			ImageUtil.saveVolumeLayers(net.layers()[2].output, 4, "./images/epoch_" + t.epoch() + "_l2_activation" + ".png");
-//			
-//			filters = net.layers()[4].response();
-//			ImageUtil.saveFilters(filters, 4, "./images/epoch_" + t.epoch() + "_l5_filters" + ".png");
-//			ImageUtil.saveVolumeLayers(net.layers()[5].output, 4, "./images/epoch_" + t.epoch() + "_l5_activation" + ".png");
+			Volume[] filters = net.layers()[1].response();
+			ImageUtil.saveFilters(filters, 8, "./images/epoch_" + t.epoch() + "_l1_filters" + ".png");
+			ImageUtil.saveVolumeLayers(net.layers()[2].output, 8, "./images/epoch_" + t.epoch() + "_l2_activation" + ".png");
 			
-
-
-			if (trainerr == 0.0 || testerr <=0.20) return false;
+			filters = net.layers()[4].response();
+			ImageUtil.saveFilters(filters, 8, "./images/epoch_" + t.epoch() + "_l5_filters" + ".png");
+			ImageUtil.saveVolumeLayers(net.layers()[5].output, 8, "./images/epoch_" + t.epoch() + "_l5_activation" + ".png");
+			
+			if ( testerr <=0.20) return false;
 
 			return true;
 		});

@@ -1,0 +1,36 @@
+newcurve marktype none linetype dotted label : Train set accuracy
+pts
+ 10  0.92727273
+ 20  0.94545455
+ 30  0.92771084
+ 40  0.94570136
+ 50  0.88447653
+ 60  0.90963855
+ 70  0.92764858
+ 80  0.93227991
+ 90  0.93775100
+ 100  0.87364621
+newcurve marktype none linetype dashed color 0 1 0 label : Tune set accuracy
+pts
+ 10  0.50000000
+ 20  0.60000000
+ 30  0.58333333
+ 40  0.65555556
+ 50  0.66111111
+ 60  0.65000000
+ 70  0.76111111
+ 80  0.71666667
+ 90  0.72222222
+ 100  0.72222222
+newcurve marktype none linetype solid color 0 0 1 label : Test set accuracy
+pts
+ 10  0.52808989
+ 20  0.66292135
+ 30  0.66853933
+ 40  0.70786517
+ 50  0.65730337
+ 60  0.70224719
+ 70  0.76966292
+ 80  0.71348315
+ 90  0.73033708
+ 100  0.73033708

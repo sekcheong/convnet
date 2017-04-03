@@ -298,7 +298,9 @@ public class ImageUtil {
 		}
 
 		for (int d = 0; d < length; d++) {
-			Volume u = filters[d].normalize();
+			Volume u = new Volume(filters[d]);
+			u.zeroMean();
+			u = u.normalize();
 			for (int i = 0; i < u.width(); i++) {
 				for (int j = 0; j < u.height(); j++) {
 					int r = (int) (u.get(i, j, 0) * 255);
@@ -321,8 +323,11 @@ public class ImageUtil {
 			}
 
 		}
-
-		image = scaleImage(image, 512, 512);
+		
+		double ratio = (double) image.getWidth() / (double) image.getHeight();
+		int imW = (int) (ratio * 512);
+		
+		image = scaleImage(image, imW, 512);
 		saveImage(image, fileName);
 	}
 
@@ -337,6 +342,9 @@ public class ImageUtil {
 		int ox = pad;
 		int oy = pad;
 
+		Volume m = new Volume(v);
+		m.zeroMean();
+		
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 		int c = 0xb3b3ff;
@@ -347,8 +355,10 @@ public class ImageUtil {
 			}
 		}
 
-		for (int l = 0; l < v.depth(); l++) {
-			Volume u = v.normalize(l);
+		for (int l = 0; l < m.depth(); l++) {
+			
+			Volume u = m.normalize(l);
+			
 			for (int i = 0; i < u.width(); i++) {
 				for (int j = 0; j < u.height(); j++) {
 					int p = (int) (u.get(i, j, l) * 255);
@@ -362,11 +372,11 @@ public class ImageUtil {
 				}
 			}
 			if ((l + 1) % cols == 0) {
-				oy = oy + v.height() + pad;
+				oy = oy + m.height() + pad;
 				ox = pad;
 			}
 			else {
-				ox = ox + v.width() + pad;
+				ox = ox + m.width() + pad;
 			}
 
 		}
