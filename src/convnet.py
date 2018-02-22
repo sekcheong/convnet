@@ -11,7 +11,8 @@ np.random.seed(638 * 838) # See https://groups.google.com/forum/#!topic/keras-us
 random.seed(   638 + 838) # I also tried this, but since get different results each run.  That's too bad, since replication is very valuable!
 
 from os.path                    import join, basename
-from scipy.misc                 import imresize, imread
+from skimage.transform          import resize
+from scipy.misc                 import imread
 from datetime                   import datetime
 from keras.models               import Sequential
 from keras.layers               import Dense, Activation, Flatten, Dropout
@@ -80,7 +81,7 @@ def load_course_images(directory, image_size):
     
     for imageIndex, f in enumerate(files):
         I = imread("{}/{}".format(directory, f))
-        I = imresize(I, [image_size, image_size])
+        I = resize(I, [image_size, image_size])
         X[imageIndex, :, :, 0:3] = I / 255.0                # rgb  channels
         X[imageIndex, :, :, 3]   = (I.mean(axis=2) / 255.0) # gray channel
         labels.append(f.split("_")[0]) # Pull the LABEL out of the image name (i.e., all the characters before the first underscore).
@@ -97,7 +98,7 @@ def load_course_images(directory, image_size):
 ############################################################
 
 # BE SURE TO EDIT THE LINE BELOW TO THE DIRECTORY WHERE YOU ARE STORING THE LAB3 IMAGES!
-IMG_DIR           = "/Users/scheong/developer/workspace/convnet/data/images"
+IMG_DIR           = "../data/images"
 
 LABELS            = ['airplanes', 'butterfly', 'flower', 'grand', 'starfish', 'watch']   
 imageDimension    = 32
