@@ -12,14 +12,16 @@ random.seed(   638 + 838) # I also tried this, but since get different results e
 
 from os.path                    import join, basename
 from skimage.transform          import resize
-from scipy.misc                 import imread
+from matplotlib.pyplot          import imread
 from datetime                   import datetime
-from keras.models               import Sequential
-from keras.layers               import Dense, Activation, Flatten, Dropout
-from keras.layers.pooling       import MaxPooling2D
-from keras.layers.convolutional import Conv2D, ZeroPadding2D
-from keras.optimizers           import Adam
-from keras.layers.advanced_activations import LeakyReLU
+#import tensorflow as tf
+
+from tensorflow.keras.models               import Sequential
+from tensorflow.keras.layers               import Dense, Activation, Flatten, Dropout
+from tensorflow.keras.layers               import MaxPooling2D
+from tensorflow.keras.layers               import Conv2D, ZeroPadding2D
+from tensorflow.keras.optimizers           import Adam
+from tensorflow.keras.layers               import LeakyReLU
 
 # TODO: extend to ensemble (where the difference is solely due to the seeds, 
 #                           but could vary HUs, plates, and other parameters)
@@ -186,12 +188,12 @@ model.add(Dense(units = numberOfClasses))
 model.add(Activation("softmax"))
 
 # Report the size of the model.
-numberOfWeights = 0
-for tw in model.trainable_weights:
-    numberOfWeights += prod([dim.value for dim in tw.get_shape()])
-print()
-print("The model has {:,} trainable weights.".format(numberOfWeights))
-print()
+# numberOfWeights = 0
+# for tw in model.trainable_weights:
+#     numberOfWeights += prod([dim.value for dim in tw.get_shape()])
+# print()
+# print("The model has {:,} trainable weights.".format(numberOfWeights))
+# print()
 
 ### Train the model.
 
