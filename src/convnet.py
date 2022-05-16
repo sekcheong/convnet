@@ -48,7 +48,9 @@ from tensorflow.keras.layers               import LeakyReLU
 
 def accuracy(model, X,  y):
     "Return the accuracy of model on Inputs X and labels y."
-    y_hat = model.predict_classes(X, verbose=0)
+    predict_x =model.predict(X) 
+    y_hat = np.argmax(predict_x, axis=1)
+    #y_hat = model.predict_classes(X, verbose=0)
     n_correct = (np.array(y_hat) == np.array(y)).sum()
     return n_correct / float(y.size)
 
@@ -217,8 +219,11 @@ for i in range(epochsToRun):
         bestTuneSetEpoch     = i
         bestTuneSetAcc       = acc_tune
         testSetAccAtBestTune = acc_test
-        marker               = "*"
-        y_pred_test = model.predict_classes(X_test, verbose = 0)
+        marker               = "*"                
+        #y_pred_test = model.predict_classes(X_test, verbose = 0)
+        predict_x =model.predict(X_test) 
+        y_pred_test = np.argmax(predict_x, axis=1)
+
         confusionTestsetAtBestTuneset.fill(0)
         for y_pred, y in zip(y_pred_test, y_test): # EXAMPLE: zip((a, b, c), (x, y, z)) produces ( (a, x), (b, y), (c, z) ).
             confusionTestsetAtBestTuneset[y, y_pred] += 1
